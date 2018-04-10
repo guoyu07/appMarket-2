@@ -1,71 +1,22 @@
 @import '~iview/src/styles/index.less';
 
-// 下面是要覆盖的变量，例如：
-// @border-color-base      : #f60;  // outside
-// @border-color-split     : #e3e8ee;
-// @input-hover-border-color: #404040;//orange;
-// @ivu-page-item-border-color: #404040;//orange;
-// @border-color-base: #dddee1;
-// @background-select-bg-color: #404040;
-
-
-// @btn-ghost-hover-color: orange;
-// @btn-ghost-bg           : transparent;
-// @btn-ghost-border       : @border-color-base;
-// @btn-ghost-border-hover : orange;
-
-// @placeholder-color: #ccc;
-// @input-placeholder-color: @placeholder-color;
-
-// @pageColor: #404040;
-// .ivu-checkbox-checked .ivu-checkbox-inner {
-//     border-color: @pageColor;
-//     background-color: @pageColor;
-// }
-
-// .ivu-checkbox-indeterminate .ivu-checkbox-inner {
-//     border-color: @pageColor;
-//     background-color: @pageColor;   
-// }
-
-// .ivu-checkbox-checked:hover .ivu-checkbox-inner {
-//     border-color: @pageColor;
-// }
-
-// .ivu-checkbox-checked:focus .ivu-checkbox-inner {
-//     border-color: @pageColor;
-// }
-
-// .editModal_content :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-//     color: #444; opacity:1; 
-// }
-
-// .editModal_content ::-moz-placeholder { /* Mozilla Firefox 19+ */
-//     color: #444;opacity:1;
-// }
-
-// .editModal_content input:-ms-input-placeholder{
-//     color: #444;opacity:1;
-// }
-
-// .editModal_content input::-webkit-input-placeholder{
-//     color: #444;opacity:1;
-// }
-
-// .editModal_content input::-webkit-textarea-placeholder{
-//     color: #444;opacity:1;
-// }
-
-// .editModal_content input::-webkit-select-placeholder{
-//     color: #444;opacity:1;
-// }
-
-// .editModal_content .ivu-select-placeholder {
-//     color: #444 !important;opacity:1;
-// }
+// 清除浮动公共类
 .clearfix:after {content:"";display:block;clear:both;}
+// 菜单栏滚动
 html , body, #app, div.layout, div.ivu-layout, #aside_menu, ul.ivu-menu, div.ivu-row, div.ivu-col {height: 100%;}
-ul.ivu-menu.ivu-menu-dark.ivu-menu-vertical {height: calc(~"100% - 230px"); overflow-y:scroll;}
+ul.ivu-menu.ivu-menu-light.ivu-menu-vertical {-webkit-height: 100%; overflow-y:scroll;}
+// 菜单栏宽度
+div.ivu-layout-sider {
+    width: auto !important ;
+    min-width: 100px !important;
+    max-width: 300px !important;
+    flex: auto !important;
+    height:100%;
+}
+// 菜单栏图标
+.ivu-menu-submenu-title > i, .ivu-menu-submenu-title span > i {
+    margin-right: 2px;
+}
 /**
 模态框高度与滚动条
 */
@@ -73,10 +24,6 @@ div.ivu-modal {width: 620px!important}
 .ivu-modal-body { overflow-y: auto; max-height: 500px;} 
 .editForm div.ivu-input-wrapper.ivu-input-type {width:90%}
 .accountModal div.ivu-input-wrapper.ivu-input-type {width:40%}
-// .ivu-btn-ghost:hover {
-//     color: #404040;//orange;
-//     border-color: #404040;//orange
-// }
 
 /**
     分页样式定制
@@ -89,11 +36,9 @@ div.ivu-modal {width: 620px!important}
     position: absolute;
     top: 50%;
 }
-
 .demo-spin-icon-load{
     animation: ani-demo-spin 1s linear infinite;
 }
-
 @keyframes ani-demo-spin {
     from { transform: rotate(0deg);}
     50%  { transform: rotate(180deg);}
@@ -101,233 +46,8 @@ div.ivu-modal {width: 620px!important}
 }
 textarea.ivu-input{font-size:12px;}
 
-/**
-    菜单hover背景色调整，
-    下面是菜单active状态的字体颜色
-*/
-.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover{background-color:rgba(16, 35, 77, 0.48)!important;}
-.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu) {
-    color: rgba(255, 255, 255, 0.7);
-    border-right: 2px solid #2d8cf0;
-}
-.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):hover, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu):hover{
-    background-color:rgba(16, 35, 77, 0.48);
-}
-div.ivu-layout-sider {
-    width: auto !important ;
-    min-width: 100px !important;
-    max-width: 300px !important;
-    flex: auto !important;
-}
-
-// 顶部通栏背景颜色
-div.ivu-layout-header{
-    background:#23262e; 
-}
-ul.ivu-menu.ivu-menu-dark.ivu-menu-horizontal{
-    background:#23262e;
-}
-
 // 后台管理名称
 div.ivu-layout-header{padding: 0}
 
 // 模态框不显示页脚
 .nofoot div.ivu-modal-footer{display:none}
-
-
-
-// button.DIY_button {
-//     width: 80px;
-//     height: 32px;
-//     line-height: 32px;
-//     cursor: pointer;
-//     margin-left: 3px;
-//     display: inline-block;
-//     border-radius: 4px;
-//     text-align: center;
-//     outline: none;
-//     margin-right: 10px;
-//     color: #fff !important;
-//     background: #444;
-//     // font-weight: bolder;
-//     border: 1px solid #444;
-// }
-// button.DIY_button:hover {
-//     background: #666;
-//     border: 1px solid #666;
-// }
-
-.ivu-menu-submenu-title > i, .ivu-menu-submenu-title span > i {
-    margin-right: 2px;
-}
-
-
-// 树形结构对齐样式
- .ivu-tree-arrow i {
-    transition: all 0.2s ease-in-out;
-    margin-left: -7px;
-}
-
-
-/**
-// Prefix
-@css-prefix             : ivu-;
-@css-prefix-iconfont    : ivu-icon;
-
-// Color
-@primary-color          : #3399ff;
-@info-color             : #2db7f5;
-@success-color          : #00cc66;
-@warning-color          : #ff9900;
-@error-color            : #ff3300;
-@link-color             : #3399ff;
-@link-hover-color       : tint(@link-color, 20%);
-@link-active-color      : shade(@link-color, 5%);
-@selected-color         : fade(@primary-color, 90%);
-@tooltip-color          : #fff;
-@subsidiary-color       : #9ea7b4;
-@rate-star-color        : #f5a623;
-
-// Base
-@body-background        : #fff;
-@font-family            : "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
-@code-family            : Consolas,Menlo,Courier,monospace;
-@title-color            : #464c5b;
-@text-color             : #657180;
-@font-size-base         : 14px;
-@font-size-small        : 12px;
-@line-height-base       : 1.5;
-@line-height-computed   : floor((@font-size-base * @line-height-base));
-@border-radius-base     : 6px;
-@border-radius-small    : 4px;
-@cursor-disabled        : not-allowed;
-
-// Border color
-@border-color-base      : #d7dde4;  // outside
-@border-color-split     : #e3e8ee;  // inside
-
-// Background color
-@background-color-base        : #f7f7f7;  // base
-@background-color-select-hover: @input-disabled-bg;
-@tooltip-bg                   : rgba(70, 76, 91, .9);
-@head-bg                      : #f9fafc;
-@table-thead-bg               : #f5f7f9;
-@table-td-stripe-bg           : #f5f7f9;
-@table-td-hover-bg            : #ebf7ff;
-@table-td-highlight-bg        : #ebf7ff;
-@menu-dark-active-bg          : #313540;
-@date-picker-cell-hover-bg    : #e1f0fe;
-
-// Shadow
-@shadow-color           : rgba(0, 0, 0, .2);
-@shadow-base            : @shadow-down;
-@shadow-card            : 0 1px 1px 0 rgba(0,0,0,.1);
-@shadow-up              : 0 -1px 6px @shadow-color;
-@shadow-down            : 0 1px 6px @shadow-color;
-@shadow-left            : -1px 0 6px @shadow-color;
-@shadow-right           : 1px 0 6px @shadow-color;
-
-// Button
-@btn-font-weight        : normal;
-@btn-padding-base       : 6px 15px;
-@btn-padding-large      : 6px 15px 7px 15px;
-@btn-padding-small      : 2px 7px;
-@btn-font-size          : 12px;
-@btn-font-size-large    : 14px;
-@btn-border-radius      : 4px;
-@btn-border-radius-small: 3px;
-@btn-group-border       : shade(@primary-color, 5%);
-
-@btn-disable-color      : #c3cbd6;
-@btn-disable-bg         : @background-color-base;
-@btn-disable-border     : @border-color-base;
-
-@btn-default-color      : @text-color;
-@btn-default-bg         : @background-color-base;
-@btn-default-border     : @border-color-base;
-
-@btn-primary-color      : #fff;
-@btn-primary-bg         : @primary-color;
-
-@btn-ghost-color        : @text-color;
-@btn-ghost-bg           : transparent;
-@btn-ghost-border       : @border-color-base;
-
-@btn-circle-size        : 32px;
-@btn-circle-size-large  : 36px;
-@btn-circle-size-small  : 24px;
-
-// Layout and Grid
-@grid-columns           : 24;
-@grid-gutter-width      : 0;
-
-// Legend
-@legend-color           : #999;
-
-// Input
-@input-height-base           : 32px;
-@input-height-large          : 36px;
-@input-height-small          : 24px;
-
-@input-padding-horizontal    : 7px;
-@input-padding-vertical-base : 4px;
-@input-padding-vertical-small: 1px;
-@input-padding-vertical-large: 6px;
-
-@input-placeholder-color     : @btn-disable-color;
-@input-color                 : @text-color;
-@input-border-color          : @border-color-base;
-@input-bg                    : #fff;
-
-@input-hover-border-color    : @primary-color;
-@input-focus-border-color    : @primary-color;
-@input-disabled-bg           : #f3f3f3;
-
-// Tag
-@tag-font-size          : 12px;
-
-// Media queries breakpoints
-// Extra small screen / phone
-@screen-xs              : 480px;
-@screen-xs-min          : @screen-xs;
-@screen-xs-max          : (@screen-xs-min - 1);
-
-// Small screen / tablet
-@screen-sm              : 768px;
-@screen-sm-min          : @screen-sm;
-@screen-sm-max          : (@screen-sm-min - 1);
-
-// Medium screen / desktop
-@screen-md              : 992px;
-@screen-md-min          : @screen-md;
-@screen-md-max          : (@screen-md-min - 1);
-
-// Large screen / wide desktop
-@screen-lg              : 1200px;
-@screen-lg-min          : @screen-lg;
-@screen-lg-max          : (@screen-lg-min - 1);
-
-// Z-index
-@zindex-spin            : 8;
-@zindex-affix           : 10;
-@zindex-back-top        : 10;
-@zindex-select          : 900;
-@zindex-modal           : 1000;
-@zindex-message         : 1010;
-@zindex-notification    : 1010;
-@zindex-tooltip         : 1060;
-@zindex-loading-bar     : 2000;
-
-// Animation
-@animation-time         : .3s;
-@transition-time        : .2s;
-@ease-in-out            : ease-in-out;
-
-// Slider
-@slider-color              : tint(@primary-color, 20%);
-@slider-height             : 4px;
-@slider-margin             : 16px 0;
-@slider-button-wrap-size   : 18px;
-@slider-button-wrap-offset : -4px;
-@slider-disabled-color     : #ccc;
-*/

@@ -3,7 +3,7 @@
          <!-- :style="{backgroundImage: 'url(' + bg + ')'}" -->
          
         <div id="login_form">
-            <h1>应用市场管理后台登录</h1>
+            <h1>应用市场后台管理系统</h1>
              <Form ref="formValidate" :model="formValidate" :rules="ruleValidate">
                 <FormItem prop="user">
                     <Input type="text" v-model="formValidate.user" placeholder="用户名" size="large">
@@ -30,6 +30,9 @@
 
 <script>
 export default {
+  created(){
+    document.title = '登录-应用市场后台管理系统'
+  },
   data(){
       return {
           bg: require('../../assets/img/bg-login.png'),
@@ -52,15 +55,24 @@ export default {
   methods: {
       // 点击登录
       handleSubmit(){
+          // 判断是否填写用户名密码
           if(this.formValidate.user.trim()=='' || this.formValidate.password.trim()==''){
               alert("请输入用户名或密码")
               return
           }else{
+              // 发送登录请求
+
+
+              // 获取用户权限并本地保存
+              window.localStorage.setItem("authList",JSON.stringify([11,21,22,31,32]))
+
               window.localStorage.setItem("user",this.formValidate.user)
               window.localStorage.setItem("password",this.formValidate.password)
+
+              // 跳转到首页
+              this.$router.push({path: '/index/homepage'})
+              window.localStorage.setItem('currentMenu','/index/homepage')
           }
-          // 跳转到首页
-          this.$router.push({path: '/index/homepage'})
       },
       // 点击刷新验证码
       refreshAuth(){

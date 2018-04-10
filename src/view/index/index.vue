@@ -52,7 +52,6 @@
 }
 
 .layout-nav{
-    // width: 420px;
     margin: 0 auto;
     margin-right: 20px;
 }
@@ -62,7 +61,7 @@
 .layout-content-main {
     padding: 20px;
     height: 100%;
-    overflow-y: scroll;
+    overflow: auto;
     margin-bottom: 20px;
 }
 

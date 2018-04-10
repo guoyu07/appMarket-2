@@ -71,13 +71,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wshicheng/dataAnalysis.git"
+    "url": "https://github.com/hsw1111/appMarket.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/wshicheng/dataAnalysis/issues"
+    "url": "https://github.com/hsw1111/appMarket.git"
   },
-  "homepage": "https://github.com/wshicheng/dataAnalysis#readme"
+  "homepage": "https://github.com/hsw1111/appMarket.git"
 }

@@ -8,6 +8,8 @@
         <button @click='submit'>提交</button> -->
         <Upload
             :before-upload="handleUpload"
+            :format='["apk","jpg","png"]'
+            accept='.apk'
             action="">
             <Button type="ghost" icon="ios-cloud-upload-outline">选择文件上传</Button>
         </Upload>

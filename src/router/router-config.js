@@ -24,6 +24,10 @@ import ChannelManage from '../view/callManage/channelManage/index.vue'
 import Item from '../view/callManage/channelManage/item.vue'
 import FamilyNumber from '../view/callManage/familyNumber/index.vue'
 
+// notfound
+import NotFoundPage from '../view/notFoundPage/index.vue'
+
+import MenuModule from '../store/modules/MenuModule.js'
 let routes = [
     {
         path:'/login',
@@ -35,81 +39,17 @@ let routes = [
         component: Index,
         children:[
             {
-                path:'/index/homepage',
-                component: Home,
-                name:'首页',
+                path: '/notfound',
+                component: NotFoundPage,
+                name:'notfound'
             },
-            {
-                path:'/index/menuManage',
-                component: MenuManage,
-                name:'菜单管理',
-            },
-            {
-                path:'/index/roleManage',
-                component: RoleManage,
-                name:'角色管理',
-            },
-            {
-                path:'/index/account',
-                component: Account,
-                name:'登录账号',
-            },
-            {
-                path:'/index/systemParam',
-                component: SystemParam,
-                name:'系统参数',
-            },
-            {
-                path:'/index/systemCache',
-                component: SystemCache,
-                name:'系统缓存',
-            },
-            {
-                path:'/index/areaManage',
-                component: AreaManage,
-                name:'区域管理',
-            },
-            {
-                path:'/index/departManage',
-                component: DepartManage,
-                name:'部门管理',
-            },
-            {
-                path:'/index/policeManage',
-                component: PoliceManage,
-                name:'民警管理',
-            },
-            {
-                path:'/index/staffManage',
-                component: StaffManage,
-                name:'职工管理',
-            },
-            {
-                path:'/index/criminalManage',
-                component: CriminalManage,
-                name:'罪犯管理',
-            },
-            {
-                path:'/index/policing',
-                component: Policing,
-                name:'警务通',
-            },
-            {
-                path:'/index/channelManage',
-                component: ChannelManage,
-                name:'频道管理',
-            },
-            {
-                path:'/index/familyNumber',
-                component: FamilyNumber,
-                name:'亲情号码',
-            }
         ]
     },
-    {
-        path:'/index/channelManage/item',
-        name: '成员管理',
-        component: Item
-    }
+    // ...generateRoutesFromMenu(MenuModule.state.items)
 ]
+// function generateRoutesFromMenu(routes = []){
+//     console.log(menu)
+//     console.log(routes)
+//     return routes
+//  }
 export default routes;
