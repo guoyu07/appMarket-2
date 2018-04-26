@@ -3,7 +3,7 @@
          <!-- :style="{backgroundImage: 'url(' + bg + ')'}" -->
          
         <div id="login_form">
-            <h1>应用市场后台管理系统</h1>
+            <h1>应用市场管理平台</h1>
              <Form ref="formValidate" :model="formValidate" :rules="ruleValidate">
                 <FormItem prop="user">
                     <Input type="text" v-model="formValidate.user" placeholder="用户名" size="large">
@@ -20,6 +20,7 @@
                     </Input>
                     <img src="../../assets/img/Main.jpg" alt="" title="点击刷新验证码" id="img_authcode" @click="refreshAuth">
                 </FormItem> -->
+                <span class="forgetpwd" @click="forgetpwd">忘记密码？</span>
                 <FormItem>
                     <Button type="success" @click="handleSubmit('formValidate')" style="width:100%" size="large">登录</Button>
                 </FormItem>
@@ -31,7 +32,7 @@
 <script>
 export default {
   created(){
-    document.title = '登录-应用市场后台管理系统'
+    document.title = '登录-应用市场管理平台'
   },
   data(){
       return {
@@ -48,23 +49,24 @@ export default {
               password: [
                 { required: true, message: '请输入密码', trigger: 'blur' }
               ]
-          }
+          },
+          isShow:false
       }
   },
 
   methods: {
       // 点击登录
       handleSubmit(){
+          console.log(this)
           // 判断是否填写用户名密码
           if(this.formValidate.user.trim()=='' || this.formValidate.password.trim()==''){
               alert("请输入用户名或密码")
               return
           }else{
               // 发送登录请求
-
-
+              
               // 获取用户权限并本地保存
-              window.localStorage.setItem("authList",JSON.stringify([11,21,22,31,32]))
+              window.localStorage.setItem("authList",JSON.stringify([11,21,22,31,32,41,42,51,61,62,63]))
 
               window.localStorage.setItem("user",this.formValidate.user)
               window.localStorage.setItem("password",this.formValidate.password)
@@ -77,6 +79,9 @@ export default {
       // 点击刷新验证码
       refreshAuth(){
 
+      },
+      forgetpwd(){
+        
       }
   }
 
@@ -109,6 +114,13 @@ export default {
                 position: absolute;
                 top: 1px;
                 right: 2px;
+            }
+            .forgetpwd{
+                float: right;
+                margin-top: -20px;
+                margin-bottom: 15px;
+                cursor: pointer;
+                color: #0148bb;
             }
         }
     }

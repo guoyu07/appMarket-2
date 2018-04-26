@@ -4,11 +4,11 @@
             <!-- 头部 -->
             <Head></Head>
             <Row>
-                <Col span="3">
+                <Col span="4">
                      <!-- 侧边栏 -->
                      <MenuComponent></MenuComponent>
                 </Col>
-                <Col span="21">
+                <Col span="20">
                     <div class="layout-content-main">
                         <!-- 路由匹配到的组件将渲染在这里 -->
                         <router-view></router-view>
@@ -37,7 +37,7 @@
         },
 
         methods: {
-            
+           
         }
     }
 </script>
@@ -59,7 +59,7 @@
     text-align: center;
 }
 .layout-content-main {
-    padding: 20px;
+    // padding: 20px;
     height: 100%;
     overflow: auto;
     margin-bottom: 20px;

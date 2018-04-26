@@ -3,54 +3,43 @@
       <Sider hide-trigger>
           <div id="aside_menu">
               <Menu :active-name="activeName" v-on:on-select="handleRoute" theme="light" width="auto" :open-names="openName" :accordion='accordion'>
-                  <MenuItem name="/index/homepage"  auth='11' class='isMenu'>
+                  <MenuItem name="/index/homepage">
                       <Icon type="android-home"></Icon>
                           首页
                   </MenuItem>
-                  <Submenu name="appManage">
-                      <template slot="title">
+                  <MenuItem name="/index/appManage" auth='21' class='isMenu'>
                           <Icon type="ios-keypad"></Icon>
                           应用管理
-                      </template>
-                      <MenuItem name="/index/menuManage" auth='21' class='isMenu'>菜单管理</MenuItem>
-                      <MenuItem name="/index/roleManage" auth='22' class='isMenu'>角色管理</MenuItem>
-                      <MenuItem name="/index/account" auth='23' class='isMenu'>登录账号</MenuItem>
-                      <MenuItem name="/index/systemParam"  auth='24' class='isMenu'>系统参数</MenuItem>
-                  </Submenu>
+                  </MenuItem>
                   <Submenu name="userManage">
                       <template slot="title">
                           <Icon type="android-people"></Icon>
                           用户管理
                       </template>
-                      <MenuItem name="/index/departManage"  auth='31' class='isMenu'>部门管理</MenuItem>
-                      <MenuItem name="/index/policeManage" auth='32' class='isMenu'>民警管理</MenuItem>
-                      <MenuItem name="/index/staffManage" auth='33' class='isMenu'>职工管理</MenuItem>
-                      <MenuItem name="/index/criminalManage" auth='34' class='isMenu'>罪犯管理</MenuItem>
+                      <MenuItem name="/index/webUser"  auth='31' class='isMenu'>平台用户</MenuItem>
+                      <MenuItem name="/index/phoneUser" auth='32' class='isMenu'>手机用户</MenuItem>
                   </Submenu>
-                  <Submenu name="rightsManage">
-                      <template slot="title">
+                  <MenuItem name="/index/rightsManage"  auth='41' class='isMenu'>
                           <Icon type="android-settings"></Icon>
                           权限管理
-                      </template>
-                      <MenuItem name="/index/channelManage" auth='41' class='isMenu'>频道管理</MenuItem>
-                      <MenuItem name="/index/familyNumber" auth='42' class='isMenu'>亲情号码</MenuItem>
-                  </Submenu>
-                  <Submenu name="deviceManage">
-                      <template slot="title">
+                  </MenuItem>
+                  <MenuItem name="/index/deviceManage"  auth='51' class='isMenu'>
                           <Icon type="android-phone-portrait"></Icon>
                           设备管理
-                      </template>
-                      <MenuItem name="/index/visitorRegister" auth='51' class='isMenu'>访客登记</MenuItem>
-                  </Submenu>
+                  </MenuItem>
                   <Submenu name="journaling">
                       <template slot="title">
                           <Icon type="stats-bars"></Icon>
                           日志报表
                       </template>
-                      <MenuItem name="/index/escortManage" auth='61' class='isMenu'>押运管理</MenuItem>
-                      <MenuItem name="/index/escortManage" auth='62' class='isMenu'>押运管理</MenuItem>
-                      <MenuItem name="/index/escortManage" auth='63' class='isMenu'>押运管理</MenuItem>
-                      <MenuItem name="/index/escortManage" auth='64' class='isMenu'>押运管理</MenuItem>
+                      <MenuItem name="/index/reportForm" auth='61' class='isMenu'>报表</MenuItem>
+                      <Submenu name="log">
+                          <template slot="title">
+                              日志
+                          </template> 
+                          <MenuItem name="/index/adminLog" auth='62' class='isMenu'>管理员日志</MenuItem>
+                          <MenuItem name="/index/userLog" auth='63' class='isMenu'>用户日志</MenuItem>
+                      </Submenu>
                   </Submenu>
               </Menu>
           </div>
@@ -59,6 +48,7 @@
 </template>
 
 <script>
+import staticRoute from "../router/staticRoute"
 export default {
   data(){
     return {
@@ -71,7 +61,7 @@ export default {
 
   },
   created(){
-          this.activeName = window.localStorage.getItem('currentMenu')
+      this.activeName = window.localStorage.getItem('currentMenu')
   },
   mounted(){
       // 根据权限渲染菜单
@@ -101,9 +91,26 @@ export default {
                 }
             }
         }
-    }
+    },
+
+    
   },
   watch: {
+      '$route': function(){
+          let authList = window.localStorage.getItem('authList')
+            // console.log(authList) // 用户权限
+            let routes = staticRoute[0].children.filter(item=>{
+                return authList.indexOf(item.auth)!== -1
+            })
+            let route = routes.map(item=>{
+                return item.path
+            })
+            // console.log(route) // 用户权限所有路径
+          if(route.indexOf(this.$route.fullPath)==1){
+              this.activeName = this.$route.fullPath
+          }
+          
+      }
   }
 
 }

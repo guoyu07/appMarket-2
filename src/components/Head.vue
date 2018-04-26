@@ -1,25 +1,24 @@
 <template>
   <Header>
       <Menu mode="horizontal" theme="dark" active-name="1">
-          <div class="layout-logo">应用市场后台管理系统</div>
+          <div class="layout-logo">应用市场管理平台</div>
       </Menu>
       
       <div id="right_wrap">
           <!-- 信息 -->
-          <span class="messages">
+          <router-link class="messages" v-bind:to="{path:'/index/messages'}" style="color:#fff">
               <Icon type="ios-email-outline"></Icon>
               <span id="num">2</span>
-          </span>
+          </router-link>
 
           <!-- 用户名 -->
-          <span @mouseover="tipsShow" @mouseleave="tipsHide">
+          <span @mousemove="tipsShow" @mouseleave="tipsHide">
             <span class="user_wrap">
                 <span class="username">13333333333</span>
                 <Icon type="ios-arrow-down"></Icon>
             </span>
             <div class='tips'>
-                <p><Icon type="card"></Icon><span>账号信息</span></p>
-                <p @click="showModal"><Icon type="gear-b"></Icon><span>修改密码</span></p>
+                <p @click="showModal"><Icon type="gear-b"></Icon><span>账号信息管理</span></p>
                 <p @click='logout'><Icon type="log-out"></Icon><span>退出登录</span></p>
             </div>
           </span>
@@ -28,20 +27,20 @@
 
     <!-- 修改密码模态框 -->
       <Modal
-        title="修改密码"
-        v-model="modifyPassword"
-        @on-ok='modifyPass'
-        @on-cancle='cancleModifyPass'
+        title="账号信息管理"
+        v-model="modifyAccountModal"
+        @on-ok='modifyAccount'
+        @on-cancle='cancleModifyAccount'
         :mask-closable="false">
-        <Form ref="passwdForm" :model="passwdForm" :rules="ruleValidate" :label-width="85">
-        <FormItem label="原密码" prop="passwd">
-            <Input type="password" v-model="passwdForm.passwd" style="width:350px" placeholder='原密码'></Input>
+        <Form ref="accountForm" :model="accountForm" :rules="ruleValidate" :label-width="85">
+        <FormItem label="用户名">
+            <Input type="text" v-model="accountForm.username" style="width:350px" placeholder='用户名' disabled></Input>
         </FormItem>
-        <FormItem label="新密码" prop="passwdCheck">
-            <Input type="password" v-model="passwdForm.passwdCheck" style="width:350px" placeholder='新密码'></Input>
+        <FormItem label="手机号" prop="phone">
+            <Input type="text" v-model="accountForm.phone" style="width:350px" placeholder='手机号'></Input>
         </FormItem>
-        <FormItem label="确认新密码" prop="passwdConfirm">
-            <Input type="password" v-model="passwdForm.passwdConfirm" style="width:350px" placeholder='确认新密码'></Input>
+        <FormItem label="密码" prop="passwd">
+            <Input type="password" v-model="accountForm.passwd" style="width:350px" placeholder='密码'></Input>
         </FormItem>
     </Form>
     </Modal>
@@ -52,22 +51,19 @@
 export default {
   data(){
       return {
-          modifyPassword:false,
-          passwdForm: {
-              passwd: '',
-              passwdCheck: '',
-              passwdConfirm: ''
+          modifyAccountModal:false,
+          accountForm: {
+              username: '13333333333',
+              phone: '13333333333',
+              passwd: '123456'
           },
           ruleValidate: {
              passwd: [
-                { required: true, message: '请输入原密码', trigger: 'blur' }
+                { required: true, message: '请输入密码', trigger: 'blur' }
              ],
-             passwdCheck: [
-                { required: true, message: '请输入新密码', trigger: 'blur' }
-             ],
-             passwdConfirm: [
-                { required: true, message: '请确认新密码', trigger: 'blur' }
-             ],
+             phone: [
+                { required: true, message: '请输入手机号', trigger: 'blur' }
+             ]
           }
       }
   },
@@ -81,17 +77,23 @@ export default {
           $(".tips").stop().slideUp(100)
       },
       showModal() {
-          this.modifyPassword = true
-          this.passwdForm.passwd = ''
-          this.passwdForm.passwdCheck = ''
-          this.passwdForm.passwdConfirm = ''
+          this.modifyAccountModal = true
+          this.accountForm.passwd = '123456'
+          this.accountForm.phone = '13333333333'
       },
       // 确定修改密码
-      modifyPass() {
+      modifyAccount() {
           console.log(111)
+          this.$refs['accountForm'].validate((valid) => {
+                if (valid) {
+                    this.$Message.success('Success!');
+                } else {
+                    this.$Message.error('Fail!');
+                }
+            })
       },
       // 取消修改密码
-      cancleModifyPass() {
+      cancleModifyAccount() {
           console.log(222)
       },
       // 退出登录
@@ -145,7 +147,7 @@ export default {
         display: none;
         position: absolute;
         z-index:1000;
-        right: 10px;
+        right: 0;
         top:64px;
         color:#000;
         border:1px solid #ccc;
