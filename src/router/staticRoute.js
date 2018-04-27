@@ -8,6 +8,7 @@ const Index = resolve => require.ensure([], () => resolve(require('../view/index
 //应用管理
 const AppManage = resolve => require.ensure([], () => resolve(require('../view/appManage/index.vue')), 'AppManage')
 const AddApp = resolve => require.ensure([], () => resolve(require('../view/appManage/addApp.vue')), 'AddApp')
+const AppDetail = resolve => require.ensure([], () => resolve(require('../view/appManage/AppDetail.vue')), 'AppDetail')
 
 // 用户管理
 const WebUser = resolve => require.ensure([], () => resolve(require('../view/userManage/webUser.vue')), 'WebUser')
@@ -50,6 +51,12 @@ let staticRoutes = [
                 component: AddApp,
                 name:'添加应用',
                 auth:22
+            },
+            {
+                path:'/index/appDetail',
+                component: AppDetail,
+                name:'应用详情',
+                auth:23
             },
             {
                 path:'/index/webUser',

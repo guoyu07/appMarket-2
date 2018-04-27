@@ -1,32 +1,97 @@
 <template>
   <div id="appManage">
     <h1><span>当前位置 > </span>应用管理</h1>
+    
     <div class="bottom_wrap">
+
+        <!-- 条件选择部分 -->
       <div class="search_wrap">
-        <Form inline :model="searchData">
-          <FormItem>
-            <Input v-model="searchData.appName" size="large" placeholder="请输入应用名"></Input>
+        <Form inline :model="searchData"  :label-width="55">
+          <FormItem label="应用名">
+            <Input v-model="searchData.appName"  placeholder="请输入应用名"></Input>
           </FormItem>
-          <FormItem>
-            <Select v-model="searchData.type" size="large" style="width:100px">
+          <FormItem label="状态">
+            <Select v-model="searchData.type"  style="width:100px">
                 <Option value="0">全部</Option>
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
             </Select>
           </FormItem>
           <FormItem>
-            <Button type="primary" size="large">确定</Button>
+            <Button type="primary">筛选</Button>
           </FormItem>
         </Form>
-        <Button type="primary" style="margin-right:15px" @click="$router.push({path:'/index/addApp'})">添加应用</Button>
-        <Button type="primary" style="margin-right:15px">启用</Button>
-        <Button type="primary" style="margin-right:15px">禁用</Button>
-        <Button type="primary" style="margin-right:15px">黑名单</Button>
-        <Button type="primary" >白名单</Button>
       </div>
-      <Table border :columns="columns" :data="appData"></Table>
+
+      <!-- 表格 -->
+      <div class="table_wrap">
+          <div class="actions clearfix">
+                <div class="applists">
+                    <Icon type="navicon-round"></Icon> 应用列表
+                </div>
+                <div class="btns_wrap">
+                    <Button type="primary" style="margin-right:15px" @click="$router.push({path:'/index/addApp'})"><Icon type="plus"></Icon> 添加应用</Button>
+                    <Button type="primary" style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
+                    <Button type="primary" style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
+                    <Button type="primary" style="margin-right:15px"  @click="isSelected()?blackListsModal = true:''">黑名单</Button>
+                    <Button type="primary"  @click="isSelected()?whiteListsModal = true:''" >白名单</Button>
+                </div>
+           </div>
+           <Table border :columns="columns" :data="appData" @on-selection-change="selectAppChange" no-data-text="暂无数据"></Table>            
+           <Page :total="2" show-total class="appPage page_wrap"></Page>
+      </div>
+      
+      
     </div>
     
+    <!-- 启用模态框 -->
+    <Modal
+        title="启用"
+        v-model="startUseModal"
+        @on-ok="confirmUse"
+        class-name="vertical-center-modal">
+        <p class="modalp">确定启用该应用吗？</p>
+    </Modal>
+    <!-- 禁用模态框 -->
+    <Modal
+        title="禁用"
+        v-model="forbiddenUseModal"
+        @on-ok="confirmForbidden"
+        class-name="vertical-center-modal">
+        <p class="modalp">确定禁用该应用吗？</p>
+    </Modal>
+    <!-- 黑名单模态框 -->
+    <Modal
+        title="黑名单"
+        v-model="blackListsModal"
+        @on-ok="confirmBlack"
+        class-name="vertical-center-modal">
+        <p class="modalp">确定将该应用的类型修改为黑名单吗？</p>
+    </Modal>
+    <!-- 白名单模态框 -->
+    <Modal
+        title="白名单"
+        v-model="whiteListsModal"
+        @on-ok="confirmWhite"
+        class-name="vertical-center-modal">
+        <p class="modalp">确定将该应用的类型修改为白名单吗？</p>
+    </Modal>
+    <!-- 下发模态框 -->
+    <Modal
+        title="用户"
+        v-model="dispatchModal"
+        class-name="vertical-center-modal">
+        <div style="margin-bottom:20px">
+            <Input type="text" placeholder="姓名/用户名/手机号" v-model="searchUser" style="width:250px;margin-right:20px"></Input>
+            <Button type="primary">筛选</Button>
+        </div>
+        <Table border ref="selection" :columns="columns2" :data="userData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>
+        <div slot="footer">
+            <Button  size="large" @click="dispatchModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmDispatch">确定</Button>
+        </div>
+    </Modal>
+
   </div>
   
 </template>
@@ -75,10 +140,12 @@ export default {
         {
             title: '下载次数',
             key: 'downNum',
+            sortable: true
         },
         {
             title: '更新时间',
-            key: 'updateTime'
+            key: 'updateTime',
+            sortable: true
         },
         {
             title: '状态',
@@ -92,10 +159,10 @@ export default {
             width: 220,
             render: (h, params) => {
                 return h('div', [
-                    h('span', {
+                    h('a', {
                         style: {
                             marginRight: '10px',
-                            cursor:"pointer"
+                            color:'#63c185'
                         },
                         on: {
                             click: () => {
@@ -104,21 +171,21 @@ export default {
                             }
                         }
                     }, '版本升级'),
-                    h('span', {
+                    h('a', {
                         style: {
                             marginRight: '10px',
-                            cursor:"pointer"
+                            color:'#63c185'
                         },
                         on: {
                             click: () => {
-                                // this.remove(params.index)
+                                this.$router.push({path:"/index/appDetail"})
                             }
                         }
                     }, '详情'),
-                     h('span', {
+                     h('a', {
                         style: {
                             marginRight: '10px',
-                            cursor:"pointer"
+                           color:'#63c185'
                         },
                         on: {
                             click: () => {
@@ -126,13 +193,20 @@ export default {
                             }
                         }
                     }, '编辑'),
-                    h('span', {
+                    h('a', {
                         style: {
-                            marginRight: '10px'
+                            marginRight: '10px',
+                            color:params.row.type=="白名单"?'#ccc':'#63c185',
+                            cursor:params.row.type=="白名单"?'not-allowed':'pointer'
                         },
                         on: {
                             click: () => {
-                                this.$router.push({path:"/index/dispatchRight"})
+                                if(params.row.type=='白名单'){
+                                    return
+                                }
+                                this.$refs.selection.selectAll(false);
+                                this.searchUser = ''
+                                this.dispatchModal = true
                             }
                         }
                     }, '下发')
@@ -150,15 +224,134 @@ export default {
           updateTime: '2018-04-03 14:14:14',
           status: "启用"
 
+        },
+        {
+          type:"黑名单",
+          appName: "QQ",
+          num: "v3.0",
+          appTip: '生活',
+          downNum: '11',
+          updateTime: '2018-04-03 14:14:14',
+          status: "启用"
+
         }
+      ],
+      startUseModal:false,
+      forbiddenUseModal:false,
+      whiteListsModal:false,
+      blackListsModal:false,
+      dispatchModal: false,
+      selectedAppData: [],
+      selectedUserData: [],
+      searchUser: '',
+      columns2: [
+          {
+            type: 'selection',
+            width: 60,
+            align: 'center'
+          },
+          {
+              title: "姓名",
+              key: "name"
+          },
+          {
+              title: "用户名",
+              key: "userName"
+          },
+          {
+              title: "手机号",
+              key: "phone"
+          },
+      ],
+      userData: [
+          {
+              name: "小雪",
+              userName: '开元',
+              phone: '18888888888'
+          }
       ]
-      
     }
   },
+
+  methods:{
+      // 判断是否选中应用
+      isSelected(){
+        if(this.selectedAppData.length==0){
+            this.$Message.warning('请至少选择一项应用！');
+            return false
+        }else{
+            return true
+        }
+      },
+
+     // 确定启用
+      confirmUse(){
+          alert(1)
+      },
+
+     // 确定禁用
+     confirmForbidden(){
+        alert(1)
+     },
+
+     // 确定黑名单
+     confirmBlack(){
+        alert(1)
+     },
+
+     // 确定白名单
+     confirmWhite(){
+        alert(1)
+     },
+
+    // 确定下发
+    confirmDispatch(){
+        if(this.selectedUserData.length==0){
+            this.$Message.warning('请至少选择一位用户！');
+            return false
+        }
+
+        this.dispatchModal = false
+    },
+
+    // 选中应用改变
+     selectAppChange(selection){
+         this.selectedAppData = selection
+         console.log(this.selectedAppData)
+     },
+
+    // 选中用户改变
+     selectUserChange(selection){
+         this.selectedUserData = selection
+         console.log(this.selectedUserData)
+     },
+
+  }
 
 }
 </script>
 
 <style lang='scss' scoped  type="text/css">
-
+    #appManage {
+        // padding:0 0 50px 0;
+        .search_wrap {
+            background:#fff;
+            padding:20px 20px 0 20px;
+        }
+        .table_wrap{
+             background:#fff;
+             padding:0 0 20px 0;
+            .actions{
+                padding:20px;
+                .btns_wrap{
+                    float:right;
+                }
+            }
+            .applists{
+                float: left;
+                margin-top:5px;
+            }
+        }
+        
+    }
 </style>

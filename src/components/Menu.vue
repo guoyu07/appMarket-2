@@ -2,7 +2,7 @@
    <Layout>
       <Sider hide-trigger>
           <div id="aside_menu">
-              <Menu :active-name="activeName" v-on:on-select="handleRoute" theme="light" width="auto" :open-names="openName" :accordion='accordion'>
+              <Menu :active-name="activeName" ref="leftMenu"  v-on:on-select="handleRoute" theme="dark" width="100%" :open-names="openName" :accordion='accordion'>
                   <MenuItem name="/index/homepage">
                       <Icon type="android-home"></Icon>
                           首页
@@ -105,10 +105,28 @@ export default {
             let route = routes.map(item=>{
                 return item.path
             })
-            // console.log(route) // 用户权限所有路径
-          if(route.indexOf(this.$route.fullPath)==1){
+            console.log(route) // 用户权限所有路径
+            console.log(route.indexOf(this.$route.fullPath))
+          if(route.indexOf(this.$route.fullPath)==-1){
               this.activeName = this.$route.fullPath
           }
+
+          var obj = 
+          {
+              "code": 0, //0 成功 -1失败  1登录超时
+              "msg": "成功",
+              "result":{
+                  "total":2, // 总条数
+                  "totalPage": 1, // 总页码
+                  "pageCount":1, // 当前页码
+                  "pageSize":10, // 每页条数
+                  "data":[
+                      {},
+                      {},
+                  ],
+              }
+          }
+          //  请求方式：get请求   响应类型：JSON 
           
       }
   }

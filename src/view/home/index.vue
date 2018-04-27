@@ -84,7 +84,6 @@ export default {
   },
   created(){
     document.title = '首页-应用市场管理平台'
-    console.log(this.$store.state.role)
   },
   mounted(){
     this.renderCharts({

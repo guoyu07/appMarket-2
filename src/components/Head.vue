@@ -1,14 +1,17 @@
 <template>
   <Header>
-      <Menu mode="horizontal" theme="dark" active-name="1">
-          <div class="layout-logo">应用市场管理平台</div>
-      </Menu>
-      
+      <!-- <Menu mode="horizontal" theme="dark" active-name="1"> -->
+          <Row>
+                <Col span="4">
+                    <div class="big_title">应用市场管理平台</div>
+                </Col>
+      <!-- </Menu> -->
+      <Col span="20">
       <div id="right_wrap">
           <!-- 信息 -->
           <router-link class="messages" v-bind:to="{path:'/index/messages'}" style="color:#fff">
               <Icon type="ios-email-outline"></Icon>
-              <span id="num">2</span>
+              <div id="num">2</div>
           </router-link>
 
           <!-- 用户名 -->
@@ -24,6 +27,8 @@
           </span>
 
       </div>
+      </Col>
+      </Row>
 
     <!-- 修改密码模态框 -->
       <Modal
@@ -107,6 +112,13 @@ export default {
 
 
 <style lang="scss" scoped type="text/css">
+.big_title {
+    color: #fff;
+    font-size: 26px;
+    width: 100%;
+    background: #63c185;
+    text-align: center;
+}
 .layout-logo {
     height: 30px;
     border-radius: 3px;
@@ -129,12 +141,12 @@ export default {
         font-size:24px;
         cursor:pointer;
 
-        span {
+        #num {
             position:absolute;
             color:red;
             font-size:14px;
-            right:-7px;
-            top:-27px;
+            right:-5px;
+            top:-25px;
         }
     }
     .user_wrap{

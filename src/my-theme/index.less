@@ -7,9 +7,9 @@
 @css-prefix-iconfont    : ivu-icon;
 
 // Color
-@primary-color          : #2d8cf0;
+@primary-color          : #63c185;
 @info-color             : #2db7f5;
-@success-color          : #19be6b;
+@success-color          : #31bbe8;
 @warning-color          : #ff9900;
 @error-color            : #ed3f14;
 @link-color             : #2D8cF0;
@@ -130,7 +130,7 @@
 @input-disabled-bg           : #f3f3f3;
 
 // Tag
-@tag-font-size          : 12px;
+@tag-font-size          : 14px;
 
 // Media queries breakpoints
 // Extra small screen / phone
@@ -198,13 +198,32 @@ h1 {
     border-bottom: 1px solid #ccc;
   }
 h1 a {color:rgba(0,0,0,0.7)}
-h1 a:hover {color:@link-color}
+h1 a:hover {color:#63c185}
 h1>span{color:rgba(0,0,0,0.5)}
-.title_active{color:@link-color}
+.title_active{color:#63c185}
 .bottom_wrap {padding:20px 20px 80px 20px;}
 .search_wrap {margin-bottom:20px}
 .screenShot i {font-size:100px!important}
 .mar-20 {margin-right:20px}
+.modalp{font-size:16px}
+.page_wrap{padding:10px}
+
+.vertical-center-modal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .ivu-modal{
+        top: 0;
+    }
+}
+.appInfo .ivu-form .ivu-form-item-label{color:#999}
+
+// 菜单栏背景颜色
+.ivu-menu-item.ivu-menu-item-active.ivu-menu-item-selected{background:#363e4f!important;color: #63c185!important;border-right:2px solid #63c185!important}
+.isMenu.ivu-menu-item.ivu-menu-item-active.ivu-menu-item-selected{background:#363e4f!important;color: #63c185!important;border-right:2px solid #63c185!important}
+.ivu-menu-item.ivu-menu-item-active.ivu-menu-item-selected:hover{background:#363e4f!important;color:#63c185;border-right:2px solid #63c185}
+.isMenu.ivu-menu-item.ivu-menu-item-active.ivu-menu-item-selected:hover{background:#363e4f!important;color:#63c185;border-right:2px solid #63c185}
 // .ivu-menu-dark {background:#03376d}
 // 清除浮动公共类
 .clearfix:after {content:"";display:block;clear:both;}
@@ -213,9 +232,10 @@ html , body, #app, div.layout, div.ivu-layout, #aside_menu, ul.ivu-menu, div.ivu
 ul.ivu-menu.ivu-menu-light.ivu-menu-vertical {-webkit-height: 100%; overflow-y:scroll;}
 // 菜单栏宽度
 div.ivu-layout-sider {
-    width: auto !important ;
-    min-width: 100px !important;
-    max-width: 300px !important;
+    // width: auto !important ;
+    min-width: 100% !important;
+    max-width: 100% !important;
+    width:100%!important;
     flex: auto !important;
     height:100%;
 }

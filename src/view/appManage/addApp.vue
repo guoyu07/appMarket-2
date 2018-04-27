@@ -17,11 +17,11 @@
         <h2>填写应用信息（均必填）</h2>
         <div class="form_wrap">
           <!-- 表单 -->
-          <Form :model="appInfo" :label-width="120">
-            <FormItem label="应用名：">
-               <Input v-model="appInfo.appName" placeholder="应用名"></Input>
+          <Form :model="appInfo" :label-width="120" :rules="ruleValidate">
+            <FormItem label="应用名："  prop="appName">
+               <Input v-model="appInfo.appName" placeholder="建议20字以内，不超过100个字。"></Input>
             </FormItem>
-            <FormItem label="应用标签：">
+            <FormItem label="应用标签："  prop="tag">
               <Select v-model="appInfo.tag" placeholder="请选择" style="width:200px">
                   <Option value="1">工作</Option>
                   <Option value="2">生活</Option>
@@ -47,16 +47,16 @@
               </Select>
             </FormItem>
             <FormItem label="一句话简介：">
-               <Input v-model="appInfo.abstract" placeholder="一句话简介"></Input>
+               <Input v-model="appInfo.abstract" placeholder="8个字以内，简要说明产品的特色和卖点。"></Input>
             </FormItem>
             <FormItem label="应用描述：">
-               <Input type="textarea" v-model="appInfo.description" :autosize="{minRows: 2,maxRows: 5}" placeholder=""></Input>
+               <Input type="textarea" v-model="appInfo.description" :autosize="{minRows: 2,maxRows: 5}" placeholder="一段话描述你的产品，1000汉字以内，做好分段排版，禁止添加链接"></Input>
             </FormItem>
             <FormItem label="新版特征：">
-               <Input type="textarea" v-model="appInfo.feature" :autosize="{minRows: 2,maxRows: 5}" placeholder=""></Input>
+               <Input type="textarea" v-model="appInfo.feature" :autosize="{minRows: 2,maxRows: 5}" placeholder="列举产品的几点特征，使用序号标识，做好换行，1000汉字以内"></Input>
             </FormItem>
             <FormItem label="权限获取说明：">
-               <Input type="textarea" v-model="appInfo.rights" :autosize="{minRows: 2,maxRows: 5}" placeholder=""></Input>
+               <Input type="textarea" v-model="appInfo.rights" :autosize="{minRows: 2,maxRows: 5}" placeholder="举例：获取通讯录权限是为了方便用户添加好友；获取地理位置权限是为了方便用户找到距离自己最近的商铺。"></Input>
             </FormItem>
             <FormItem label="收费描述：">
                 <RadioGroup v-model="appInfo.fee">
@@ -88,75 +88,40 @@
       <div class="wrap upload_img_wrap ">
         <h2>上传图标和截图（均必填）</h2>
         <div class="img_icon">
-          <p class="title">应用图标：请上传尺寸512*512，大小200K以内，JPG、PNG格式，建议使用直角图标。</p>
-          <div style="margin-bottom:20px;">
+          <p class="title">应用图标：</p>
+          <div style="margin-bottom:5px;margin-left:80px;">
             <Upload
-                multiple
                 type="drag"
                 action=""
                  style="width:150px;height:150px;">
                 <div style="padding: 20px 0">
-                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                    <p class="upBtn"><Button type="success">上传图片</Button></p>
+                    <Icon type="plus" size="52" style="color: #f2f3f3"></Icon>
+                    <p class="upBtn"><Button type="success">上传图标</Button></p>
                 </div>
             </Upload>
           </div>
-
-          <p class="title">应用截图：请上传2-4张截图（尺寸保持一致），单张图片不超过1M。截图不能小于320*480像素，推荐480*800像素。JPG、PNG格式。</p>
-          <div class="clearfix">
-            <div class="screenShot">
+          <p style="margin-left:80px;font-size:12px;margin-bottom:20px">请上传尺寸512*512，大小200K以内，JPG、PNG格式，建议使用直角图标。</p>
+          <p class="title">应用截图：</p>
+          <div class="clearfix" >
+            <div class="screenShot"  style="margin-bottom:5px;margin-left:10px;">
               <Upload
                   multiple
                   type="drag"
                   action="">
-                  <div style="padding: 20px 0">
-                      <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                      <p class="upBtn2"><Button type="success">上传截图</Button></p>
+                  <div style="padding: 50px">
+                      <Icon type="plus" size="52" style="color: #f2f3f3"></Icon>
                   </div>
               </Upload>
             </div>
-            <div class="screenShot">
-              <Upload
-                  multiple
-                  type="drag"
-                  action="">
-                  <div style="padding: 20px 0">
-                      <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                      <p class="upBtn2"><Button type="success">上传截图</Button></p>
-                  </div>
-              </Upload>
-            </div>
-            <div class="screenShot">
-              <Upload
-                  multiple
-                  type="drag"
-                  action="">
-                  <div style="padding: 20px 0">
-                      <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                      <p class="upBtn2"><Button type="success">上传截图</Button></p>
-                  </div>
-              </Upload>
-            </div>
-            <div class="screenShot">
-              <Upload
-                  multiple
-                  type="drag"
-                  action="">
-                  <div style="padding: 20px 0">
-                      <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
-                      <p class="upBtn2"><Button type="success">上传截图</Button></p>
-                  </div>
-              </Upload>
-            </div>
-
           </div>
+          <p style="margin-left:80px;font-size:12px;margin-bottom:20px">请上传2-4张截图（尺寸保持一致），单张图片不超过1M。截图不能小于320*480像素，推荐480*800像素。JPG、PNG格式。</p> 
         </div>
       </div>
 
       <!-- 底部按钮 -->
       <div class="wrap btn_wrap">
-          <Button size="large" style="margin-right:20px">取消</Button>
-          <Button type="primary" size="large">提交应用</Button>
+          <Button size="large" style="margin-right:20px" @click="$router.push({path:'/index/appManage'})">取消</Button>
+          <Button type="primary" size="large">提交</Button>
       </div>
     </div>
   </div>
@@ -181,10 +146,20 @@ export default {
         fee: "",
         adStatus: "",
         language: ""
+      },
+      ruleValidate:{
+         appName: [
+            { required: true, message: '请输入应用名', trigger: 'blur' }
+         ],
       }
+       
+      
     }
   },
+
   methods: {
+
+    // 上传图片处理
     handleBeforeUpload(file){
       console.log(file)
         var reader = new FileReader();
@@ -209,11 +184,12 @@ export default {
       font-size:18px;
       text-indent:20px;
       border-bottom: 1px dashed #ccc;
+      background:#ebebeb;
     }
     .wrap {
       border:1px solid #ccc;
       border-radius:5px;
-      background:#eaf1f8;
+      background:#fff;
     }
     .upload_wrap {
       margin-bottom:20px;
@@ -230,24 +206,26 @@ export default {
       }
     }
     .upload_img_wrap{
-      margin-bottom:20px;
+      margin-bottom:20px;     
       .img_icon{
-      padding:20px;
-      .title {
-        margin-bottom:20px;
+        padding:20px;
+        .title {
+          margin-bottom:20px;
+          float:left;
+        }
+        .upBtn {
+          margin-top:25px;
+        }
+        .screenShot {
+          float: left;
+          margin-right:20px;
+          width:200px;
+          height:200px;
+        }
+        .upBtn2 {
+          margin:50px 0;
+        }
       }
-      .upBtn {
-        margin-top:25px;
-      }
-      .screenShot {
-        float: left;
-        margin-right:20px;
-        width:200px;
-      }
-      .upBtn2 {
-        margin:50px 0;
-      }
-    }
     }
     
     .btn_wrap {

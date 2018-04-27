@@ -66,7 +66,7 @@ export default {
               // 发送登录请求
               
               // 获取用户权限并本地保存
-              window.localStorage.setItem("authList",JSON.stringify([11,21,22,31,32,41,42,51,61,62,63]))
+              window.localStorage.setItem("authList",JSON.stringify([11,21,22,23,31,32,41,42,51,61,62,63]))
 
               window.localStorage.setItem("user",this.formValidate.user)
               window.localStorage.setItem("password",this.formValidate.password)
