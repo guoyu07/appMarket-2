@@ -20,9 +20,9 @@
                     </Input>
                     <img src="../../assets/img/Main.jpg" alt="" title="点击刷新验证码" id="img_authcode" @click="refreshAuth">
                 </FormItem> -->
-                <span class="forgetpwd" @click="forgetpwd">忘记密码？</span>
+                <a class="forgetpwd" @click="forgetpwd">忘记密码？</a>
                 <FormItem>
-                    <Button type="success" @click="handleSubmit('formValidate')" style="width:100%" size="large">登录</Button>
+                    <Button type="primary" @click="handleSubmit('formValidate')" style="width:100%" size="large">登录</Button>
                 </FormItem>
             </Form>
         </div>
@@ -66,7 +66,7 @@ export default {
               // 发送登录请求
               
               // 获取用户权限并本地保存
-              window.localStorage.setItem("authList",JSON.stringify([11,21,22,23,31,32,41,42,51,61,62,63]))
+              window.localStorage.setItem("authList",JSON.stringify([11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]))
 
               window.localStorage.setItem("user",this.formValidate.user)
               window.localStorage.setItem("password",this.formValidate.password)
@@ -81,7 +81,10 @@ export default {
 
       },
       forgetpwd(){
-        
+        this.$Message.warning({
+            content: '请联系管理员！',
+            duration:5,
+        })
       }
   }
 

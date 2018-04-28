@@ -105,10 +105,9 @@ export default {
             let route = routes.map(item=>{
                 return item.path
             })
-            console.log(route) // 用户权限所有路径
-            console.log(route.indexOf(this.$route.fullPath))
-          if(route.indexOf(this.$route.fullPath)==-1){
-              this.activeName = this.$route.fullPath
+            console.log(this.$route) // 用户权限所有路径
+          if(route.indexOf(this.$route.path)==-1){
+              this.activeName = this.$route.path
           }
 
           var obj = 

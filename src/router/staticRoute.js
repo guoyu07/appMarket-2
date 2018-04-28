@@ -8,7 +8,8 @@ const Index = resolve => require.ensure([], () => resolve(require('../view/index
 //应用管理
 const AppManage = resolve => require.ensure([], () => resolve(require('../view/appManage/index.vue')), 'AppManage')
 const AddApp = resolve => require.ensure([], () => resolve(require('../view/appManage/addApp.vue')), 'AddApp')
-const AppDetail = resolve => require.ensure([], () => resolve(require('../view/appManage/AppDetail.vue')), 'AppDetail')
+const AppDetail = resolve => require.ensure([], () => resolve(require('../view/appManage/appDetail.vue')), 'AppDetail')
+const EditApp = resolve => require.ensure([], () => resolve(require('../view/appManage/editApp.vue')), 'EditApp')
 
 // 用户管理
 const WebUser = resolve => require.ensure([], () => resolve(require('../view/userManage/webUser.vue')), 'WebUser')
@@ -20,9 +21,11 @@ const DispatchRight = resolve => require.ensure([], () => resolve(require('../vi
 
 // 设备管理
 const DeviceManage = resolve => require.ensure([], () => resolve(require('../view/deviceManage/index.vue')), 'DeviceManage')
+const DeviceDetail = resolve => require.ensure([], () => resolve(require('../view/deviceManage/deviceDetail.vue')), 'DeviceDetail')
 
 // 日志报表
 const ReportForm = resolve => require.ensure([], () => resolve(require('../view/journaling/reportForm.vue')), 'ReportForm')
+const FormDetail = resolve => require.ensure([], () => resolve(require('../view/journaling/formDetail.vue')), 'FormDetail')
 const AdminLog = resolve => require.ensure([], () => resolve(require('../view/journaling/adminLog.vue')), 'AdminLog')
 const UserLog = resolve => require.ensure([], () => resolve(require('../view/journaling/userLog.vue')), 'UserLog')
 
@@ -59,6 +62,12 @@ let staticRoutes = [
                 auth:23
             },
             {
+                path:'/index/editApp',
+                component: EditApp,
+                name:'应用编辑',
+                auth:24
+            },
+            {
                 path:'/index/webUser',
                 component: WebUser,
                 name:'平台用户',
@@ -89,22 +98,34 @@ let staticRoutes = [
                 auth: 51
             },
             {
+                path:'/index/deviceDetail',
+                component: DeviceDetail,
+                name:'设备详情',
+                auth: 52
+            },
+            {
                 path:'/index/reportForm',
                 component: ReportForm,
                 name:'报表',
                 auth: 61
             },
             {
+                path:'/index/formDetail',
+                component: FormDetail,
+                name:'报表详情',
+                auth: 62
+            },
+            {
                 path:'/index/adminLog',
                 component: AdminLog,
                 name:'管理员日志',
-                auth: 62
+                auth: 63
             },
             {
                 path:'/index/userLog',
                 component: UserLog,
                 name:'用户日志',
-                auth: 63
+                auth: 64
             },
             {
                 path:'/index/messages',

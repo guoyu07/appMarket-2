@@ -67,7 +67,9 @@
 
 <script>
 export default {
-  
+  created(){
+    document.title = "应用管理-详情"
+  },
 }
 </script>
 

@@ -37,7 +37,7 @@
         @on-ok='modifyAccount'
         @on-cancle='cancleModifyAccount'
         :mask-closable="false">
-        <Form ref="accountForm" :model="accountForm" :rules="ruleValidate" :label-width="85">
+        <Form ref="accountForm" :model="accountForm"  :label-width="85">
         <FormItem label="用户名">
             <Input type="text" v-model="accountForm.username" style="width:350px" placeholder='用户名' disabled></Input>
         </FormItem>
@@ -45,7 +45,7 @@
             <Input type="text" v-model="accountForm.phone" style="width:350px" placeholder='手机号'></Input>
         </FormItem>
         <FormItem label="密码" prop="passwd">
-            <Input type="password" v-model="accountForm.passwd" style="width:350px" placeholder='密码'></Input>
+            <Input type="text" v-model="accountForm.passwd" style="width:350px" placeholder='密码'></Input>
         </FormItem>
     </Form>
     </Modal>

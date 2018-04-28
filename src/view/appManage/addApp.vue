@@ -19,7 +19,7 @@
           <!-- 表单 -->
           <Form :model="appInfo" :label-width="120" :rules="ruleValidate">
             <FormItem label="应用名："  prop="appName">
-               <Input v-model="appInfo.appName" placeholder="建议20字以内，不超过100个字。"></Input>
+               <Input v-model="appInfo.appName" placeholder="建议20字以内，不超过100个字。" style="width:400px"></Input>
             </FormItem>
             <FormItem label="应用标签："  prop="tag">
               <Select v-model="appInfo.tag" placeholder="请选择" style="width:200px">
@@ -201,8 +201,9 @@ export default {
     .appInfo_wrap {
        margin-bottom:20px;
       .form_wrap {
-        width:500px;
-        margin:30px auto;
+          width:60%;
+          margin-left:20%;
+          margin-top:20px;
       }
     }
     .upload_img_wrap{

@@ -4,7 +4,7 @@
     
     <div class="bottom_wrap">
 
-        <!-- 条件选择部分 -->
+      <!-- 条件选择部分 -->
       <div class="search_wrap">
         <Form inline :model="searchData"  :label-width="55">
           <FormItem label="应用名">
@@ -166,7 +166,7 @@ export default {
                         },
                         on: {
                             click: () => {
-                                // this.show(params.index)
+                                this.$router.push({path:"/index/editApp",query:{type:0}})
                                 
                             }
                         }
@@ -189,7 +189,7 @@ export default {
                         },
                         on: {
                             click: () => {
-                                this.$router.push({path:"/index/dispatchRight"})
+                                this.$router.push({path:"/index/editApp",query:{type:1}})
                             }
                         }
                     }, '编辑'),
@@ -286,7 +286,16 @@ export default {
 
      // 确定启用
       confirmUse(){
-          alert(1)
+          
+          this.axios.get('/add',{
+              params:{
+                  name:"zs",
+                  age:'20'
+              }
+          })
+          .then(res=>{
+
+          })
       },
 
      // 确定禁用
