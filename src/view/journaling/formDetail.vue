@@ -40,11 +40,11 @@ export default {
         },
         {
             title: "设备名称",
-            key: 'deviceName',
+            key: 'name',
         },
         {
             title: "设备归属",
-            key: 'belong',
+            key: 'belongto',
         },
         {
             title: "用户名",
@@ -52,43 +52,43 @@ export default {
         },
         {
             title: "手机号",
-            key: 'belong',
+            key: 'phone',
         },
         {
             title: "设备型号",
-            key: 'belong',
+            key: 'model',
         },
         {
             title: "平台",
-            key: 'belong',
+            key: 'platName',
         },
         {
             title: "系统版本",
-            key: 'belong',
+            key: 'sysVersion',
         },
         {
             title: "序列号",
-            key: 'belong',
+            key: 'serialNum',
         },
         {
             title: "IMEI",
-            key: 'belong',
+            key: 'imei',
         },
         {
             title: "是否Rooted/越狱",
-            key: 'belong',
+            key: 'rooted',
         },
         {
             title: "设备状态",
-            key: 'belong',
+            key: 'state',
         },
         {
             title: "激活时间",
-            key: 'belong',
+            key: 'activeDate',
         },
         {
             title: "更新时间",
-            key: 'belong',
+            key: 'updateDate',
         },
       ],
       columns2:[
@@ -99,7 +99,7 @@ export default {
         },
         {
             title: "设备名称",
-            key: 'deviceName',
+            key: 'name',
         },
         {
             title: "用户名",
@@ -107,19 +107,19 @@ export default {
         },
         {
             title: "手机号",
-            key: 'belong',
+            key: 'phone',
         },
         {
             title: "平台",
-            key: 'belong',
+            key: 'platName',
         },
         {
             title: "当前版本",
-            key: 'belong',
+            key: 'sysVersion',
         },
         {
             title: "激活时间",
-            key: 'belong',
+            key: 'activeDate',
         }
       ],
       columns3:[
@@ -134,27 +134,27 @@ export default {
         },
         {
             title: "手机号",
-            key: 'belong',
+            key: 'phone',
         },
         {
             title: "设备名称",
-            key: 'deviceName',
+            key: 'name',
         },
         {
             title: "设备归属",
-            key: 'belong',
+            key: 'belongto',
         },
         {
             title: "月份",
-            key: 'belong',
+            key: 'month',
         },
         {
             title: "上网方式",
-            key: 'belong',
+            key: 'netType',
         },
         {
             title: "数据流量",
-            key: 'deviceName',
+            key: 'count',
         },
       ],
       formData:[]

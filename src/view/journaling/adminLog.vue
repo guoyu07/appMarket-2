@@ -6,7 +6,7 @@
       <div class="search_wrap">
         <Form inline :model="searchData"  :label-width="80">
           <FormItem label="操作类型" v-show='tabName=="name1"'>
-            <Input v-model="searchData.actionType"  placeholder="请输入操作类型"></Input>
+            <Input v-model="searchData.optType"  placeholder="请输入操作类型"></Input>
           </FormItem>
           <FormItem label="用户类型">
             <Select v-model="searchData.userType"  style="width:100px">
@@ -55,7 +55,7 @@ export default {
   data(){
     return {
       searchData:{
-        actionType:'',
+        optType:'',
         userType: '0',
         time: ''
       },
@@ -67,27 +67,27 @@ export default {
         },
         {
             title: "用户类型",
-            key: 'appName',
+            key: 'userType',
         },
         {
             title: "操作类型",
-            key: 'installTime',
+            key: 'optType',
         },
         {
             title: "操作者",
-            key: 'installTime',
+            key: 'userId',
         },
         {
             title: "影响对象",
-            key: 'installTime',
+            key: 'affectedObj',
         },
         {
             title: "具体操作",
-            key: 'installTime',
+            key: 'optDesc',
         },
         {
             title: "操作时间",
-            key: 'installTime',
+            key: 'optDate',
         },
       ],
       columns2:[
@@ -98,23 +98,23 @@ export default {
         },
         {
             title: "用户类型",
-            key: 'appName',
+            key: 'userType',
         },
         {
             title: "操作类型",
-            key: 'installTime',
+            key: 'optType',
         },
         {
             title: "操作者",
-            key: 'installTime',
+            key: 'userId',
         },
         {
             title: "IP地址",
-            key: 'installTime',
+            key: 'operatorIp',
         },
         {
             title: "操作时间",
-            key: 'installTime',
+            key: 'optDate',
         },
       ],
       actionData:[],

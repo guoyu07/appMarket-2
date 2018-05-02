@@ -1,6 +1,6 @@
 <template>
   <div id="message">
-    <h1><span>当前位置 > </span>> 消息</h1>
+    <h1><span>当前位置 >> </span> 消息</h1>
 
       <!-- 条件选择部分 -->
       <div style="padding:20px 20px 0 20px">

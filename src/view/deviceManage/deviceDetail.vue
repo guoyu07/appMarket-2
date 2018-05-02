@@ -11,36 +11,36 @@
               <div class="clearfix">
                 <div class="left_content">
                   <Form :label-width="120" style="width:60%;margin:0 auto;">
-                    <FormItem label="设备类型">Andrio手机</FormItem>
-                    <FormItem label="设备归属">企业</FormItem>
-                    <FormItem label="资产编号">12345678</FormItem>
-                    <FormItem label="设备名称">Q787</FormItem>
-                    <FormItem label="设备序列号">12345</FormItem>
-                    <FormItem label="操作系统">Andriod</FormItem>
-                    <FormItem label="系统版本">7.0</FormItem>
-                    <FormItem label="激活时间">2018-04-02  14:14</FormItem>
-                    <FormItem label="最近上线">2018-04-02  14:14</FormItem>
-                    <FormItem label="上次更新时间">2018-04-02  14:14</FormItem>
-                    <FormItem label="设备厂商">ZXH</FormItem>
-                    <FormItem label="型号">ZXH-Q787</FormItem>
-                    <FormItem label="CPU">dsdhfbhb</FormItem>
+                    <FormItem label="设备类型">{{deviceData.type}}</FormItem>
+                    <FormItem label="设备归属">{{deviceData.belongto}}</FormItem>
+                    <FormItem label="资产编号">{{deviceData.assetNum}}</FormItem>
+                    <FormItem label="设备名称">{{deviceData.name}}</FormItem>
+                    <FormItem label="设备序列号">{{deviceData.serialNum}}</FormItem>
+                    <FormItem label="操作系统">{{deviceData.actSys}}</FormItem>
+                    <FormItem label="系统版本">{{deviceData.sysVersion}}</FormItem>
+                    <FormItem label="激活时间">{{deviceData.activeDate}}</FormItem>
+                    <FormItem label="最近上线">{{deviceData.lastDate}}</FormItem>
+                    <FormItem label="上次更新时间">{{deviceData.updateDate}}</FormItem>
+                    <FormItem label="设备厂商">{{deviceData.manufacturer}}</FormItem>
+                    <FormItem label="型号">{{deviceData.model}}</FormItem>
+                    <FormItem label="CPU">{{deviceData.cpu}}</FormItem>
                   </Form>
                 </div>
                 <div class="right_content">
                   <Form :label-width="120" style="width:60%;margin:0 auto;">
-                    <FormItem label="RAM">2GB</FormItem>
-                    <FormItem label="ROM总容量">20GB</FormItem>
-                    <FormItem label="ROM可用容量">20GB</FormItem>
-                    <FormItem label="相机">前置503万像素，后置1297万像素</FormItem>
-                    <FormItem label="蓝牙MAC地址">1234</FormItem>
-                    <FormItem label="WiFiMAC地址">435</FormItem>
-                    <FormItem label="SD卡容量">2GB</FormItem>
-                    <FormItem label="SD卡可用容量">2GB</FormItem>
-                    <FormItem label="SD卡序列号">1234</FormItem>
-                    <FormItem label="电源状态">100%</FormItem>
-                    <FormItem label="是否Rooted/越狱">否</FormItem>
-                    <FormItem label="IMEI">123435</FormItem>
-                    <FormItem label="IMSI">12343qw5</FormItem>
+                    <FormItem label="RAM">{{deviceData.ram}}</FormItem>
+                    <FormItem label="ROM总容量">{{deviceData.rom}}</FormItem>
+                    <FormItem label="ROM可用容量">{{deviceData.availableRom}}</FormItem>
+                    <FormItem label="相机">{{deviceData.camera}}</FormItem>
+                    <FormItem label="蓝牙MAC地址">{{deviceData.bluetoothMac}}</FormItem>
+                    <FormItem label="WiFiMAC地址">{{deviceData.wifi}}</FormItem>
+                    <FormItem label="SD卡容量">{{deviceData.totalSd}}</FormItem>
+                    <FormItem label="SD卡可用容量">{{deviceData.availableSd}}</FormItem>
+                    <FormItem label="SD卡序列号">{{deviceData.serialnumberSd}}</FormItem>
+                    <FormItem label="电源状态">{{deviceData.battState}}</FormItem>
+                    <FormItem label="是否Rooted/越狱">{{deviceData.rooted}}</FormItem>
+                    <FormItem label="IMEI">{{deviceData.imei}}</FormItem>
+                    <FormItem label="IMSI">{{deviceData.imsi}}</FormItem>
                   </Form>
                 </div>
               </div>
@@ -72,6 +72,33 @@ export default {
   },
   data(){
     return {
+      deviceData:{
+        type:"",
+        belongto:"",
+        assetNum:"",
+        name:"",
+        serialNum:"",
+        actSys:"",
+        sysVersion:"",
+        activeDate:"",
+        lastDate:"",
+        manufacturer:"",
+        model:"",
+        cpu:"",
+        ram:"",
+        rom:"",
+        availableRom:"",
+        camera:"",
+        bluetoothMac:"",
+        wifi:"",
+        totalSd:"",
+        availableSd:"",
+        serialnumber:"",
+        battState:"",
+        rooted:"",
+        imei:"",
+        imsi:""
+      },
       columns:[
         {
             type: 'index',
@@ -80,21 +107,21 @@ export default {
         },
         {
             title: "应用名称",
-            key: 'appName',
+            key: 'name',
         },
         {
             title: "安装时间",
-            key: 'installTime',
+            key: 'createDate',
         }
       ],
       appInstallData:[
         {
-          appName: 'QQ',
-          installTime: '2018-04-02'
+          name: 'QQ',
+          createDate: '2018-04-02'
         },
         {
-          appName: '微信',
-          installTime: '2018-04-03'
+          name: '微信',
+          createDate: '2018-04-03'
         }
       ]
     }

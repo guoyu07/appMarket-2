@@ -37,33 +37,33 @@
         class-name="vertical-center-modal">
        <Form :model="addDeviceData"  :label-width="80" style="width:70%;margin:10px auto 0">
           <FormItem label="用户名">
-            <Select v-model="addDeviceData.userName"  style="width:100px">
+            <Select v-model="addDeviceData.userName"  style="width:200px">
                 <Option value="0">小雪</Option>
                 <Option value="1">张三</Option>
                 <Option value="2">小明</Option>
             </Select>
           </FormItem>
           <FormItem label="设备平台">
-            <Select v-model="addDeviceData.plat"  style="width:100px">
+            <Select v-model="addDeviceData.platName"  style="width:200px">
                 <Option value="0">Andriod</Option>
             </Select>
           </FormItem>
           <FormItem label="设备类型">
-            <Select v-model="addDeviceData.deviceType"  style="width:100px">
+            <Select v-model="addDeviceData.type"  style="width:200px">
                 <Option value="0">手机</Option>
             </Select>
           </FormItem>
           <FormItem label="设备归属">
-            <Select v-model="addDeviceData.belong"  style="width:100px">
+            <Select v-model="addDeviceData.belongto"  style="width:200px">
                 <Option value="0">企业</Option>
                 <Option value="1">个人</Option>
             </Select>
           </FormItem>
           <FormItem label="资产编号">
-            <Input v-model="addDeviceData.number"  placeholder="请输入资产编号"></Input>
+            <Input v-model="addDeviceData.assetNum"  placeholder="请输入资产编号"></Input>
           </FormItem>
           <FormItem label="设备名称">
-            <Input v-model="addDeviceData.deviceName"  placeholder="请输入设备名称"></Input>
+            <Input v-model="addDeviceData.name"  placeholder="请输入设备名称"></Input>
           </FormItem>
           <FormItem label="IMEI">
             <Input v-model="addDeviceData.imei"  placeholder="请输入IMEI"></Input>
@@ -95,11 +95,11 @@ export default {
         },
         {
             title: '设备名称',
-            key: 'deviceName'
+            key: 'name'
         },
         {
             title: '设备型号',
-            key: 'deviceType'
+            key: 'model'
         },
         {
             title: 'IMEI',
@@ -107,11 +107,11 @@ export default {
         },
         {
             title: '归属',
-            key: 'belong'
+            key: 'belongto'
         },
         {
             title: '系统版本',
-            key: 'system'
+            key: 'sysVersion'
         },
         {
             title: '操作',
@@ -137,22 +137,22 @@ export default {
       ],
       deviceData: [
         {
-            deviceName: 'Q787',
-            deviceType: "ZXH-Q787",
+            name: 'Q787',
+            model: "ZXH-Q787",
             imei:'1234455',
-            belong:'企业',
-            system: '7.0',
+            belongto:'企业',
+            sysVersion: '7.0',
         }
         
       ],
       addModal: false,
       addDeviceData: {
           userName:'',
-          plat:'0',
-          deviceType: '0',
-          belong:'0',
-          number: '',
-          deviceName:'',
+          platName:'0',
+          type: '0',
+          belongto:'0',
+          assetNum: '',
+          name:'',
           imei:"",
           model:''
       }

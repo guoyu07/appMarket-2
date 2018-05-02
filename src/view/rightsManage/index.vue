@@ -26,7 +26,7 @@
         class-name="vertical-center-modal">
        <Form :model="addRoleData"  :label-width="80" style="width:70%;margin:10px auto 0">
           <FormItem label="角色名称">
-            <Input v-model="addRoleData.roleName"  placeholder="请输入角色名称"></Input>
+            <Input v-model="addRoleData.mask"  placeholder="请输入角色名称"></Input>
           </FormItem>
           <FormItem label="角色描述">
             <Input v-model="addRoleData.description"  placeholder="请输入角色描述"></Input>
@@ -43,7 +43,7 @@
         class-name="vertical-center-modal">
         <Form :model="editRoleData"  :label-width="80" style="width:70%;margin:10px auto 0">
           <FormItem label="角色名称">
-            <Input v-model="editRoleData.roleName"  placeholder="请输入角色名称"></Input>
+            <Input v-model="editRoleData.mask"  placeholder="请输入角色名称"></Input>
           </FormItem>
           <FormItem label="角色描述">
             <Input v-model="editRoleData.description"  placeholder="请输入角色描述"></Input>
@@ -76,7 +76,7 @@ export default {
         },
         {
             title: '角色名称',
-            key: 'roleName'
+            key: 'mask'
         },
         {
             title: '角色描述',
@@ -128,11 +128,11 @@ export default {
       ],
       roleData: [
         {
-            roleName: '管理员',
+            mask: '管理员',
             description: "管理员",
         },
         {
-            roleName: '普通成员',
+            mask: '普通成员',
             description: "普通成员",
         },
         
@@ -141,11 +141,11 @@ export default {
       editModal:false,
       addModal: false,
       addRoleData: {
-          roleName:'',
+          mask:'',
           description:''
       },
       editRoleData: {
-          roleName:'管理员',
+          mask:'管理员',
           description:'管理员管理员管理员'
       }
 

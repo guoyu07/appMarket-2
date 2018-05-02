@@ -5,13 +5,13 @@
         <div id="login_form">
             <h1>应用市场管理平台</h1>
              <Form ref="formValidate" :model="formValidate" :rules="ruleValidate">
-                <FormItem prop="user">
-                    <Input type="text" v-model="formValidate.user" placeholder="用户名" size="large">
+                <FormItem prop="userName">
+                    <Input type="text" v-model="formValidate.userName" placeholder="用户名" size="large">
                         <Icon type="ios-person-outline" slot="prepend"></Icon>
                     </Input>
                 </FormItem>
-                <FormItem prop="password">
-                    <Input type="password" v-model="formValidate.password" placeholder="密码" size="large">
+                <FormItem prop="pwd">
+                    <Input type="password" v-model="formValidate.pwd" placeholder="密码" size="large">
                         <Icon type="ios-locked-outline" slot="prepend"></Icon>
                     </Input>
                 </FormItem>
@@ -38,15 +38,14 @@ export default {
       return {
           bg: require('../../assets/img/bg-login.png'),
           formValidate: {
-            user: '',
-            password: '',
-            authcode: ''
+            userName: '',
+            pwd: '',
           },
           ruleValidate: {
-              user: [
+              userName: [
                 { required: true, message: '请输入用户名', trigger: 'blur' }
               ],
-              password: [
+              pwd: [
                 { required: true, message: '请输入密码', trigger: 'blur' }
               ]
           },
@@ -59,7 +58,7 @@ export default {
       handleSubmit(){
           console.log(this)
           // 判断是否填写用户名密码
-          if(this.formValidate.user.trim()=='' || this.formValidate.password.trim()==''){
+          if(this.formValidate.userName.trim()=='' || this.formValidate.pwd.trim()==''){
               alert("请输入用户名或密码")
               return
           }else{
@@ -68,8 +67,8 @@ export default {
               // 获取用户权限并本地保存
               window.localStorage.setItem("authList",JSON.stringify([11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]))
 
-              window.localStorage.setItem("user",this.formValidate.user)
-              window.localStorage.setItem("password",this.formValidate.password)
+              window.localStorage.setItem("user",this.formValidate.userName)
+              window.localStorage.setItem("password",this.formValidate.pwd)
 
               // 跳转到首页
               this.$router.push({path: '/index/homepage'})
@@ -96,16 +95,17 @@ export default {
         width:100%;
         height:100%;
         position: relative;
-
+        background:-webkit-linear-gradient(#64c086, #63c185,#90c099);
         #login_form {
             h1 {
                 text-align: center;
                 margin-bottom: 15px;
+                color:#64c086
             }
-            width: 350px;
-            background: rgba(0,0,0,.4);
+            width: 400px;
+            background: #fff;
             border-radius: 5px;
-            padding: 25px 30px 5px 30px;
+            padding: 25px 50px 5px 50px;
             position: absolute;
             left: 50%;
             top: 50%;

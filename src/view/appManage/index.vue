@@ -123,33 +123,33 @@ export default {
         },
         {
             title: "类型",
-            key: 'type',
+            key: 'isBlacklist',
         },
         {
             title: '应用名',
-            key: 'appName'
+            key: 'name'
         },
         {
             title: '版本号',
-            key: 'num'
+            key: 'versionId'
         },
         {
             title: '应用标签',
-            key: 'appTip'
+            key: 'tag'
         },
         {
             title: '下载次数',
-            key: 'downNum',
+            key: 'downCnt',
             sortable: true
         },
         {
             title: '更新时间',
-            key: 'updateTime',
+            key: 'updateDate',
             sortable: true
         },
         {
             title: '状态',
-            key: 'status',
+            key: 'state',
             width:70
         },
         {
@@ -196,12 +196,12 @@ export default {
                     h('a', {
                         style: {
                             marginRight: '10px',
-                            color:params.row.type=="白名单"?'#ccc':'#63c185',
-                            cursor:params.row.type=="白名单"?'not-allowed':'pointer'
+                            color:params.row.isBlacklist=="白名单"?'#ccc':'#63c185',
+                            cursor:params.row.isBlacklist=="白名单"?'not-allowed':'pointer'
                         },
                         on: {
                             click: () => {
-                                if(params.row.type=='白名单'){
+                                if(params.row.isBlacklist=='白名单'){
                                     return
                                 }
                                 this.$refs.selection.selectAll(false);
@@ -216,23 +216,23 @@ export default {
       ],
       appData: [
         {
-          type:"白名单",
-          appName: "微信",
-          num: "v3.0",
-          appTip: '工作',
-          downNum: '11',
-          updateTime: '2018-04-03 14:14:14',
-          status: "启用"
+          isBlacklist:"白名单",
+          name: "微信",
+          versionId: "v3.0",
+          tag: '工作',
+          downCnt: '11',
+          updateDate: '2018-04-03 14:14:14',
+          state: "启用"
 
         },
         {
-          type:"黑名单",
-          appName: "QQ",
-          num: "v3.0",
-          appTip: '生活',
-          downNum: '11',
-          updateTime: '2018-04-03 14:14:14',
-          status: "启用"
+          isBlacklist:"黑名单",
+          name: "QQ",
+          versionId: "v3.0",
+          tag: '生活',
+          downCnt: '11',
+          updateDate: '2018-04-03 14:14:14',
+          state: "启用"
 
         }
       ],

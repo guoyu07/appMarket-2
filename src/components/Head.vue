@@ -37,15 +37,15 @@
         @on-ok='modifyAccount'
         @on-cancle='cancleModifyAccount'
         :mask-closable="false">
-        <Form ref="accountForm" :model="accountForm"  :label-width="85">
+        <Form ref="accountForm" :model="accountForm"  :label-width="85" :rules="ruleValidate">
         <FormItem label="用户名">
-            <Input type="text" v-model="accountForm.username" style="width:350px" placeholder='用户名' disabled></Input>
+            <Input type="text" v-model="accountForm.userName" style="width:350px" placeholder='用户名' disabled></Input>
         </FormItem>
         <FormItem label="手机号" prop="phone">
             <Input type="text" v-model="accountForm.phone" style="width:350px" placeholder='手机号'></Input>
         </FormItem>
-        <FormItem label="密码" prop="passwd">
-            <Input type="text" v-model="accountForm.passwd" style="width:350px" placeholder='密码'></Input>
+        <FormItem label="密码" prop="pwd">
+            <Input type="text" v-model="accountForm.pwd" style="width:350px" placeholder='密码'></Input>
         </FormItem>
     </Form>
     </Modal>
@@ -58,12 +58,12 @@ export default {
       return {
           modifyAccountModal:false,
           accountForm: {
-              username: '13333333333',
+              userName: '13333333333',
               phone: '13333333333',
-              passwd: '123456'
+              pwd: '123456'
           },
           ruleValidate: {
-             passwd: [
+             pwd: [
                 { required: true, message: '请输入密码', trigger: 'blur' }
              ],
              phone: [
@@ -83,7 +83,7 @@ export default {
       },
       showModal() {
           this.modifyAccountModal = true
-          this.accountForm.passwd = '123456'
+          this.accountForm.pwd = '123456'
           this.accountForm.phone = '13333333333'
       },
       // 确定修改密码

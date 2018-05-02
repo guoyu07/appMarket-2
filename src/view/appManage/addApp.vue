@@ -1,16 +1,42 @@
 <template>
-  <div id="addApp">
+  <div id="addApp"> 
     <h1><span>当前位置 > </span><a href="#/index/appManage">应用管理</a><span> > </span><span class="title_active">添加应用</span></h1>
     <div class="bottom_wrap">
       <!-- 上传安装包 -->
       <div class="wrap upload_wrap">
         <h2>上传安装包</h2>
-        <div class="upload">
+
+        <!-- 首次上传时显示 -->
+        <div class="upload" v-if='false'>
           <Upload action="" :before-upload="handleBeforeUpload">
               <Button type="success" icon="ios-cloud-upload-outline">上传apk</Button>
           </Upload>
         </div>
+
+        <!-- 上传成功后显示 -->
+        <div class="intro" v-else>
+          <div class="info clearfix">
+            <img src="" alt="" class="img_wrap">
+            <div class="left">
+              <p>主题：{{app.theme}}</p>
+              <p>包名：{{app.packageName}}</p>
+              <p>签名：{{app.sign}}</p>
+            </div>
+            <div class="right">
+              <p>版本号：{{app.versionNumber}}</p>
+              <p>版本名：{{app.name}}</p>
+              <p>包大小：{{app.size}}</p>
+            </div>
+          </div>
+          <div class="upload1">
+            <Upload action="" :before-upload="handleBeforeUpload">
+                <Button type="success" icon="ios-cloud-upload-outline">重新上传</Button>
+            </Upload>
+          </div>
+        </div>
+
       </div>
+      
 
       <!-- 填写应用信息 -->
       <div class="wrap appInfo_wrap ">
@@ -18,8 +44,8 @@
         <div class="form_wrap">
           <!-- 表单 -->
           <Form :model="appInfo" :label-width="120" :rules="ruleValidate">
-            <FormItem label="应用名："  prop="appName">
-               <Input v-model="appInfo.appName" placeholder="建议20字以内，不超过100个字。" style="width:400px"></Input>
+            <FormItem label="应用名："  prop="name">
+               <Input v-model="appInfo.name" placeholder="建议20字以内，不超过100个字。" style="width:400px"></Input>
             </FormItem>
             <FormItem label="应用标签："  prop="tag">
               <Select v-model="appInfo.tag" placeholder="请选择" style="width:200px">
@@ -47,26 +73,26 @@
               </Select>
             </FormItem>
             <FormItem label="一句话简介：">
-               <Input v-model="appInfo.abstract" placeholder="8个字以内，简要说明产品的特色和卖点。"></Input>
+               <Input v-model="appInfo.summary" placeholder="8个字以内，简要说明产品的特色和卖点。"></Input>
             </FormItem>
             <FormItem label="应用描述：">
-               <Input type="textarea" v-model="appInfo.description" :autosize="{minRows: 2,maxRows: 5}" placeholder="一段话描述你的产品，1000汉字以内，做好分段排版，禁止添加链接"></Input>
+               <Input type="textarea" v-model="appInfo.introduce" :autosize="{minRows: 2,maxRows: 5}" placeholder="一段话描述你的产品，1000汉字以内，做好分段排版，禁止添加链接"></Input>
             </FormItem>
             <FormItem label="新版特征：">
-               <Input type="textarea" v-model="appInfo.feature" :autosize="{minRows: 2,maxRows: 5}" placeholder="列举产品的几点特征，使用序号标识，做好换行，1000汉字以内"></Input>
+               <Input type="textarea" v-model="appInfo.featureDesc" :autosize="{minRows: 2,maxRows: 5}" placeholder="列举产品的几点特征，使用序号标识，做好换行，1000汉字以内"></Input>
             </FormItem>
             <FormItem label="权限获取说明：">
-               <Input type="textarea" v-model="appInfo.rights" :autosize="{minRows: 2,maxRows: 5}" placeholder="举例：获取通讯录权限是为了方便用户添加好友；获取地理位置权限是为了方便用户找到距离自己最近的商铺。"></Input>
+               <Input type="textarea" v-model="appInfo.authority" :autosize="{minRows: 2,maxRows: 5}" placeholder="举例：获取通讯录权限是为了方便用户添加好友；获取地理位置权限是为了方便用户找到距离自己最近的商铺。"></Input>
             </FormItem>
             <FormItem label="收费描述：">
-                <RadioGroup v-model="appInfo.fee">
+                <RadioGroup v-model="appInfo.ifChare">
                     <Radio label="1">完全免费</Radio>
                     <Radio label="2">部分功能收费</Radio>
                     <Radio label="3">部分内容收费</Radio>
                 </RadioGroup>
             </FormItem>
             <FormItem label="广告状态：">
-                <RadioGroup v-model="appInfo.adStatus">
+                <RadioGroup v-model="appInfo.hasAd">
                     <Radio label="1">无广告</Radio>
                     <Radio label="2">内嵌广告</Radio>
                     <Radio label="3">通知栏广告</Radio>
@@ -74,7 +100,7 @@
                 </RadioGroup>
             </FormItem>
             <FormItem label="支持语言：">
-                <RadioGroup v-model="appInfo.language">
+                <RadioGroup v-model="appInfo.supportLanguage">
                     <Radio label="1">简体中文</Radio>
                     <Radio label="2">英文</Radio>
                     <Radio label="3">其他</Radio>
@@ -123,6 +149,7 @@
           <Button size="large" style="margin-right:20px" @click="$router.push({path:'/index/appManage'})">取消</Button>
           <Button type="primary" size="large">提交</Button>
       </div>
+
     </div>
   </div>
 </template>
@@ -135,20 +162,28 @@ export default {
   data(){
     return {
       appInfo:{
-        appName: "",
+        name: "",
         tag: "",
         type: "1",
         classify: "",
-        abstract:"",
-        description: "",
-        feature: "",
-        rights: "",
-        fee: "",
-        adStatus: "",
-        language: ""
+        summary:"",
+        introduce: "",
+        featureDesc: "",
+        authority: "",
+        ifChare: "",
+        hasAd: "",
+        supportLanguage: ""
+      },
+      app: {
+        theme:"",
+        packageName: "",
+        sign:"",
+        versionNumber: "",
+        name:"",
+        size:""
       },
       ruleValidate:{
-         appName: [
+         name: [
             { required: true, message: '请输入应用名', trigger: 'blur' }
          ],
       }
@@ -198,6 +233,30 @@ export default {
         margin:30px auto;
       }
     }
+    .intro {
+        padding:20px;
+        background:#fff;
+        .upload1 {
+          text-align:center;
+          margin:30px auto;
+        }
+        .info{
+          margin-left:20%;
+          
+          .img_wrap,.left,.right{
+            float:left;
+            margin-right:50px;
+            p{
+              margin-bottom:5px;
+            }
+          }
+          .img_wrap{
+            width:80px;
+            height: 80px;
+            background:#ccc
+          }
+        }
+      }
     .appInfo_wrap {
        margin-bottom:20px;
       .form_wrap {

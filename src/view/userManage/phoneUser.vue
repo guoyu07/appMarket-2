@@ -11,7 +11,7 @@
             <Input v-model="searchData.userName"  placeholder="用户名/手机号"></Input>
           </FormItem>
           <FormItem label="状态">
-            <Select v-model="searchData.type"  style="width:100px">
+            <Select v-model="searchData.state"  style="width:100px">
                 <Option value="0">全部</Option>
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
@@ -65,13 +65,13 @@
             </Select>
           </FormItem>
           <FormItem label="状态">
-            <Select v-model="editUserData.status">
+            <Select v-model="editUserData.state">
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
             </Select>
           </FormItem>
           <FormItem label="警务通号码">
-            <Input v-model="editUserData.jwtNumber"  placeholder="" disabled></Input>
+            <Input v-model="editUserData.policeservnum"  placeholder="" disabled></Input>
           </FormItem>
         </Form>
     </Modal>
@@ -108,7 +108,7 @@ export default {
       forbiddenUseModal:false,
       searchData: {
         userName:"",
-        type: '0'
+        state: '0'
       },
       columns: [
         {
@@ -144,7 +144,7 @@ export default {
         },
         {
             title: '状态',
-            key: 'status'
+            key: 'state'
         },
         {
             title: '操作',
@@ -176,7 +176,7 @@ export default {
           phone:"13333333333",
           sex: '女',
           roleName: '普通用户',
-          status:'启用'
+          state:'启用'
         }
       ],
       selectedUserData: [],
@@ -185,8 +185,8 @@ export default {
         name: '小雪',
         pwd:"123123",
         sex: '1',
-        status: '1',
-        jwtNumber: '1234r3fdcdss'
+        state: '1',
+        policeservnum: '1234r3fdcdss'
       }
     }
   },

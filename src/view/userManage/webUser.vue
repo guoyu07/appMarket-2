@@ -11,7 +11,7 @@
             <Input v-model="searchData.userName"  placeholder="用户名/手机号"></Input>
           </FormItem>
           <FormItem label="状态">
-            <Select v-model="searchData.type"  style="width:100px">
+            <Select v-model="searchData.state"  style="width:100px">
                 <Option value="0">全部</Option>
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
@@ -65,7 +65,7 @@
             </Select>
           </FormItem>
           <FormItem label="状态">
-            <Select v-model="searchData.status">
+            <Select v-model="searchData.state">
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
             </Select>
@@ -93,7 +93,7 @@
             </Select>
           </FormItem>
           <FormItem label="状态">
-            <Select v-model="editUserData.status">
+            <Select v-model="editUserData.state">
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
             </Select>
@@ -134,7 +134,7 @@ export default {
       forbiddenUseModal:false,
       searchData: {
         userName:"",
-        type: '0'
+        state: '0'
       },
       columns: [
         {
@@ -158,7 +158,7 @@ export default {
         },
         {
             title: '注册时间',
-            key: 'registerTime'
+            key: 'registerDate'
         },
         {
             title: '角色名称',
@@ -166,7 +166,7 @@ export default {
         },
         {
             title: '状态',
-            key: 'status'
+            key: 'state'
         },
         {
             title: '操作',
@@ -195,9 +195,9 @@ export default {
         {
           userName:"开元",
           phone:"13333333333",
-          registerTime: '2018-04-02',
+          registerDate: '2018-04-02',
           roleName: '普通用户',
-          status:'启用'
+          state:'启用'
         }
       ],
       selectedUserData: [],
@@ -206,13 +206,13 @@ export default {
         initPwd: '111111',
         phone:"",
         roleName: '0',
-        status: '1'
+        state: '1'
       },
       editUserData: {
         userName: '',
         phone:"",
         roleName: '0',
-        status: '1'
+        state: '1'
       }
     }
   },
