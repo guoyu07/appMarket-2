@@ -1,25 +1,18 @@
 <template>
     <div id="login">
-         <!-- :style="{backgroundImage: 'url(' + bg + ')'}" -->
-         
         <div id="login_form">
             <h1>应用市场管理平台</h1>
-             <Form ref="formValidate" :model="formValidate" :rules="ruleValidate">
+             <Form ref="formValidate" :model="loginData" :rules="ruleValidate">
                 <FormItem prop="userName">
-                    <Input type="text" v-model="formValidate.userName" placeholder="用户名" size="large">
+                    <Input type="text" v-model="loginData.userName" placeholder="用户名" size="large">
                         <Icon type="ios-person-outline" slot="prepend"></Icon>
                     </Input>
                 </FormItem>
                 <FormItem prop="pwd">
-                    <Input type="password" v-model="formValidate.pwd" placeholder="密码" size="large">
+                    <Input type="password" v-model="loginData.pwd" placeholder="密码" size="large">
                         <Icon type="ios-locked-outline" slot="prepend"></Icon>
                     </Input>
                 </FormItem>
-                <!-- <FormItem prop="authcode">
-                    <Input type="password" v-model="formValidate.authcode" placeholder="验证码" size="large">
-                    </Input>
-                    <img src="../../assets/img/Main.jpg" alt="" title="点击刷新验证码" id="img_authcode" @click="refreshAuth">
-                </FormItem> -->
                 <a class="forgetpwd" @click="forgetpwd">忘记密码？</a>
                 <FormItem>
                     <Button type="primary" @click="handleSubmit('formValidate')" style="width:100%" size="large">登录</Button>
@@ -30,14 +23,18 @@
 </template>
 
 <script>
+import qs from 'qs'
 export default {
+    
+// created-----------------------------------------------------------------------------------
   created(){
     document.title = '登录-应用市场管理平台'
   },
+
+// data--------------------------------------------------------------------------------------
   data(){
       return {
-          bg: require('../../assets/img/bg-login.png'),
-          formValidate: {
+          loginData: {
             userName: '',
             pwd: '',
           },
@@ -53,37 +50,55 @@ export default {
       }
   },
 
+// methods-----------------------------------------------------------------------------------
   methods: {
       // 点击登录
-      handleSubmit(){
-          console.log(this)
-          // 判断是否填写用户名密码
-          if(this.formValidate.userName.trim()=='' || this.formValidate.pwd.trim()==''){
-              alert("请输入用户名或密码")
-              return
-          }else{
-              // 发送登录请求
-              
-              // 获取用户权限并本地保存
-              window.localStorage.setItem("authList",JSON.stringify([11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]))
+      handleSubmit(name){
+        console.log(this)
+        // 判断是否填写用户名密码
+        this.$refs[name].validate((valid) => {
+            if (valid) {
+                // 发送登录请求
+                this.axios.post('/login',qs.stringify(this.loginData))
+                .then((res)=>{
+                    console.log(res)
+                })
+                //   this.axios.get('/login',{params:this.loginData})
+                //   .then((res)=>{
+                //       console.log(res)
+                //   })
 
-              window.localStorage.setItem("user",this.formValidate.userName)
-              window.localStorage.setItem("password",this.formValidate.pwd)
+                // 获取用户权限并本地保存
+                window.localStorage.setItem("user",this.loginData.userName)
+                window.localStorage.setItem("password",this.loginData.pwd)
+                window.localStorage.setItem("authList",JSON.stringify([11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]))                
 
-              // 跳转到首页
-              this.$router.push({path: '/index/homepage'})
-              window.localStorage.setItem('currentMenu','/index/homepage')
-          }
+                // 跳转到首页
+                this.$router.push({path: '/index/homepage'})
+                window.localStorage.setItem('currentMenu','/index/homepage')
+            }
+        })
       },
+
+
       // 点击刷新验证码
       refreshAuth(){
 
       },
+
+      // 忘记密码
       forgetpwd(){
         this.$Message.warning({
             content: '请联系管理员！',
             duration:5,
         })
+        // 解决多次连续点击问题
+        $(".forgetpwd").attr("disabled",true)
+        var timer = setTimeout(function(){
+            $(".forgetpwd").attr("disabled",false)
+            clearTimeout(timer)
+        },5000)
+
       }
   }
 
@@ -95,7 +110,7 @@ export default {
         width:100%;
         height:100%;
         position: relative;
-        background:-webkit-linear-gradient(#64c086, #63c185,#90c099);
+        background:-webkit-linear-gradient(#37a861,#40c4d8);
         #login_form {
             h1 {
                 text-align: center;

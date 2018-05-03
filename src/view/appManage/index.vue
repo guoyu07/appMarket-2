@@ -37,10 +37,17 @@
                     <Button type="primary"  @click="isSelected()?whiteListsModal = true:''" >白名单</Button>
                 </div>
            </div>
-           <Table border :columns="columns" :data="appData" @on-selection-change="selectAppChange" no-data-text="暂无数据"></Table>            
-           <Page :total="2" show-total class="appPage page_wrap"></Page>
+
+           <div style="position:relative">
+                <Table border :columns="columns" :loading="loading" :data="appData" @on-selection-change="selectAppChange" no-data-text="暂无数据"></Table>            
+                <Page :total="2" show-total class="appPage page_wrap"></Page>
+                <Spin fix v-if='loading'>
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>loading...</div>
+                </Spin>
+           </div>
+           
       </div>
-      
       
     </div>
     
@@ -99,16 +106,20 @@
 
 <script>
 export default {
+// created------------------------------------------------------------------------------------
   created(){
     document.title = "应用管理"
   },
 
+// data---------------------------------------------------------------------------------------
   data(){
     return{
+      loading:false,
       searchData: {
         appName: "",
         type: "0"
       },
+      // 应用表格
       columns: [
         {
             type: 'selection',
@@ -236,14 +247,17 @@ export default {
 
         }
       ],
+      // 模态框
       startUseModal:false,
       forbiddenUseModal:false,
       whiteListsModal:false,
       blackListsModal:false,
       dispatchModal: false,
+      // 复选框选中数据
       selectedAppData: [],
       selectedUserData: [],
-      searchUser: '',
+      searchUser: '',  // 下发用户筛选
+      // 下发用户表格
       columns2: [
           {
             type: 'selection',
@@ -273,20 +287,21 @@ export default {
     }
   },
 
+// methods------------------------------------------------------------------------------------
   methods:{
+
       // 判断是否选中应用
-      isSelected(){
+     isSelected(){
         if(this.selectedAppData.length==0){
             this.$Message.warning('请至少选择一项应用！');
             return false
         }else{
             return true
         }
-      },
+     },
 
      // 确定启用
-      confirmUse(){
-          
+     confirmUse(){
           this.axios.get('/add',{
               params:{
                   name:"zs",
@@ -296,7 +311,7 @@ export default {
           .then(res=>{
 
           })
-      },
+     },
 
      // 确定禁用
      confirmForbidden(){
@@ -313,23 +328,23 @@ export default {
         alert(1)
      },
 
-    // 确定下发
-    confirmDispatch(){
+     // 确定下发
+     confirmDispatch(){
         if(this.selectedUserData.length==0){
             this.$Message.warning('请至少选择一位用户！');
-            return false
+            return
         }
 
         this.dispatchModal = false
-    },
+     },
 
-    // 选中应用改变
+     // 选中应用改变
      selectAppChange(selection){
          this.selectedAppData = selection
          console.log(this.selectedAppData)
      },
 
-    // 选中用户改变
+     // 选中用户改变
      selectUserChange(selection){
          this.selectedUserData = selection
          console.log(this.selectedUserData)
@@ -343,6 +358,7 @@ export default {
 <style lang='scss' scoped  type="text/css">
     #appManage {
         // padding:0 0 50px 0;
+       
         .search_wrap {
             background:#fff;
             padding:20px 20px 0 20px;

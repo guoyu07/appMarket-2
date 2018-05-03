@@ -12,8 +12,15 @@
                     <Button type="primary"  @click="addModal=true"><Icon type="plus"></Icon> 添加角色</Button>
                 </div>
            </div>
-           <Table border :columns="columns" :data="roleData" no-data-text="暂无数据"></Table>            
-           <Page :total="2" show-total class="page_wrap"></Page>
+           
+           <div style="position:relative">
+                <Table border :columns="columns" :data="roleData" no-data-text="暂无数据"></Table>            
+                <Page :total="2" show-total class="page_wrap"></Page>
+                <Spin fix v-if='loading'>
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>loading...</div>
+                </Spin>
+           </div>
       </div>
     </div>
 
@@ -68,6 +75,7 @@ export default {
   },
   data(){
     return {
+      loading:false,
       columns: [
         {
             type: 'index',

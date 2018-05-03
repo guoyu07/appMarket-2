@@ -9,10 +9,10 @@
       <Col span="20">
       <div id="right_wrap">
           <!-- 信息 -->
-          <router-link class="messages" v-bind:to="{path:'/index/messages'}" style="color:#fff">
-              <Icon type="ios-email-outline"></Icon>
-              <div id="num">2</div>
-          </router-link>
+            <router-link class="messages" v-bind:to="{path:'/index/messages'}" style="color:#fff"  title="消息">
+                <Icon type="ios-email-outline"></Icon>
+                <div id="num">2</div>
+            </router-link>
 
           <!-- 用户名 -->
           <span @mousemove="tipsShow" @mouseleave="tipsHide">

@@ -35,8 +35,15 @@
                     <Button type="primary" style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
                 </div>
            </div>
-           <Table border :columns="columns" :data="webUserData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>            
-           <Page :total="2" show-total class="page_wrap"></Page>
+           <div style="position:relative">
+                <Table border :columns="columns" :data="webUserData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>            
+                <Page :total="2" show-total class="page_wrap"></Page>
+                <Spin fix v-if='loading'>
+                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
+                    <div>loading...</div>
+                </Spin>
+           </div>
+           
       </div>
       
       
@@ -128,6 +135,7 @@ export default {
 
   data(){
     return {
+      loading:false,
       addUserModal: false,
       editUserModal: false,
       startUseModal:false,

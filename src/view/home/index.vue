@@ -77,53 +77,100 @@ var Highcharts = require('highcharts')
 // 在 Highcharts 加载之后加载功能模块
 require('highcharts/modules/exporting')(Highcharts)
 export default {
-  
+
+// data------------------------------------------------------------------------------------------ 
   data(){
     return {
     }
   },
+
+// created----------------------------------------------------------------------------------------
   created(){
     document.title = '首页-应用市场管理平台'
   },
+
+// mounted----------------------------------------------------------------------------------------
   mounted(){
-    this.renderCharts({
+    
+    this.renderPie({
       ele:"chart1",
       title:"设备型号分布图",
       data:[
                 ['787手机', 45.0],
                 ['华为手机', 26.8],
-            ]
+            ],
     })
-    this.renderCharts({
+    this.renderPie({
       ele:"chart2",
       title:"Andriod客户端版本分布图",
       data:[
                 ['Andriod8.0', 45.0],
                 ['Andriod7.0', 26.8],
-            ]
+                ['Andriod9.0', 76.8],
+                ['Andriod9.0', 76.8],
+                ['Andriod9.0', 76.8],
+            ],
     })
-    this.renderCharts({
+    this.renderPie({
       ele:"chart3",
-      title:"Andriod客户端版本分布图",
+      title:"违规设备分布图",
       data:[
-                ['Andriod8.0', 45.0],
-                ['Andriod7.0', 26.8],
-            ]
+                ['正常设备', 45.0],
+                ['违规设备', 26.8],
+            ],
+    })
+    this.renderColumn({
+      ele:"chart4",
+      data:[{
+                name: '应用名称',
+                data: [{
+                    name: 'qq',
+                    y: 56.33},
+                    {
+                    name: '微信',
+                    y: 24.03},
+                    {
+                    name: '微博',
+                    y: 10.38}, 
+                    {
+                    name: '网易新闻',
+                    y: 4.77}, 
+                    {
+                    name: '知乎',
+                    y: 0.91}, 
+                    {
+                    name: '抖音',
+                    y: 0.2}, 
+                    {
+                    name: '简书',
+                    y: 6.72}, 
+                    {
+                    name: '支付宝',
+                    y: 3.98
+                }]
+            }],
+
     })
   },
+
+// computed----------------------------------------------------------------------------------------
   computed: {
     token(){
       return this.$store.state.token
     }
   },
+
+// methods-----------------------------------------------------------------------------------------
   methods: {
-     renderCharts(options){
+     // 渲染饼图
+     renderPie(options){
         Highcharts.chart(options.ele, {
             chart: {
                 // plotBackgroundColor: null,
                 // plotBorderWidth: null,
                 // plotShadow: false
             },
+            colors:['#f45853','#7bd5e9','#73dcb6','#ffbe31'],
             credits: {
                 enabled: false,
             },
@@ -140,6 +187,7 @@ export default {
             },
             plotOptions: {
                 pie: {
+                  size:180,
                     cursor: 'pointer',
                     dataLabels: {
                         enabled: true,
@@ -148,7 +196,7 @@ export default {
                             color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                         }
                     },
-                    center: ['50%', '25%']
+                    center: ['50%','25%']
                 },
             },
             series: [{
@@ -158,8 +206,58 @@ export default {
                 data: options.data
             }]
         });
-    }
+     },
+
+     // 渲染柱状图
+     renderColumn(options){
+       Highcharts.chart('chart4', {
+            chart: {
+                type: 'column'
+            },
+            colors:['#64c086'],
+            credits: {
+                enabled: false,
+            },
+            exporting: {
+                enabled: false
+            },
+            title: {
+                text: ''
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: {
+                    text: '',
+                },
+                max: 100
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.1f}%',
+                        style: {
+                            color: 'black'
+                        }
+                    }
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
+            },
+            series: options.data
+        });
+     }
+
   }
+
 }
 </script>
 
@@ -219,7 +317,7 @@ export default {
       height:300px;
       display: flex;
       text-align:justify;
-      margin-bottom:20px;
+      margin-bottom:30px;
       .left,.right {
         height:100%;
         width:50%;

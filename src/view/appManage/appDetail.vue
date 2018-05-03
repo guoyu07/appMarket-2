@@ -5,18 +5,18 @@
       
         <!-- 简介 -->
         <div class="intro">
-          <p style="margin-left:20%">微信</p>
+          <p style="margin-left:20%">{{appInfo.name}}</p>
           <div class="info clearfix">
             <img src="" alt="" class="img_wrap">
             <div class="left">
-              <p>主题：微信</p>
-              <p>包名：WeChat</p>
-              <p>签名：123344567</p>
+              <p>主题：{{app.theme}}</p>
+              <p>包名：{{app.packageName}}</p>
+              <p>签名：{{app.sign}}</p>
             </div>
             <div class="right">
-              <p>版本号：微信</p>
-              <p>版本名：WeChat</p>
-              <p>更新时间：123344567</p>
+              <p>版本号：{{app.versionNumber}}</p>
+              <p>版本名：{{app.name}}</p>
+              <p>更新时间：{{app.updateDate}}</p>
             </div>
           </div>
         </div>
@@ -26,17 +26,17 @@
           <h2>应用信息</h2>
           <div class="appInfo">
               <Form :label-width="100">
-                <FormItem label="应用名">微信</FormItem>
-                <FormItem label="应用标签">工作</FormItem>
-                <FormItem label="种类">应用</FormItem>
-                <FormItem label="分类">生活服务</FormItem>
-                <FormItem label="一句话简介">通信工具</FormItem>
-                <FormItem label="应用描述">政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通</FormItem>
-                <FormItem label="新版本特征">政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通</FormItem>
-                <FormItem label="权限获取说明">政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通政务通</FormItem>
-                <FormItem label="收费描述">完全免费</FormItem>
-                <FormItem label="广告状态">无广告</FormItem>
-                <FormItem label="支持语言">中文</FormItem>
+                <FormItem label="应用名">{{appInfo.name}}</FormItem>
+                <FormItem label="应用标签">{{appInfo.tag}}</FormItem>
+                <FormItem label="种类">{{appInfo.type}}</FormItem>
+                <FormItem label="分类">{{appInfo.classify}}</FormItem>
+                <FormItem label="一句话简介">{{appInfo.summary}}</FormItem>
+                <FormItem label="应用描述">{{appInfo.introduce}}</FormItem>
+                <FormItem label="新版本特征">{{appInfo.featureDesc}}</FormItem>
+                <FormItem label="权限获取说明">{{appInfo.authority}}</FormItem>
+                <FormItem label="收费描述">{{appInfo.ifChare}}</FormItem>
+                <FormItem label="广告状态">{{appInfo.hasAd}}</FormItem>
+                <FormItem label="支持语言">{{appInfo.supportLanguage}}</FormItem>
               </Form>
           </div>
         </div>
@@ -46,12 +46,15 @@
           <h2>图标和截图</h2>
           <div class="appInfo">
             <Form :label-width="100">
-                <FormItem label="应用图标"><div style="width:60px;height:60px;margin-top:10px;border:1px solid #ccc"></div></FormItem>
+                <FormItem label="应用图标">
+                  <div style="width:60px;height:60px;margin-top:10px;border:1px solid #ccc">
+                    <img :src="appInfo.iconUrl" alt="">
+                  </div>
+                </FormItem>
                 <FormItem label="应用截图">
-                  <div style="width:100px;height:200px;margin:10px 20px 0 0;border:1px solid #ccc;float:left"></div>
-                  <div style="width:100px;height:200px;margin:10px 20px 0 0;border:1px solid #ccc;float:left"></div>
-                  <div style="width:100px;height:200px;margin:10px 20px 0 0;border:1px solid #ccc;float:left"></div>
-                  <div style="width:100px;height:200px;margin:10px 20px 0 0;border:1px solid #ccc;float:left"></div>
+                  <div class="urls" v-for='(item,index) in appInfo.captureUrls' :key='index'>
+                    <img src="" alt="">
+                  </div>
                 </FormItem>
               </Form>
           </div>
@@ -67,9 +70,40 @@
 
 <script>
 export default {
+// created-----------------------------------------------------------------------------------
   created(){
     document.title = "应用管理-详情"
   },
+
+// data--------------------------------------------------------------------------------------
+  data(){
+    return {
+      app: {
+        theme:"",
+        packageName: "",
+        sign:"",
+        versionNumber: "",
+        name:"",
+        updateDate:""
+      },
+      appInfo:{
+        name: "",
+        tag: "",
+        type: "1",
+        classify: "",
+        summary:"",
+        introduce: "",
+        featureDesc: "",
+        authority: "",
+        ifChare: "",
+        hasAd: "",
+        supportLanguage: "",
+        iconUrl:"",
+        captureUrls:[1,2,3]
+      },
+    }
+  }
+  
 }
 </script>
 
@@ -127,6 +161,13 @@ export default {
             margin-left:20px;
           }
         }
+      }
+      .urls{
+        width:100px;
+        height:200px;
+        margin:10px 20px 0 0;
+        border:1px solid #ccc;
+        float:left;
       }
       .btn_wrap {
         padding:20px;
