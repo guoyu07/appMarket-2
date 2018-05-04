@@ -30,8 +30,8 @@
                     <Icon type="navicon-round"></Icon> 手机用户列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary" style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
-                    <Button type="primary" style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
+                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
+                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
                 </div>
            </div>
            
@@ -104,11 +104,14 @@
 </template>
 
 <script>
+import {breakTips} from '../../util/util'
 export default {
+// created--------------------------------------------------------------------------------------
   created(){
     document.title = "用户管理-手机用户"
   },
 
+// data------------------------------------------------------------------------------------------
   data(){
     return {
       loading:false,
@@ -200,6 +203,7 @@ export default {
     }
   },
 
+// methods---------------------------------------------------------------------------------------
   methods: {
     // 选中数据改变
     selectUserChange(selection){
@@ -210,6 +214,7 @@ export default {
     isSelected(){
       if(this.selectedUserData.length==0){
           this.$Message.warning('请至少选择一位用户！');
+          breakTips()
           return false
       }else{
           return true

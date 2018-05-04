@@ -18,7 +18,7 @@
             </Select>
           </FormItem>
           <FormItem>
-            <Button type="primary">筛选</Button>
+            <Button type="primary" @click='queryTable'>筛选</Button>
           </FormItem>
         </Form>
       </div>
@@ -31,10 +31,10 @@
                 </div>
                 <div class="btns_wrap">
                     <Button type="primary" style="margin-right:15px" @click="$router.push({path:'/index/addApp'})"><Icon type="plus"></Icon> 添加应用</Button>
-                    <Button type="primary" style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
-                    <Button type="primary" style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
-                    <Button type="primary" style="margin-right:15px"  @click="isSelected()?blackListsModal = true:''">黑名单</Button>
-                    <Button type="primary"  @click="isSelected()?whiteListsModal = true:''" >白名单</Button>
+                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
+                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
+                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?blackListsModal = true:''">黑名单</Button>
+                    <Button type="primary" class='isDisabled'  @click="isSelected()?whiteListsModal = true:''" >白名单</Button>
                 </div>
            </div>
 
@@ -105,6 +105,7 @@
 
 
 <script>
+import {breakTips} from '../../util/util'
 export default {
 // created------------------------------------------------------------------------------------
   created(){
@@ -290,10 +291,17 @@ export default {
 // methods------------------------------------------------------------------------------------
   methods:{
 
-      // 判断是否选中应用
+     // 查询表格
+     queryTable(){
+
+     },
+
+     // 判断是否选中应用
      isSelected(){
         if(this.selectedAppData.length==0){
             this.$Message.warning('请至少选择一项应用！');
+            // 解决多次连续点击问题
+            breakTips()
             return false
         }else{
             return true

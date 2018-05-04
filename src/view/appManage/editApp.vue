@@ -105,7 +105,7 @@
             <Form :label-width="100">
                 <FormItem label="应用图标">
                   <div style="width:60px;height:60px;margin:10px 0;border:1px solid #ccc">
-                    <img :src="appInfo.iconUrl" alt="">
+                    <img src="../../assets/img/1.png" alt="">
                   </div>
                   <div>
                     <Upload action="" :before-upload="handleBeforeUpload">
@@ -172,7 +172,7 @@ export default {
         ifChare: "",
         hasAd: "",
         supportLanguage: "",
-        iconUrl:"",
+        iconUrl:'',
         captureUrls:[1,2,3]
       },
       ruleValidate:validate

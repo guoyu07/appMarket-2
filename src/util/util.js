@@ -1,25 +1,25 @@
-
-// 上传app表单的验证规则-----------------------------------------------------
-export const validate = {
+import axios from  '../api/axios_api.js'
+// 上传app表单的验证规则----------------------------------------------------------------
+export function validate(nameValidate,introValidate){
+  const validate = {
     name: [
-      { required: true, message: '请输入应用名', trigger: 'blur' }
+      { required: true, validator: nameValidate, trigger: 'blur' },
     ],
     tag: [
       { required: true, message: '请选择应用标签', trigger: 'change' }
     ],
-
     type: [
       { required: true, message: '请选择种类', trigger: 'change' }
     ],
     classify: [
       { required: true, message: '请选择分类', trigger: 'change' }
     ],
-
     summary: [
-      { required: true, message: '请输入一句话简介', trigger: 'blur' }
+      { required: true, message: '请输入一句话简介', trigger: 'blur' },
+      { type: 'string', max: 8, message: '8个字以内', trigger: 'blur' }
     ],
     introduce: [
-      { required: true, message: '请输入应用描述', trigger: 'blur' }
+      { required: true,  validator: introValidate, trigger: 'blur' }
     ],
     featureDesc: [
       { required: true, message: '请输入新版特征', trigger: 'blur' }
@@ -37,9 +37,12 @@ export const validate = {
     supportLanguage: [
       { required: true, message: '请选择支持语言', trigger: 'change' }
     ],
+  }
+  return validate
+
 }
 
-// 正则验证---------------------------------------------------------------
+// 正则验证----------------------------------------------------------------------------
 export function regTest(str,type){
   var myReg = ''
   switch(type){
@@ -53,6 +56,22 @@ export function regTest(str,type){
   }
   return myReg.test(str)?true:false
 }
+
+// 解决多次点击按钮多次提示的问题  应用管理与用户管理模块启用禁用黑白名单按钮---------------
+export function breakTips(){
+  $(".isDisabled").attr("disabled",true)
+  $(".isDisabled").css({
+      background:'#63c185',
+      cursor:'pointer',
+      color:'#fff'
+  })
+  var timer = setTimeout(function(){
+      $(".isDisabled").attr("disabled",false)
+      clearTimeout(timer)
+  },2000)
+}
+
+
 
 // /**
 //  * 原生js仿 jq的 Siblings()兄弟选择器

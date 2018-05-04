@@ -11,7 +11,7 @@
           <Upload action="" :before-upload="handleBeforeUpload" :on-success='upIconSuccess'>
               <Button type="success" icon="ios-cloud-upload-outline">上传apk</Button>
           </Upload>
-          <span id="cancle" v-if="isUploading" @click="breakUpload">取消</span>
+          
         </div>
 
         <!-- 上传成功后显示 -->
@@ -108,14 +108,9 @@
         <div class="img_icon">
           <p class="title">应用图标：</p>
           <div style="margin-bottom:5px;margin-left:80px;">
-            <Upload
-                type="drag"
-                action=""
-                 style="width:150px;height:150px;">
-                <div style="padding: 20px 0">
-                    <Icon type="plus" size="52" style="color: #f2f3f3"></Icon>
-                    <p class="upBtn"><Button type="success">上传图标</Button></p>
-                </div>
+            <img :src="appInfo.iconUrl" alt="" style="display:none" id="icon" > 
+            <Upload action="">                                
+                <Button type="success">上传图标</Button>
             </Upload>
           </div>
           <p style="margin-left:80px;font-size:12px;margin-bottom:20px">请上传尺寸512*512，大小200K以内，JPG、PNG格式，建议使用直角图标。</p>
@@ -143,24 +138,68 @@
       </div>
 
     </div>
+
+    <!-- 上传进度模态框 -->
+    <Modal v-model="progressModal" :closable='false' :mask-closable='false' class-name="vertical-center-modal" id="progressModal">
+      <div id="progress">
+        <p>正在上传: <span>{{fileName}}</span> </p>
+        <Progress :percent="50"></Progress>
+        <div style="color:red;position:absolute;right:20px;top:65px;cursor:pointer"  @click='stopUpload'><Icon type="close-circled" size='24'></Icon></div>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 import qs from 'qs'
 import {validate} from '../../util/util.js'
+
 export default {
 // created-----------------------------------------------------------------------------
   created(){
     document.title="应用管理-添加应用";
   },
 
+// mounted-------------------------------------------------------------------------------------
+  mounted(){
+
+  },
+
 // data---------------------------------------------------------------------------------
   data(){
+     const nameValidate = (rule,value,callback)=>{
+        if(value==''){
+          callback(new Error('请输入应用名'))      
+        }else if(value.length>100){
+          callback(new Error('建议20字以内，不超过100个字。'))
+        }else if(value!=this.app.theme){
+          callback(new Error('应用名应与主题名一致'))      
+        }else{
+          callback()
+        }
+        // 查重
+        this.axios.get('/api').then(res=>{
+
+        })
+    }
+    const introValidate = (rule,value,callback)=>{
+        var str = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/g;
+        if(value==''){
+          callback(new Error('请输入应用描述'))      
+        }else if(value.length>1000){
+          callback(new Error('1000字以内'))
+        }else if(value.match(/^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/g)){
+          callback(new Error('禁止添加链接'))      
+        }else{
+          callback()
+        }
+    }
     return {
+      progressModal:false,
       isUploading:false,
       currentAjax:'',
       appFile:'',
+      fileName:'',
       iconFile:'',
       shotFiles:'',
       allType:{
@@ -196,16 +235,16 @@ export default {
         name:"",
         size:""
       },
-      ruleValidate:validate
+      ruleValidate:validate(nameValidate,introValidate)
     }
   },
 
 // methods-------------------------------------------------------------------------------
   methods: {
-
     // 上传图片处理
     handleBeforeUpload(file){
-      // console.log(file)
+      console.log(file)
+       this.fileName = file.name
         this.isUploading = true
         var reader = new FileReader();
         reader.readAsDataURL(file);
@@ -218,7 +257,14 @@ export default {
           
           // 发送ajax请求上传apk
           console.log(that.appFile)
-          that.currentAjax = that.axios.post('/login',qs.stringify({file:this.appFile})).then(res=>{
+          var config = {
+            onUploadProgress: progressEvent => {
+              var complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
+              this.progress = complete
+            }
+          }
+          that.progressModal = true
+          that.currentAjax = that.axios.post('/login',qs.stringify({file:this.appFile}),config).then(res=>{
 
           })
         }
@@ -229,8 +275,10 @@ export default {
     },
 
     // 取消上传图标
-    breakUpload(){
-      this.currentAjax.abort()
+    stopUpload(){
+      // this.currentAjax.abort()
+      this.progressModal = false
+      console.log(1111111111111)
     },
 
     // 上传图标成功
@@ -320,9 +368,9 @@ export default {
           margin-bottom:20px;
           float:left;
         }
-        .upBtn {
-          margin-top:25px;
-        }
+        // .upBtn {
+        //   margin-top:25px;
+        // }
         .screenShot {
           float: left;
           margin-right:20px;
@@ -337,9 +385,18 @@ export default {
     
     .btn_wrap {
       padding:20px 300px;
-    }
-    
+    } 
   }
+   #progress {
+      padding:10px 30px 25px 10px;
+      p{
+        font-size:20px;
+        margin-bottom:10px;
+        span {
+          color:#63c185
+        }
+      }
+    }   
 </style>
 
 
