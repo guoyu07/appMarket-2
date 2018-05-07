@@ -31,7 +31,7 @@
           <h2>应用信息</h2>
           <div class="appInfo">
             <!-- 表单 -->
-            <Form ref="formValidate" :model="appInfo" :label-width="120" :rules="ruleValidate">
+            <Form ref='formValidate' :model="appInfo" :label-width="130" :rules="ruleValidate">
               <FormItem label="应用名："  prop="name">
                 <Input v-model="appInfo.name" placeholder="建议20字以内，不超过100个字。" style="width:400px"></Input>
               </FormItem>
@@ -149,6 +149,33 @@ export default {
 
 // data-------------------------------------------------------------------------------------
   data(){
+     const nameValidate = (rule,value,callback)=>{
+        if(value==''){
+          callback(new Error('请输入应用名'))      
+        }else if(value.length>100){
+          callback(new Error('建议20字以内，不超过100个字。'))
+        }else if(value!=this.app.theme){
+          callback(new Error('应用名应与主题名一致'))      
+        }else{
+          callback()
+        }
+        // 查重
+        this.axios.get('/api').then(res=>{
+
+        })
+    }
+    const introValidate = (rule,value,callback)=>{
+        var str = /(((ht|f)tps?):\/\/)?[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?/g;
+        if(value==''){
+          callback(new Error('请输入应用描述'))      
+        }else if(value.length>1000){
+          callback(new Error('1000字以内'))
+        }else if(value.match(str)){
+          callback(new Error('禁止添加链接'))      
+        }else{
+          callback()
+        }
+    }
     return {
       iconFile:'',
       shotFiles:'',
@@ -175,7 +202,7 @@ export default {
         iconUrl:'',
         captureUrls:[1,2,3]
       },
-      ruleValidate:validate
+      ruleValidate:validate(nameValidate,introValidate)
     }
   },
 

@@ -30,9 +30,9 @@
                     <Icon type="navicon-round"></Icon> 应用列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary" style="margin-right:15px" @click="$router.push({path:'/index/addApp'})"><Icon type="plus"></Icon> 添加应用</Button>
-                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
-                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
+                    <Button type="primary" v-has="'addbtn'" style="margin-right:15px" @click="$router.push({path:'/index/addApp'})"><Icon type="plus"></Icon> 添加应用</Button>
+                    <Button type="primary" v-has="'addbtn'"  class='isDisabled' style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
+                    <Button type="primary" v-has="'addbtn'"  class='isDisabled' style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
                     <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?blackListsModal = true:''">黑名单</Button>
                     <Button type="primary" class='isDisabled'  @click="isSelected()?whiteListsModal = true:''" >白名单</Button>
                 </div>
@@ -98,7 +98,7 @@
             <Button type="primary" size="large" @click="confirmDispatch">确定</Button>
         </div>
     </Modal>
-
+    <Action></Action>
   </div>
   
 </template>
@@ -106,15 +106,20 @@
 
 <script>
 import {breakTips} from '../../util/util'
+import Action from '../../components/Action.vue'
 export default {
+    components:{
+        Action
+    },
 // created------------------------------------------------------------------------------------
   created(){
-    document.title = "应用管理"
+    document.title = "应用管理";
   },
 
 // data---------------------------------------------------------------------------------------
   data(){
     return{
+      perms:null,
       loading:false,
       searchData: {
         appName: "",
@@ -170,44 +175,53 @@ export default {
             align: 'center',
             width: 220,
             render: (h, params) => {
-                return h('div', [
+                
+                return h('div', {
+                    attrs: {
+                        class:'action_wrap'
+                    }
+                },[
+                    h(Action, {
+                        style: {
+                            marginRight: '10px',
+                            padding:0
+                            // color:'#63c185',
+                        },
+                        props: {
+                            hasName: 'addbtn',
+                            textName: '版本升级',
+                            id:params.row.name
+                        }
+                    }),
+                    h(Action, {
+                        style: {
+                            marginRight: '10px',
+                            padding:0
+                            
+                            // color:'#63c185',
+                        },
+                        props: {
+                            hasName: 'addbtn',
+                            textName: '详情',
+                            // id:params.row.name
+                        }
+                    }),
+                    h(Action, {
+                        style: {
+                            marginRight: '10px',
+                            padding:0
+                            
+                            // color:'#63c185',
+                        },
+                        props: {
+                            hasName: 'addbtn',
+                            textName: '编辑',
+                            id:params.row.name
+                        }
+                    }),
                     h('a', {
                         style: {
-                            marginRight: '10px',
-                            color:'#63c185'
-                        },
-                        on: {
-                            click: () => {
-                                this.$router.push({path:"/index/editApp",query:{type:0}})
-                                
-                            }
-                        }
-                    }, '版本升级'),
-                    h('a', {
-                        style: {
-                            marginRight: '10px',
-                            color:'#63c185'
-                        },
-                        on: {
-                            click: () => {
-                                this.$router.push({path:"/index/appDetail"})
-                            }
-                        }
-                    }, '详情'),
-                     h('a', {
-                        style: {
-                            marginRight: '10px',
-                           color:'#63c185'
-                        },
-                        on: {
-                            click: () => {
-                                this.$router.push({path:"/index/editApp",query:{type:1}})
-                            }
-                        }
-                    }, '编辑'),
-                    h('a', {
-                        style: {
-                            marginRight: '10px',
+                            // marginRight: '10px',
                             color:params.row.isBlacklist=="白名单"?'#ccc':'#63c185',
                             cursor:params.row.isBlacklist=="白名单"?'not-allowed':'pointer'
                         },
@@ -290,7 +304,22 @@ export default {
 
 // methods------------------------------------------------------------------------------------
   methods:{
-
+    queryRights(value){
+        let isExist=false;
+        let buttonpermsStr=localStorage.getItem("buttenpremissions");
+        console.log('buttonpermsStr',buttonpermsStr)
+        if(buttonpermsStr==undefined || buttonpermsStr==null){
+        return false;
+        }
+        let buttonperms=JSON.parse(buttonpermsStr);
+        for(let i=0;i<buttonperms.length;i++){
+        if(buttonperms[i].perms.indexOf(value)>-1){
+            isExist=true;
+            break;
+        }
+        }
+        return isExist;
+    },
      // 查询表格
      queryTable(){
 
@@ -310,7 +339,7 @@ export default {
 
      // 确定启用
      confirmUse(){
-          this.axios.get('/add',{
+          this.axios.get('/index',{
               params:{
                   name:"zs",
                   age:'20'

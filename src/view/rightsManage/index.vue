@@ -29,16 +29,19 @@
     <Modal
         title="添加角色"
         v-model="addModal"
-        @on-ok="confirmAdd"
         class-name="vertical-center-modal">
-       <Form :model="addRoleData"  :label-width="80" style="width:70%;margin:10px auto 0">
-          <FormItem label="角色名称">
+       <Form ref="formValidate" :rules="ruleValidate" :model="addRoleData"  :label-width="80" style="width:70%;margin:10px auto 0">
+          <FormItem label="角色名称" prop="mask">
             <Input v-model="addRoleData.mask"  placeholder="请输入角色名称"></Input>
           </FormItem>
-          <FormItem label="角色描述">
+          <FormItem label="角色描述" prop="description">
             <Input v-model="addRoleData.description"  placeholder="请输入角色描述"></Input>
           </FormItem>
         </Form>
+        <div slot="footer">
+            <Button  size="large" @click="addModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmAdd">确定</Button>
+        </div>
     </Modal>
 
 
@@ -46,16 +49,19 @@
     <Modal
         title="编辑角色"
         v-model="editModal"
-        @on-ok="confirmEdit"
         class-name="vertical-center-modal">
-        <Form :model="editRoleData"  :label-width="80" style="width:70%;margin:10px auto 0">
-          <FormItem label="角色名称">
+        <Form ref="formValidate1" :rules="ruleValidate"  :model="editRoleData"  :label-width="80" style="width:70%;margin:10px auto 0">
+          <FormItem label="角色名称" prop="mask">
             <Input v-model="editRoleData.mask"  placeholder="请输入角色名称"></Input>
           </FormItem>
-          <FormItem label="角色描述">
+          <FormItem label="角色描述" prop="description">
             <Input v-model="editRoleData.description"  placeholder="请输入角色描述"></Input>
           </FormItem>
         </Form>
+        <div slot="footer">
+            <Button  size="large" @click="editModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmEdit">确定</Button>
+        </div>
     </Modal>
     <!-- 删除模态框 -->
     <Modal
@@ -76,6 +82,14 @@ export default {
   data(){
     return {
       loading:false,
+      ruleValidate:{
+        mask:[
+          { required: true,  message:'请输入角色名称', trigger: 'blur' },
+        ],
+        description:[
+          { required: true, message:'请输入角色描述' , trigger: 'blur' },
+        ],
+      },
       columns: [
         {
             type: 'index',
@@ -163,12 +177,20 @@ export default {
   methods: {
       // 确认添加
       confirmAdd(){
-
+        this.$refs['formValidate'].validate((valid) => {
+            if(valid) {
+            console.log(11111)
+            }
+        })
       },
 
       // 确认编辑
       confirmEdit(){
-
+          this.$refs['formValidate1'].validate((valid) => {
+            if(valid) {
+            console.log(11111)
+            }
+        })
       },
 
       // 确认删除

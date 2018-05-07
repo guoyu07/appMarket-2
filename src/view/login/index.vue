@@ -4,7 +4,7 @@
             <h1>应用市场管理平台</h1>
              <Form ref="formValidate" :model="loginData" :rules="ruleValidate">
                 <FormItem prop="userName">
-                    <Input type="text" v-model="loginData.userName" placeholder="用户名" size="large">
+                    <Input type="text" v-model="loginData.name" placeholder="用户名" size="large">
                         <Icon type="ios-person-outline" slot="prepend"></Icon>
                     </Input>
                 </FormItem>
@@ -24,8 +24,12 @@
 
 <script>
 import qs from 'qs'
+import {mapActions,mapState,mapGetters} from 'vuex'
+
 export default {
-    
+  computed:{
+    ...mapGetters(['isLoadRoutes','menuitems'])
+  }, 
 // created-----------------------------------------------------------------------------------
   created(){
     document.title = '登录-应用市场管理平台'
@@ -35,43 +39,48 @@ export default {
   data(){
       return {
           loginData: {
-            userName: '',
+            name: '',
             pwd: '',
           },
           ruleValidate: {
-              userName: [
+              name: [
                 { required: true, message: '请输入用户名', trigger: 'blur' }
               ],
               pwd: [
                 { required: true, message: '请输入密码', trigger: 'blur' }
               ]
           },
-          isShow:false
+          isShow:false,
+          authList:null,
       }
   },
 
 // methods-----------------------------------------------------------------------------------
   methods: {
       // 点击登录
+      ...mapActions(['addMenu','loadRoutes',]),
       handleSubmit(name){
         console.log(this)
         // 判断是否填写用户名密码
         this.$refs[name].validate((valid) => {
             if (valid) {
                 // 发送登录请求
-                this.axios.post('/login',qs.stringify(this.loginData))
+                this.axios.post('/login',this.loginData)
                 .then((res)=>{
                     console.log(res)
                 })
-                //   this.axios.get('/login',{params:this.loginData})
-                //   .then((res)=>{
-                //       console.log(res)
-                //   })
-
+                this.authList = [11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]
+                this.addMenu(this.authList)
+                if(!this.isLoadRoutes) {  
+                    this.$router.addRoutes(this.menuitems)
+                    this.loadRoutes()  
+                }
                 // 获取用户权限并本地保存
                 window.localStorage.setItem("user",this.loginData.userName)
                 window.localStorage.setItem("password",this.loginData.pwd)
-                window.localStorage.setItem("authList",JSON.stringify([11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]))                
+                window.localStorage.setItem("authList",JSON.stringify(this.authList))  
+                var buttenpremissions  = [{'perms':'addbtn'},{'perms':'delbtn'}]  
+                window.localStorage.setItem("buttenpremissions",JSON.stringify(buttenpremissions))                
 
                 // 跳转到首页
                 this.$router.push({path: '/index/homepage'})

@@ -53,59 +53,65 @@
     <Modal
         title="添加用户"
         v-model="addUserModal"
-        @on-ok="confirmAdd"
         class-name="vertical-center-modal">
-        <Form  :model="addUserData"  :label-width="80" style="width:70%;margin:10px auto 70px">
-          <FormItem label="用户名">
+        <Form  ref='formValidate'  :rules="ruleValidate" :model="addUserData"  :label-width="80" style="width:70%;margin:10px auto 70px">
+          <FormItem label="用户名" prop="userName">
             <Input v-model="addUserData.userName"  placeholder="请输入用户名"></Input>
           </FormItem>
-          <FormItem label="初始密码">
+          <FormItem label="初始密码" prop="initPwd">
             <Input v-model="addUserData.initPwd"  placeholder="初始密码"></Input>
           </FormItem>
-          <FormItem label="手机号">
+          <FormItem label="手机号" prop="phone">
             <Input v-model="addUserData.phone"  placeholder="请输入手机号"></Input>
           </FormItem>
-          <FormItem label="角色名称">
-            <Select v-model="searchData.roleName">
+          <FormItem label="角色名称" prop="roleName">
+            <Select v-model="addUserData.roleName">
                 <Option value="0">管理员</Option>
                 <Option value="1">普通用户</Option>
             </Select>
           </FormItem>
-          <FormItem label="状态">
-            <Select v-model="searchData.state">
+          <FormItem label="状态" prop="state">
+            <Select v-model="addUserData.state">
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
             </Select>
           </FormItem>
         </Form>
+        <div slot="footer">
+            <Button  size="large" @click="addUserModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmAdd">确定</Button>
+        </div>
     </Modal>
 
     <!-- 编辑用户模态框 -->
     <Modal
         title="编辑用户"
         v-model="editUserModal"
-        @on-ok="confirmEdit"
         class-name="vertical-center-modal">
-        <Form  :model="editUserData"  :label-width="80" style="width:70%;margin:10px auto 70px">
-          <FormItem label="用户名">
+        <Form  ref='formValidate1'  :rules="ruleValidate" :model="editUserData"  :label-width="80" style="width:70%;margin:10px auto 70px">
+          <FormItem label="用户名" prop="userName">
             <Input v-model="editUserData.userName"  placeholder="请输入用户名"></Input>
           </FormItem>
-          <FormItem label="手机号">
+          <FormItem label="手机号" prop="phone">
             <Input v-model="editUserData.phone"  placeholder="请输入手机号"></Input>
           </FormItem>
-          <FormItem label="角色名称">
+          <FormItem label="角色名称" prop="roleName">
             <Select v-model="editUserData.roleName">
                 <Option value="0">管理员</Option>
                 <Option value="1">普通用户</Option>
             </Select>
           </FormItem>
-          <FormItem label="状态">
+          <FormItem label="状态" prop="state">
             <Select v-model="editUserData.state">
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
             </Select>
           </FormItem>
         </Form>
+        <div slot="footer">
+            <Button  size="large" @click="editUserModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmEdit">确定</Button>
+        </div>
     </Modal>
 
     <!-- 启用模态框 -->
@@ -128,7 +134,7 @@
 </template>
 
 <script>
-import {breakTips} from '../../util/util'
+import {breakTips,regTest} from '../../util/util'
 export default {
 // created-----------------------------------------------------------------------------
   created(){
@@ -137,12 +143,50 @@ export default {
 
 // data--------------------------------------------------------------------------------
   data(){
+    const nameValidate = (rule,value,callback)=>{
+        if(value==''){
+          callback(new Error('请输入用户名'))      
+        }else{
+          callback()
+        }
+        // 查重
+        this.axios.get('/api').then(res=>{
+
+        })
+    }
+    const phoneValidate = (rule,value,callback) =>{
+       if(value==''){
+          callback(new Error('请输入手机号'))      
+        }else if(!regTest(value,'phone')){
+          callback(new Error('请输入正确的手机号'))
+        }else{
+          callback()
+        }
+    }
     return {
       loading:false,
       addUserModal: false,
       editUserModal: false,
       startUseModal:false,
       forbiddenUseModal:false,
+      ruleValidate:{
+        userName:[
+          { required: true, validator: nameValidate, trigger: 'blur' },
+        ],
+        initPwd:[
+          { required: true, message:'请输入初始密码' , trigger: 'blur' },
+        ],
+        phone:[
+          { required: true, validator:phoneValidate , trigger: 'blur' },
+        ],
+        roleName:[
+          { required: true, message:'请选择角色名称' , trigger: 'change' },
+        ],
+        state:[
+          { required: true, message:'请选择状态' , trigger: 'change' },
+        ],
+      },
+
       searchData: {
         userName:"",
         state: '0'
@@ -257,12 +301,20 @@ export default {
 
     // 确定添加用户
     confirmAdd(){
-
+      this.$refs['formValidate'].validate((valid) => {
+            if(valid) {
+              console.log(11111)
+            }
+      })
     },
 
     // 确定编辑
     confirmEdit(){
-
+      this.$refs['formValidate1'].validate((valid) => {
+            if(valid) {
+              console.log(11111)
+            }
+      })
     }
   }
 }

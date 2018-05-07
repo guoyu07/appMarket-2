@@ -44,7 +44,7 @@
         <h2>填写应用信息（均必填）</h2>
         <div class="form_wrap">
           <!-- 表单 -->
-          <Form ref='formValidate' :model="appInfo" :label-width="120" :rules="ruleValidate">
+          <Form ref='formValidate' :model="appInfo" :label-width="130" :rules="ruleValidate">
             <FormItem label="应用名："  prop="name">
                <Input v-model="appInfo.name" placeholder="建议20字以内，不超过100个字。" style="width:400px"></Input>
             </FormItem>
@@ -183,12 +183,12 @@ export default {
         })
     }
     const introValidate = (rule,value,callback)=>{
-        var str = /^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/g;
+        var str = /(((ht|f)tps?):\/\/)?[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?/g;
         if(value==''){
           callback(new Error('请输入应用描述'))      
         }else if(value.length>1000){
           callback(new Error('1000字以内'))
-        }else if(value.match(/^((ht|f)tps?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/g)){
+        }else if(value.match(str)){
           callback(new Error('禁止添加链接'))      
         }else{
           callback()

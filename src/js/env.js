@@ -9,7 +9,7 @@
 const development = {
 	name: 'development',
 	dir: 'test',
-	apiPath: 'http://10.30.95.8:7080/',	
+	apiPath: 'http://133.100.108.63:8080/',	
 };
 
 

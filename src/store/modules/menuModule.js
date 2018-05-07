@@ -45,7 +45,6 @@ function generateMenuItems(state, authList){
     // console.log(newArr)
     var res = Object.assign({},state.staticRoute[0],{children:newArr})
     state.items = [res]
-    // console.log(state.items)
     return
 }
 export default {

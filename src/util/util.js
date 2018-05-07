@@ -22,7 +22,8 @@ export function validate(nameValidate,introValidate){
       { required: true,  validator: introValidate, trigger: 'blur' }
     ],
     featureDesc: [
-      { required: true, message: '请输入新版特征', trigger: 'blur' }
+      { required: true, message: '请输入新版特征', trigger: 'blur' },
+      { type: 'string', max: 1000, message: '1000个字以内', trigger: 'blur' }
     ],
 
     authority: [

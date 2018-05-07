@@ -29,5 +29,11 @@ let routes = [
             },
         ]
     },
+    // ...generateRoutesFromMenu(MenuModule.state.items)
 ]
+function generateRoutesFromMenu(menu = [], routes = []){
+    // console.log("menu", menu)
+    // console.log("routes", routes)
+    return routes
+ }
 export default routes;

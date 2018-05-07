@@ -18,6 +18,31 @@ Vue.use(iView)
 Vue.use(vuescroll)
 Vue.prototype.axios = axios
 axios.defaults.withCredentials=true;
+Vue.directive('has', {
+    bind: function(el, binding) {
+        if (!Vue.prototype.$_has(binding.value)) {
+            // el.parentNode.removeChild(el);
+            $(el).remove()
+        }
+    }
+});
+Vue.prototype.$_has = function(value) {
+    // debugger
+    let isExist=false;
+    let buttonpermsStr=localStorage.getItem("buttenpremissions");
+    console.log('buttonpermsStr',buttonpermsStr)
+    if(buttonpermsStr==undefined || buttonpermsStr==null){
+      return false;
+    }
+    let buttonperms=JSON.parse(buttonpermsStr);
+    for(let i=0;i<buttonperms.length;i++){
+      if(buttonperms[i].perms.indexOf(value)>-1){
+        isExist=true;
+        break;
+      }
+    }
+    return isExist;
+  };
 
 let authList = window.localStorage.getItem('authList')
 console.log(authList) // 用户权限
@@ -30,6 +55,8 @@ console.log(authList) // 用户权限
 // console.log(route) // 用户权限所有路径
 
 if (authList) {
+    // store.commit(types.LOGIN, token)
+    store.commit(types.ADD_MENU, authList)
     store.commit(types.ADD_MENU, JSON.parse(authList))
     router.addRoutes(store.state.menus.items)
   }

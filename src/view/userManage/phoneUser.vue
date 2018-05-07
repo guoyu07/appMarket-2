@@ -54,25 +54,24 @@
     <Modal
         title="编辑用户"
         v-model="editUserModal"
-        @on-ok="confirmEdit"
         class-name="vertical-center-modal">
-        <Form  :model="editUserData"  :label-width="90" style="width:70%;margin:0 auto">
+        <Form ref="formValidate" :rules='ruleValidate' :model="editUserData"  :label-width="90" style="width:70%;margin:0 auto">
           <FormItem label="用户名">
             <Input v-model="editUserData.userName"  placeholder="请输入用户名" disabled></Input>
           </FormItem>
           <FormItem label="姓名">
             <Input v-model="editUserData.name"  placeholder="请输入姓名" disabled></Input>
           </FormItem>
-          <FormItem label="密码">
+          <FormItem label="密码" prop="pwd">
             <Input v-model="editUserData.pwd"  placeholder="请输入密码"></Input>
           </FormItem>
-          <FormItem label="性别">
+          <FormItem label="性别" prop="sex">
             <Select v-model="editUserData.sex">
                 <Option value="0">男</Option>
                 <Option value="1">女</Option>
             </Select>
           </FormItem>
-          <FormItem label="状态">
+          <FormItem label="状态" prop="state">
             <Select v-model="editUserData.state">
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
@@ -82,6 +81,10 @@
             <Input v-model="editUserData.policeservnum"  placeholder="" disabled></Input>
           </FormItem>
         </Form>
+        <div slot="footer">
+            <Button  size="large" @click="editUserModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmEdit">确定</Button>
+        </div>
     </Modal>
 
     <!-- 启用模态框 -->
@@ -114,10 +117,21 @@ export default {
 // data------------------------------------------------------------------------------------------
   data(){
     return {
-      loading:false,
       editUserModal: false,
       startUseModal:false,
       forbiddenUseModal:false,
+      loading:false,
+      ruleValidate:{
+        pwd:[
+          { required: true,  message:'请输入密码', trigger: 'blur' },
+        ],
+        sex:[
+          { required: true, message:'请选择性别' , trigger: 'change' },
+        ],
+        state:[
+          { required: true, message:'请选择状态' , trigger: 'change'},
+        ],
+      },     
       searchData: {
         userName:"",
         state: '0'
@@ -230,14 +244,13 @@ export default {
 
     },
 
-    // 确定添加用户
-    confirmAdd(){
-
-    },
-
     // 确定编辑
     confirmEdit(){
-
+        this.$refs['formValidate'].validate((valid) => {
+            if(valid) {
+              console.log(11111)
+            }
+      })
     }
   }
 }

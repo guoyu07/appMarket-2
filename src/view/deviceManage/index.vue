@@ -33,45 +33,48 @@
     <Modal
         title="添加设备"
         v-model="addModal"
-        @on-ok="confirmAdd"
         class-name="vertical-center-modal">
-       <Form :model="addDeviceData"  :label-width="80" style="width:70%;margin:10px auto 0">
-          <FormItem label="用户名">
+       <Form ref="formValidate" :rules="ruleValidate" :model="addDeviceData"  :label-width="80" style="width:70%;margin:10px auto 0">
+          <FormItem label="用户名" prop="userName">
             <Select v-model="addDeviceData.userName"  style="width:200px">
                 <Option value="0">小雪</Option>
                 <Option value="1">张三</Option>
                 <Option value="2">小明</Option>
             </Select>
           </FormItem>
-          <FormItem label="设备平台">
+          <FormItem label="设备平台" prop="platName">
             <Select v-model="addDeviceData.platName"  style="width:200px">
                 <Option value="0">Andriod</Option>
             </Select>
           </FormItem>
-          <FormItem label="设备类型">
+          <FormItem label="设备类型" prop="type">
             <Select v-model="addDeviceData.type"  style="width:200px">
                 <Option value="0">手机</Option>
             </Select>
           </FormItem>
-          <FormItem label="设备归属">
+          <FormItem label="设备归属" prop="belongto">
             <Select v-model="addDeviceData.belongto"  style="width:200px">
                 <Option value="0">企业</Option>
                 <Option value="1">个人</Option>
             </Select>
           </FormItem>
-          <FormItem label="资产编号">
+          <FormItem label="资产编号" prop="assetNum">
             <Input v-model="addDeviceData.assetNum"  placeholder="请输入资产编号"></Input>
           </FormItem>
-          <FormItem label="设备名称">
+          <FormItem label="设备名称" prop="name">
             <Input v-model="addDeviceData.name"  placeholder="请输入设备名称"></Input>
           </FormItem>
-          <FormItem label="IMEI">
+          <FormItem label="IMEI" prop="imei">
             <Input v-model="addDeviceData.imei"  placeholder="请输入IMEI"></Input>
           </FormItem>
-          <FormItem label="设备型号">
+          <FormItem label="设备型号" prop="model">
             <Input v-model="addDeviceData.model"  placeholder="请输入设备型号"></Input>
           </FormItem>
         </Form>
+        <div slot="footer">
+            <Button  size="large" @click="addModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmAdd">确定</Button>
+        </div>
     </Modal>
 
   </div>
@@ -86,6 +89,32 @@ export default {
     return {
       searchData:{
         search:''
+      },
+      ruleValidate:{
+          userName:[
+            { required: true,  message:'请选择用户', trigger: 'change' },
+          ],
+          platName:[
+            { required: true,  message:'请选择设备平台', trigger: 'change' },
+          ],
+          type: [
+            { required: true,  message:'请选择设备类型', trigger: 'change' },
+          ],
+          belongto:[
+            { required: true,  message:'请选择设备归属', trigger: 'change' },
+          ],
+          assetNum: [
+            { required: true,  message:'请输入资产编号', trigger: 'blur' },
+          ],
+          name:[
+            { required: true,  message:'请输入设备名称', trigger: 'blur' },
+          ],
+          imei:[
+            { required: true,  message:'请输入imei', trigger: 'blur' },
+          ],
+          model:[
+            { required: true,  message:'请输入设备型号', trigger: 'blur' },
+          ],
       },
       columns: [
         {
@@ -163,7 +192,11 @@ export default {
   methods: {
       // 确认添加
       confirmAdd(){
-
+        this.$refs['formValidate'].validate((valid) => {
+            if(valid) {
+            console.log(11111)
+            }
+        })
       },
 
   }
