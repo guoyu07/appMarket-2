@@ -171,9 +171,9 @@ export default {
       }
       .btn_wrap {
         padding:20px;
+        padding-left:-webkit-calc(20% + 100px);
         margin-top:20px;
-        text-align:center
-      }
+      } 
     }
   }
 </style>

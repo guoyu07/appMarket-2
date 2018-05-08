@@ -94,6 +94,9 @@
           <FormItem label="用户名" prop="userName">
             <Input v-model="editUserData.userName"  placeholder="请输入用户名"></Input>
           </FormItem>
+          <FormItem label="密码" prop="pwd">
+            <Input v-model="editUserData.pwd"  placeholder="请输入密码"></Input>
+          </FormItem>
           <FormItem label="手机号" prop="phone">
             <Input v-model="editUserData.phone"  placeholder="请输入手机号"></Input>
           </FormItem>
@@ -179,6 +182,9 @@ export default {
         ],
         initPwd:[
           { required: true, message:'请输入初始密码' , trigger: 'blur' },
+        ],
+        pwd:[
+          { required: true, message:'请输入密码' , trigger: 'blur' },
         ],
         phone:[
           { required: true, validator:phoneValidate , trigger: 'blur' },
@@ -270,6 +276,7 @@ export default {
       },
       editUserData: {
         userName: '',
+        pwd:'',
         phone:"",
         roleName: '0',
         state: '1'

@@ -218,7 +218,7 @@ h1>span{color:rgba(0,0,0,0.5)}
 }
 // 设置表单label字体颜色
 .ivu-form .ivu-form-item-label{color:#999!important}
-#progressModal .ivu-modal-footer{display:none}
+.progressModal .ivu-modal-footer{display:none}
 
 
 // 菜单栏背景颜色
@@ -249,7 +249,10 @@ div.ivu-layout-sider {
 模态框高度与滚动条
 */
 div.ivu-modal {width: 620px!important}
-.ivu-modal-body { overflow-y: auto; max-height: 500px;} 
+.viewModal div.ivu-modal {width: 360px!important}
+// .viewModal .ivu-modal-body  {height: 480px}
+.viewModal .ivu-modal-footer  {display:none}
+.ivu-modal-body { overflow-y: auto; max-height: 600px;} 
 .editForm div.ivu-input-wrapper.ivu-input-type {width:90%}
 .accountModal div.ivu-input-wrapper.ivu-input-type {width:40%}
 

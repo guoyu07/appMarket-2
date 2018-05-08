@@ -54,6 +54,7 @@ export default {
           },
           isShow:false,
           authList:null,
+          count:0
       }
   },
 
@@ -63,6 +64,10 @@ export default {
       ...mapActions(['addMenu','loadRoutes',]),
       handleSubmit(name){
         console.log(this)
+        if(this.count>0){
+            return
+        }
+        this.count++;
         // 判断是否填写用户名密码
         this.$refs[name].validate((valid) => {
             if (valid) {
@@ -74,6 +79,8 @@ export default {
                 this.axios.post('/login',qs.stringify(this.loginData))
                 .then((res)=>{
                     // console.log(res.data.success=='1')
+                    this.count = 0;
+                    
                     if(res.data.success=='1'){
                         this.$Message.destroy(msg)
                         this.$Message.success("登陆成功！")

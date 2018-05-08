@@ -7,7 +7,7 @@
         <h2>上传安装包</h2>
 
         <!-- 首次上传时显示 -->
-        <div class="upload" v-if='true'>
+        <div class="upload" v-if='isFirst'>
           <Upload action="" :before-upload="handleBeforeUploadApk">
               <Button type="success" icon="ios-cloud-upload-outline">上传apk</Button>
           </Upload>
@@ -156,14 +156,14 @@
                             <Icon type="plus" size="20"></Icon>
                         </div>
                     </Upload>
-                    <Modal title="图片预览" v-model="visible" class-name="vertical-center-modal" :mask-closable="false">
-                        <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
+                    <Modal title="图片预览" v-model="visible" class-name="vertical-center-modal viewModal" :mask-closable="false">
+                        <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width:360px;height:480px;">
                     </Modal>
 
 
                   </div>
                 </div>
-                <p style="margin-left:80px;font-size:12px;margin-bottom:20px">请上传2-4张截图（尺寸保持一致），单张图片不超过1M。截图不能小于320*480像素，推荐480*800像素。JPG、PNG格式。</p> 
+                <p style="font-size:12px;margin-bottom:20px">请上传2-4张截图（尺寸保持一致），单张图片不超过1M。截图不能小于320*480像素，推荐480*800像素。JPG、PNG格式。</p> 
               </FormItem>
 
             </Form>
@@ -179,7 +179,7 @@
     </div>
 
     <!-- 上传进度模态框 -->
-    <Modal v-model="progressModal" :closable='false' :mask-closable='false' class-name="vertical-center-modal" id="progressModal">
+    <Modal v-model="progressModal" :closable='false' :mask-closable='false' class-name="vertical-center-modal" class="progressModal">
       <div id="progress">
         <p>正在上传: <span>{{fileName}}</span> </p>
         <Progress :percent="50"></Progress>
@@ -234,6 +234,7 @@ export default {
         }
     }
     return {
+      isFirst:true,
       progressModal:false,
       isUploading:false,
       currentAjax:'',
@@ -456,7 +457,8 @@ export default {
     }
     
     .btn_wrap {
-      padding:20px 300px;
+      padding:20px;
+      padding-left:-webkit-calc(20% + 110px)
     } 
 
    #progress {
