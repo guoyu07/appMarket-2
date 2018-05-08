@@ -3,28 +3,43 @@
     <h1><span>当前位置 > </span><a href="#/index/rightsManage">权限管理</a><span> > </span><span class="title_active">分配权限</span></h1>
     <div class="bottom_wrap clearfix">
         <div class="btn_wrap">
-            <Button type="primary" style="margin-right:15px">全选</Button>
-            <Button type="primary" style="margin-right:15px">全部折叠</Button>
+            <Button type="primary" style="margin-right:15px" @click="selectAll">全选</Button>
+            <Button type="primary" style="margin-right:15px" @click="closeAll">全部折叠</Button>
         </div>
         <div class="tree_wrap">
-            <Tree :data="rightsData" show-checkbox multiple></Tree>
-            <div class="treeM"></div>
+            <div class="title">应用管理</div>
+            <div class="inner">
+                <Tree :data="rightsData" show-checkbox multiple></Tree>
+                <div class="treeM"></div>
+            </div>
         </div>
         <div class="tree_wrap">
-            <Tree :data="rightsData" show-checkbox multiple></Tree>
-            <div class="treeM"></div>
+            <div class="title">用户管理</div>
+            <div class="inner">
+                <Tree :data="rightsData" show-checkbox multiple></Tree>
+                <div class="treeM"></div>
+            </div>
         </div>
         <div class="tree_wrap">
-            <Tree :data="rightsData" show-checkbox multiple></Tree>
-            <div class="treeM"></div>
+            <div class="title">权限管理</div>
+            <div class="inner">
+                <Tree :data="rightsData" show-checkbox multiple></Tree>
+                <div class="treeM"></div>
+            </div>
         </div>
         <div class="tree_wrap">
-            <Tree :data="rightsData" show-checkbox multiple></Tree>
-            <div class="treeM"></div>
+            <div class="title">设备管理</div>
+            <div class="inner">
+                <Tree :data="rightsData" show-checkbox multiple></Tree>
+                <div class="treeM"></div>
+            </div>
         </div>
         <div class="tree_wrap">
-            <Tree :data="rightsData" show-checkbox multiple></Tree>
-            <div class="treeM"></div>
+            <div class="title">日志报表</div>
+            <div class="inner">
+                <Tree :data="rightsData" show-checkbox multiple></Tree>
+                <div class="treeM"></div>
+            </div>
         </div>
       
       
@@ -34,9 +49,12 @@
 
 <script>
 export default {
+// created----------------------------------------------------------------------------------------------
   created(){
     document.title="权限管理-分配权限";
   },
+
+// data-------------------------------------------------------------------------------------------------
   data(){
     return {
       rightsData:[
@@ -78,12 +96,28 @@ export default {
     }
   },
 
+// methods----------------------------------------------------------------------------------------------
+   methods:{
+       // 全选
+       selectAll(){
+
+       },
+
+       // 全部折叠
+       closeAll(){
+
+       },
+   }
+
 }
 </script>
 
 <style lang="scss" scoped type="text/css">
     #dispatchRight{
         .bottom_wrap{
+            background:#fff;
+            margin:20px;
+            min-height:600px;
             .btn_wrap{
                 margin-bottom:20px;
             }
@@ -91,14 +125,15 @@ export default {
                 width:20%;
                 float:left;
                 position:relative;
-                // text-align:center
-                .treeM{
-                    width: 90%;
-                    height: 35px;
-                    background: rgba(0,0,0,.1);
-                    position: absolute;
-                    top: 0;
-                    left: 13px;
+                padding:0 10px 0 0;
+                .inner{
+                    border:1px solid #ccc;
+                }
+                .title{
+                    text-align:center;
+                    height:40px;
+                    line-height:40px;
+                    background:#63c185;
                 }
             }
         }

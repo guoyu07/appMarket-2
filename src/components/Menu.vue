@@ -105,28 +105,10 @@ export default {
             let route = routes.map(item=>{
                 return item.path
             })
-            console.log(this.$route) // 用户权限所有路径
+            // console.log(route) // 用户权限所有路径
           if(route.indexOf(this.$route.path)==-1){
               this.activeName = this.$route.path
           }
-
-          var obj = 
-          {
-              "code": 0, //0 成功 -1失败  1登录超时
-              "msg": "成功",
-              "result":{
-                  "total":2, // 总条数
-                  "totalPage": 1, // 总页码
-                  "pageCount":1, // 当前页码
-                  "pageSize":10, // 每页条数
-                  "data":[
-                      {},
-                      {},
-                  ],
-              }
-          }
-          //  请求方式：get请求   响应类型：JSON 
-          
       }
   }
 

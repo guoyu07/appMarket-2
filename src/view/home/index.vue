@@ -315,10 +315,10 @@ export default {
   .charts_wrap{
     .charts{
       height:300px;
-      display: flex;
-      text-align:justify;
+      // display: flex;
+      // text-align:justify;
       margin-bottom:30px;
-      .left,.right {
+      .left,.right{
         height:100%;
         width:50%;
         border:1px solid #ccc;
@@ -331,8 +331,11 @@ export default {
           border-bottom:1px solid #ccc;
         }
       }
+      .left{
+        float:left;
+      }
       .right{
-        margin-left:20px;
+        margin-left:51%;
       }
       .chart_bg{
         background:#fff;

@@ -17,7 +17,7 @@
           <!-- 用户名 -->
           <span @mousemove="tipsShow" @mouseleave="tipsHide">
             <span class="user_wrap">
-                <span class="username">13333333333</span>
+                <span class="username"></span>
                 <Icon type="ios-arrow-down"></Icon>
             </span>
             <div class='tips'>
@@ -34,10 +34,8 @@
       <Modal
         title="账号信息管理"
         v-model="modifyAccountModal"
-        @on-ok='modifyAccount'
-        @on-cancle='cancleModifyAccount'
         :mask-closable="false">
-        <Form ref="accountForm" :model="accountForm"  :label-width="85" :rules="ruleValidate">
+        <Form ref="formValidate" :model="accountForm"  :label-width="85" :rules="ruleValidate">
         <FormItem label="用户名">
             <Input type="text" v-model="accountForm.userName" style="width:350px" placeholder='用户名' disabled></Input>
         </FormItem>
@@ -48,12 +46,27 @@
             <Input type="text" v-model="accountForm.pwd" style="width:350px" placeholder='密码'></Input>
         </FormItem>
     </Form>
+    <div slot="footer">
+        <Button  size="large" @click="modifyAccountModal=false">取消</Button>
+        <Button type="primary" size="large" @click="modifyAccount">确定</Button>
+    </div>
     </Modal>
   </Header>
 </template>
 
 <script>
 export default {
+// created-----------------------------------------------------------------------------------
+  created(){
+      this.sendWebSocket()
+  },
+
+// created-----------------------------------------------------------------------------------
+  mounted(){
+    $(".username").html(window.localStorage.getItem("userName"))
+  },
+
+// data--------------------------------------------------------------------------------------
   data(){
       return {
           modifyAccountModal:false,
@@ -72,6 +85,8 @@ export default {
           }
       }
   },
+
+// methods-----------------------------------------------------------------------------------
   methods: {
       // 鼠标移入
       tipsShow() {
@@ -89,22 +104,35 @@ export default {
       // 确定修改密码
       modifyAccount() {
           console.log(111)
-          this.$refs['accountForm'].validate((valid) => {
+          this.$refs['formValidate'].validate((valid) => {
                 if (valid) {
                     this.$Message.success('Success!');
-                } else {
-                    this.$Message.error('Fail!');
                 }
             })
       },
-      // 取消修改密码
-      cancleModifyAccount() {
-          console.log(222)
-      },
+
       // 退出登录
       logout() {
           window.localStorage.clear();
           this.$router.push('/login')
+      },
+
+      // Websocket显示消息数量
+      sendWebSocket(){
+          var ws = new WebSocket("wss://echo.websocket.org");
+            ws.onopen = function(evt) { 
+            console.log("Connection open ..."); 
+            ws.send("Hello WebSockets!");
+            };
+
+            ws.onmessage = function(evt) {
+            console.log( "Received Message: " + evt.data);
+            ws.close();
+            };
+
+            ws.onclose = function(evt) {
+            console.log("Connection closed.");
+            };      
       }
   }
 }
@@ -157,6 +185,7 @@ export default {
     }
     .tips{
         display: none;
+        width:140px;
         position: absolute;
         z-index:1000;
         right: 0;

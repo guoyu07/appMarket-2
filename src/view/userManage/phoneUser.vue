@@ -54,6 +54,7 @@
     <Modal
         title="编辑用户"
         v-model="editUserModal"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <Form ref="formValidate" :rules='ruleValidate' :model="editUserData"  :label-width="90" style="width:70%;margin:0 auto">
           <FormItem label="用户名">
@@ -92,6 +93,7 @@
         title="启用"
         v-model="startUseModal"
         @on-ok="confirmUse"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定启用该用户吗？</p>
     </Modal>
@@ -100,6 +102,7 @@
         title="禁用"
         v-model="forbiddenUseModal"
         @on-ok="confirmForbidden"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定禁用该用户吗？</p>
     </Modal>

@@ -9,7 +9,7 @@
                     <Icon type="navicon-round"></Icon> 角色列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary"  @click="addModal=true"><Icon type="plus"></Icon> 添加角色</Button>
+                    <Button type="primary"  @click="addRole"><Icon type="plus"></Icon> 添加角色</Button>
                 </div>
            </div>
            
@@ -29,6 +29,7 @@
     <Modal
         title="添加角色"
         v-model="addModal"
+        :mask-closable="false"
         class-name="vertical-center-modal">
        <Form ref="formValidate" :rules="ruleValidate" :model="addRoleData"  :label-width="80" style="width:70%;margin:10px auto 0">
           <FormItem label="角色名称" prop="mask">
@@ -49,6 +50,7 @@
     <Modal
         title="编辑角色"
         v-model="editModal"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <Form ref="formValidate1" :rules="ruleValidate"  :model="editRoleData"  :label-width="80" style="width:70%;margin:10px auto 0">
           <FormItem label="角色名称" prop="mask">
@@ -67,6 +69,7 @@
     <Modal
         title="删除角色"
         v-model="deleteModal"
+        :mask-closable="false"
         @on-ok="confirmDelete"
         class-name="vertical-center-modal">
         <p class="modalp">确定删除该角色吗？</p>
@@ -76,9 +79,12 @@
 
 <script>
 export default {
+// created------------------------------------------------------------------------------
   created(){
     document.title = "权限管理"
   },
+
+// data---------------------------------------------------------------------------------
   data(){
     return {
       loading:false,
@@ -174,7 +180,14 @@ export default {
     }
   },
 
+// methods------------------------------------------------------------------------------
   methods: {
+      // 点击添加角色按钮
+      addRole(){
+        this.$refs['formValidate'].resetFields() 
+        this.addModal=true
+      },
+
       // 确认添加
       confirmAdd(){
         this.$refs['formValidate'].validate((valid) => {
@@ -198,6 +211,7 @@ export default {
 
       }
   }
+
 }
 </script>
 

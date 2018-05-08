@@ -30,7 +30,7 @@
                     <Icon type="navicon-round"></Icon> 平台用户列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary" style="margin-right:15px" @click="addUserModal=true"><Icon type="plus"></Icon> 添加用户</Button>
+                    <Button type="primary" style="margin-right:15px" @click="addUser"><Icon type="plus"></Icon> 添加用户</Button>
                     <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
                     <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
                 </div>
@@ -53,6 +53,7 @@
     <Modal
         title="添加用户"
         v-model="addUserModal"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <Form  ref='formValidate'  :rules="ruleValidate" :model="addUserData"  :label-width="80" style="width:70%;margin:10px auto 70px">
           <FormItem label="用户名" prop="userName">
@@ -87,6 +88,7 @@
     <Modal
         title="编辑用户"
         v-model="editUserModal"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <Form  ref='formValidate1'  :rules="ruleValidate" :model="editUserData"  :label-width="80" style="width:70%;margin:10px auto 70px">
           <FormItem label="用户名" prop="userName">
@@ -119,6 +121,7 @@
         title="启用"
         v-model="startUseModal"
         @on-ok="confirmUse"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定启用该用户吗？</p>
     </Modal>
@@ -127,6 +130,7 @@
         title="禁用"
         v-model="forbiddenUseModal"
         @on-ok="confirmForbidden"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定禁用该用户吗？</p>
     </Modal>
@@ -237,8 +241,9 @@ export default {
                         },
                         on: {
                             click: () => {
-                                this.editUserModal = true
-                                
+                                // 请求用户数据
+
+                                this.editUserModal = true  
                             }
                         }
                     }, '编辑')
@@ -288,6 +293,12 @@ export default {
       }else{
           return true
       }
+    },
+
+    // 点击添加用户按钮
+    addUser(){
+       this.$refs['formValidate'].resetFields();
+       this.addUserModal=true      
     },
 
     // 确定启用

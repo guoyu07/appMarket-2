@@ -4,7 +4,7 @@
             <h1>应用市场管理平台</h1>
              <Form ref="formValidate" :model="loginData" :rules="ruleValidate">
                 <FormItem prop="userName">
-                    <Input type="text" v-model="loginData.name" placeholder="用户名" size="large">
+                    <Input type="text" v-model="loginData.userName" placeholder="用户名" size="large">
                         <Icon type="ios-person-outline" slot="prepend"></Icon>
                     </Input>
                 </FormItem>
@@ -19,6 +19,8 @@
                 </FormItem>
             </Form>
         </div>
+
+        
     </div>
 </template>
 
@@ -39,11 +41,11 @@ export default {
   data(){
       return {
           loginData: {
-            name: '',
+            userName: '',
             pwd: '',
           },
           ruleValidate: {
-              name: [
+              userName: [
                 { required: true, message: '请输入用户名', trigger: 'blur' }
               ],
               pwd: [
@@ -64,27 +66,37 @@ export default {
         // 判断是否填写用户名密码
         this.$refs[name].validate((valid) => {
             if (valid) {
+                const msg = this.$Message.loading({
+                    content: '正在登陆...',
+                    duration: 0
+                });
                 // 发送登录请求
-                this.axios.post('/login',this.loginData)
+                this.axios.post('/login',qs.stringify(this.loginData))
                 .then((res)=>{
-                    console.log(res)
-                })
-                this.authList = [11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]
-                this.addMenu(this.authList)
-                if(!this.isLoadRoutes) {  
-                    this.$router.addRoutes(this.menuitems)
-                    this.loadRoutes()  
-                }
-                // 获取用户权限并本地保存
-                window.localStorage.setItem("user",this.loginData.userName)
-                window.localStorage.setItem("password",this.loginData.pwd)
-                window.localStorage.setItem("authList",JSON.stringify(this.authList))  
-                var buttenpremissions  = [{'perms':'addbtn'},{'perms':'delbtn'}]  
-                window.localStorage.setItem("buttenpremissions",JSON.stringify(buttenpremissions))                
+                    // console.log(res.data.success=='1')
+                    if(res.data.success=='1'){
+                        this.$Message.destroy(msg)
+                        this.$Message.success("登陆成功！")
 
-                // 跳转到首页
-                this.$router.push({path: '/index/homepage'})
-                window.localStorage.setItem('currentMenu','/index/homepage')
+                        this.authList = [11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]
+                        this.addMenu(this.authList)
+                        if(!this.isLoadRoutes) {  
+                            this.$router.addRoutes(this.menuitems)
+                            this.loadRoutes()  
+                        }
+                        // 获取用户权限并本地保存
+                        window.localStorage.setItem("userName",this.loginData.userName)
+                        window.localStorage.setItem("password",this.loginData.pwd)
+                        window.localStorage.setItem("authList",JSON.stringify(this.authList))  
+                        var buttenpremissions  = [{'perms':'addbtn'},{'perms':'delbtn'}]  
+                        window.localStorage.setItem("buttenpremissions",JSON.stringify(buttenpremissions))                
+
+                        // 跳转到首页
+                        this.$router.push({path: '/index/homepage'})
+                        window.localStorage.setItem('currentMenu','/index/homepage')
+                    }
+                })
+               
             }
         })
       },
@@ -119,6 +131,7 @@ export default {
         width:100%;
         height:100%;
         position: relative;
+         background:#37a861;         
         background:-webkit-linear-gradient(#37a861,#40c4d8);
         #login_form {
             h1 {

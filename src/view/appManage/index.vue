@@ -56,6 +56,7 @@
         title="启用"
         v-model="startUseModal"
         @on-ok="confirmUse"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定启用该应用吗？</p>
     </Modal>
@@ -64,6 +65,7 @@
         title="禁用"
         v-model="forbiddenUseModal"
         @on-ok="confirmForbidden"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定禁用该应用吗？</p>
     </Modal>
@@ -72,6 +74,7 @@
         title="黑名单"
         v-model="blackListsModal"
         @on-ok="confirmBlack"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定将该应用的类型修改为黑名单吗？</p>
     </Modal>
@@ -80,6 +83,7 @@
         title="白名单"
         v-model="whiteListsModal"
         @on-ok="confirmWhite"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定将该应用的类型修改为白名单吗？</p>
     </Modal>
@@ -87,6 +91,7 @@
     <Modal
         title="用户"
         v-model="dispatchModal"
+        :mask-closable="false"
         class-name="vertical-center-modal">
         <div style="margin-bottom:20px">
             <Input type="text" placeholder="姓名/用户名/手机号" v-model="searchUser" style="width:250px;margin-right:20px"></Input>

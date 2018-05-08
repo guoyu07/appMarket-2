@@ -20,7 +20,7 @@
                     <Icon type="navicon-round"></Icon> 设备列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary"  @click="addModal=true"><Icon type="plus"></Icon> 添加设备</Button>
+                    <Button type="primary"  @click="addDevice"><Icon type="plus"></Icon> 添加设备</Button>
                 </div>
            </div>
            <Table border :columns="columns" :data="deviceData" no-data-text="暂无数据"></Table>            
@@ -33,6 +33,7 @@
     <Modal
         title="添加设备"
         v-model="addModal"
+        :mask-closable="false"
         class-name="vertical-center-modal">
        <Form ref="formValidate" :rules="ruleValidate" :model="addDeviceData"  :label-width="80" style="width:70%;margin:10px auto 0">
           <FormItem label="用户名" prop="userName">
@@ -190,6 +191,12 @@ export default {
   },
 
   methods: {
+      // 点击添加设备按钮
+      addDevice(){
+        this.$refs['formValidate'].resetFields() 
+        this.addModal=true
+      },
+
       // 确认添加
       confirmAdd(){
         this.$refs['formValidate'].validate((valid) => {

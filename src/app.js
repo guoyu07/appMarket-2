@@ -11,13 +11,13 @@ import './my-theme/index.less';
 import store from './store/store'
 import * as types from './store/types.js'
 
-// console.log(process.argv)
-// console.log(process.version)
 
 Vue.use(iView)
 Vue.use(vuescroll)
 Vue.prototype.axios = axios
-axios.defaults.withCredentials=true;
+
+
+// 自定义指令设置按钮权限
 Vue.directive('has', {
     bind: function(el, binding) {
         if (!Vue.prototype.$_has(binding.value)) {
@@ -27,7 +27,6 @@ Vue.directive('has', {
     }
 });
 Vue.prototype.$_has = function(value) {
-    // debugger
     let isExist=false;
     let buttonpermsStr=localStorage.getItem("buttenpremissions");
     console.log('buttonpermsStr',buttonpermsStr)
@@ -44,25 +43,20 @@ Vue.prototype.$_has = function(value) {
     return isExist;
   };
 
+
 let authList = window.localStorage.getItem('authList')
+
 console.log(authList) // 用户权限
-// let routes = staticRoute[0].children.filter(item=>{
-//     return authList.indexOf(item.auth)!== -1
-// })
-// let route = routes.map(item=>{
-//     return item.path
-// })
-// console.log(route) // 用户权限所有路径
 
 if (authList) {
-    // store.commit(types.LOGIN, token)
     store.commit(types.ADD_MENU, authList)
     store.commit(types.ADD_MENU, JSON.parse(authList))
     router.addRoutes(store.state.menus.items)
-  }
+}
+
 router.beforeEach((to, from, next) => {
 
-    var user = window.localStorage.getItem("user")
+    var userName = window.localStorage.getItem("userName")
     var password = window.localStorage.getItem("password")
 
     if(to.path === '/'){
@@ -72,19 +66,8 @@ router.beforeEach((to, from, next) => {
     if(to.path === '/login'){
         window.localStorage.clear()
     }
-    if(user && password){
-        console.log(1111)
+    if(userName && password){
         next()
-        
-        // if(to.path=='/'){
-        //     console.log(222)
-        //     next({path:'/login'})
-        // }
-
-        // if(route.indexOf(to.path)==-1 && to.path !== '/' && to.path !== '/index/homepage'){
-        //     next({path:'/notfound'})
-        // }
-        
     }else{
         if(to.path=='/login'){
             console.log(333)
