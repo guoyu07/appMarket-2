@@ -8,17 +8,17 @@
       <div class="search_wrap">
         <Form inline :model="searchData"  :label-width="55">
           <FormItem label="用户名">
-            <Input v-model="searchData.userName"  placeholder="用户名/手机号"></Input>
+            <Input v-model="searchData.content"  placeholder="用户名/手机号"></Input>
           </FormItem>
           <FormItem label="状态">
             <Select v-model="searchData.state"  style="width:100px">
-                <Option value="0">全部</Option>
+                <Option value="-1">全部</Option>
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
             </Select>
           </FormItem>
           <FormItem>
-            <Button type="primary">筛选</Button>
+            <Button type="primary" @click="searchTable">筛选</Button>
           </FormItem>
         </Form>
       </div>
@@ -36,12 +36,8 @@
                 </div>
            </div>
            <div style="position:relative">
-                <Table border :columns="columns" :data="webUserData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>            
-                <Page :total="2" show-total class="page_wrap"></Page>
-                <Spin fix v-if='loading'>
-                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
-                    <div>loading...</div>
-                </Spin>
+                <Table border :loading='loading' :columns="columns" :data="webUserData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>            
+                <Page :total="totalPage" :current='searchData.pageNo' @on-change='changePage' show-total class="page_wrap"></Page>
            </div>
            
       </div>
@@ -59,16 +55,16 @@
           <FormItem label="用户名" prop="userName">
             <Input v-model="addUserData.userName"  placeholder="请输入用户名"></Input>
           </FormItem>
-          <FormItem label="初始密码" prop="initPwd">
-            <Input v-model="addUserData.initPwd"  placeholder="初始密码"></Input>
+          <FormItem label="初始密码" prop="pwd">
+            <Input v-model="addUserData.pwd"  placeholder="初始密码"></Input>
           </FormItem>
           <FormItem label="手机号" prop="phone">
             <Input v-model="addUserData.phone"  placeholder="请输入手机号"></Input>
           </FormItem>
-          <FormItem label="角色名称" prop="roleName">
-            <Select v-model="addUserData.roleName">
-                <Option value="0">管理员</Option>
-                <Option value="1">普通用户</Option>
+          <FormItem label="角色名称" prop="roleId">
+            <Select v-model="addUserData.roleId">
+                <Option value="1">管理员</Option>
+                <Option value="2">普通用户</Option>
             </Select>
           </FormItem>
           <FormItem label="状态" prop="state">
@@ -90,20 +86,19 @@
         v-model="editUserModal"
         :mask-closable="false"
         class-name="vertical-center-modal">
-        <Form  ref='formValidate1'  :rules="ruleValidate" :model="editUserData"  :label-width="80" style="width:70%;margin:10px auto 70px">
+        <Form  ref='formValidate1'  :rules="ruleValidate1" :model="editUserData"  :label-width="80" style="width:70%;margin:10px auto 70px">
           <FormItem label="用户名" prop="userName">
-            <Input v-model="editUserData.userName"  placeholder="请输入用户名"></Input>
+            <Input v-model="editUserData.userName"  placeholder="请输入用户名" disabled></Input>
           </FormItem>
           <FormItem label="密码" prop="pwd">
-            <Input v-model="editUserData.pwd"  placeholder="请输入密码"></Input>
+            <Input v-model="editUserData.pwd"  placeholder="请输入密码" type="password"></Input>
           </FormItem>
           <FormItem label="手机号" prop="phone">
             <Input v-model="editUserData.phone"  placeholder="请输入手机号"></Input>
           </FormItem>
-          <FormItem label="角色名称" prop="roleName">
-            <Select v-model="editUserData.roleName">
-                <Option value="0">管理员</Option>
-                <Option value="1">普通用户</Option>
+          <FormItem label="角色名称" prop="roleId">
+            <Select v-model="editUserData.roleId">
+                <Option :value="item.roleId" v-for="item in roleData" :key="item.roleId">{{item.roleName}}</Option>
             </Select>
           </FormItem>
           <FormItem label="状态" prop="state">
@@ -146,6 +141,8 @@ export default {
 // created-----------------------------------------------------------------------------
   created(){
     document.title = "用户管理-平台用户"
+    this.searchTable()
+    this.queryRole()
   },
 
 // data--------------------------------------------------------------------------------
@@ -156,10 +153,17 @@ export default {
         }else{
           callback()
         }
-        // 查重
-        this.axios.get('/api').then(res=>{
+        // // 查重
+        // this.axios.get('/userPerm/checkUserName',{
+        //   params:{
+        //     userName:value,
+        //     userType:'1'
+        //   }
+        // }).then(res=>{
+        //     if(res.success==1){
 
-        })
+        //     }
+        // })
     }
     const phoneValidate = (rule,value,callback) =>{
        if(value==''){
@@ -171,17 +175,26 @@ export default {
         }
     }
     return {
+      roleData:[
+        {
+          roleId:1,
+          roleName:"管理员"
+        },
+        {
+          roleId:2,
+          roleName:"普通员工"
+        },
+      ],
       loading:false,
       addUserModal: false,
       editUserModal: false,
       startUseModal:false,
       forbiddenUseModal:false,
+      totalPage:1,
+      currentPage:1,
       ruleValidate:{
         userName:[
           { required: true, validator: nameValidate, trigger: 'blur' },
-        ],
-        initPwd:[
-          { required: true, message:'请输入初始密码' , trigger: 'blur' },
         ],
         pwd:[
           { required: true, message:'请输入密码' , trigger: 'blur' },
@@ -189,17 +202,35 @@ export default {
         phone:[
           { required: true, validator:phoneValidate , trigger: 'blur' },
         ],
-        roleName:[
+        roleId:[
           { required: true, message:'请选择角色名称' , trigger: 'change' },
         ],
         state:[
           { required: true, message:'请选择状态' , trigger: 'change' },
         ],
       },
-
+       ruleValidate1:{
+        userName:[
+          { required: true, message:'请输入用户名' , trigger: 'blur' },
+        ],
+        pwd:[
+          { required: true, message:'请输入密码' , trigger: 'blur' },
+        ],
+        phone:[
+          { required: true, validator:phoneValidate , trigger: 'blur' },
+        ],
+        roleId:[
+          { type:"number", required: true, message:'请选择角色名称' , trigger: 'change' },
+        ],
+        state:[
+          { required: true, message:'请选择状态' , trigger: 'change' },
+        ],
+      },
       searchData: {
-        userName:"",
-        state: '0'
+        content:"",
+        state: '-1',
+        pageNo:1,
+        pageSize:10
       },
       columns: [
         {
@@ -231,7 +262,10 @@ export default {
         },
         {
             title: '状态',
-            key: 'state'
+            key: 'state',
+            render:(h,params)=>{
+              return h('div',params.row.state=='1'?'启用':'禁用')
+            }
         },
         {
             title: '操作',
@@ -248,7 +282,25 @@ export default {
                         on: {
                             click: () => {
                                 // 请求用户数据
+                                this.axios.get("/userPerm/qryUserInfoById",{
+                                  params:{
+                                    id:params.row.id
+                                  }
+                                })
+                                .then(res=>{
+                                  if(res.success=='1' && res.data){
+                                    const data = res.data
+                                    
+                                    this.editUserData.userName = data.userName
+                                    this.editUserData.id = data.id
+                                    this.editUserData.pwd = data.pwd
+                                    this.editUserData.phone = data.phone
+                                    this.editUserData.roleId = data.roleId
+                                    this.editUserData.state = data.state
 
+                                    this.tmpwd = data.pwd
+                                  }
+                                })
                                 this.editUserModal = true  
                             }
                         }
@@ -257,35 +309,65 @@ export default {
             }
         }
       ],
-      webUserData: [
-        {
-          userName:"开元",
-          phone:"13333333333",
-          registerDate: '2018-04-02',
-          roleName: '普通用户',
-          state:'启用'
-        }
-      ],
+      webUserData: [],
       selectedUserData: [],
       addUserData: {
         userName: '',
-        initPwd: '111111',
+        pwd: '111111',
         phone:"",
-        roleName: '0',
-        state: '1'
+        roleId: '1',
+        state: '1',
+        userType:'1'
       },
       editUserData: {
+        id:"",
         userName: '',
         pwd:'',
         phone:"",
-        roleName: '0',
-        state: '1'
-      }
+        roleId: '',
+        state: ''
+      },
+      tmpwd:""
     }
   },
 
 // methods-----------------------------------------------------------------------------
   methods: {
+    // 查询用户角色
+    queryRole(){
+      this.axios.get("/userPerm/qryRoleList").then(res=>{
+        if(res&&res.success==1){
+
+        }
+      })
+    },
+
+    // 表格查询
+    searchTable(){
+      this.loading = true
+      this.axios.get("/userPerm/listUsers",{
+          params:this.searchData
+      }).then(res => {
+        console.log(res)
+        if(res && res.success==1 && res.data){
+          this.loading = false
+          const data = res.data
+          this.totalPage = data.total
+          this.webUserData = data.list
+          
+        }
+      })
+    },
+
+    // 改变页码
+    changePage(current){
+
+      console.log(current)
+      this.searchData.pageNo = current
+      this.searchTable()
+
+    },
+
     // 选中数据改变
     selectUserChange(selection){
       this.selectedUserData = selection
@@ -310,6 +392,7 @@ export default {
 
     // 确定启用
     confirmUse(){
+
     },
 
     // 确定禁用
@@ -321,16 +404,53 @@ export default {
     confirmAdd(){
       this.$refs['formValidate'].validate((valid) => {
             if(valid) {
-              console.log(11111)
+              this.axios.get("/userPerm/addUser",{
+                  params:this.addUserData
+              }).then(res=>{
+                if(res.success==1){
+                  this.$Message.success("添加成功！")
+                  this.addUserModal = false
+                  this.searchTable()
+                }
+              })
             }
       })
     },
 
     // 确定编辑
     confirmEdit(){
+
       this.$refs['formValidate1'].validate((valid) => {
+
             if(valid) {
-              console.log(11111)
+              // 若密码修改了，则传参密码
+              if(this.editUserData.pwd != this.tmpwd){
+                this.axios.get('/userPerm/updateUser',{params:this.editUserData})
+                .then(res=>{
+                  if(res.success==1){
+                    this.$Message.success("编辑成功！")
+                    this.editUserModal = false
+                    this.searchTable()
+                  }
+                })
+              }else{
+                this.axios.get('/userPerm/updateUser',{params:{
+                  id:this.editUserData.id,
+                  userName:this.editUserData.userName,
+                  phone:this.editUserData.phone,
+                  roleId:this.editUserData.roleId,
+                  state:this.editUserData.state
+                }})
+                .then(res=>{
+                  if(res.success==1){
+                    this.$Message.success("编辑成功！")
+                    this.editUserModal = false
+                    this.searchTable()
+                  }
+                })
+              }
+
+              
             }
       })
     }

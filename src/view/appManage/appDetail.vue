@@ -47,13 +47,13 @@
           <div class="appInfo">
             <Form :label-width="100">
                 <FormItem label="应用图标">
-                  <div style="width:60px;height:60px;margin-top:10px;border:1px solid #ccc">
-                    <img :src="appInfo.iconUrl" alt="">
+                  <div style="width:66px;height:66px;margin-top:10px;border:1px solid #ccc">
+                    <img :src="appInfo.iconUrl" alt="" style="width:100%;height:100%">
                   </div>
                 </FormItem>
                 <FormItem label="应用截图">
                   <div class="urls" v-for='(item,index) in appInfo.captureUrls' :key='index'>
-                    <img src="" alt="">
+                    <img src="" alt="" style="width:100%;height:100%">
                   </div>
                 </FormItem>
               </Form>
@@ -163,8 +163,8 @@ export default {
         }
       }
       .urls{
-        width:100px;
-        height:200px;
+        width:136px;
+        height:242px;
         margin:10px 20px 0 0;
         border:1px solid #ccc;
         float:left;

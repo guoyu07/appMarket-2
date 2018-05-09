@@ -81,7 +81,7 @@ export default {
                     // console.log(res.data.success=='1')
                     this.count = 0;
                     
-                    if(res.data.success=='1'){
+                    if(res.success=='1'){
                         this.$Message.destroy(msg)
                         this.$Message.success("登陆成功！")
 

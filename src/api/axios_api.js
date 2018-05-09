@@ -10,8 +10,8 @@ let baseURL = env.apiPath
 axios.defaults.baseURL = baseURL;
 axios.defaults.withCredentials=true;
 
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
-axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded;';
 
 
 // http request 拦截器
@@ -29,7 +29,7 @@ axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded'
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-        return response;
+        return response.data;
     },
     error => {
         if (error.response) {

@@ -8,7 +8,7 @@
 
         <!-- 首次上传时显示 -->
         <div class="upload" v-if='isFirst'>
-          <Upload action="" :before-upload="handleBeforeUploadApk">
+          <Upload action="" :before-upload="handleBeforeUploadApk" :accept='".apk"'>
               <Button type="success" icon="ios-cloud-upload-outline">上传apk</Button>
           </Upload>
           
@@ -30,7 +30,7 @@
             </div>
           </div>
           <div class="upload1">
-            <Upload action="" :before-upload="handleBeforeUploadApk" :show-upload-list="false">
+            <Upload action="" :before-upload="handleBeforeUploadApk" :show-upload-list="false"  :accept='"apk"'>
                 <Button type="success" icon="ios-cloud-upload-outline">重新上传</Button>
             </Upload>
           </div>
@@ -106,8 +106,8 @@
       <div class="wrap upload_img_wrap ">
         <h2>上传图标和截图（均必填）</h2>
         <div class="appInfo">
-            <Form :label-width="110">
-              <FormItem label="应用图标">
+            <Form ref='formValidate1' :model="appInfo" :label-width="110" :rules="ruleValidate">
+              <FormItem label="应用图标" prop='iconUrl'>
                 <div>
                   <img :src="appInfo.iconUrl" alt="" style="display:none" id="icon" > 
                   <Upload action="">                                
@@ -116,7 +116,7 @@
                 </div>
                 <p style="font-size:12px;">请上传尺寸512*512，大小200K以内，JPG、PNG格式，建议使用直角图标。</p>
               </FormItem>
-              <FormItem label="应用截图">
+              <FormItem label="应用截图" prop='uploadList'>
                 <div class="clearfix" >
                   <div class="screenShot">
                     <!-- <Upload
@@ -127,32 +127,31 @@
                             <Icon type="plus" size="52" style="color: #f2f3f3"></Icon>
                         </div>
                     </Upload> -->
-                    <div class="demo-upload-list" v-for="(item,index) in uploadList" :key="index">
+                    <div class="demo-upload-list" v-for="(item,index) in appInfo.uploadList" :key="index">
                         <template v-if="item.status === 'finished'">
+                            <Icon type="close-circled" class="delShot"  @click.native="handleRemove(item)"></Icon>
                             <img :src="item.url">
-                            <div class="demo-upload-list-cover">
+                            <!-- <div class="demo-upload-list-cover">
                                 <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
                                 <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-                            </div>
+                            </div> -->
+                            <div></div>
                         </template>
                         <template v-else>
                             <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
                         </template>
                     </div>
                     <Upload
+                        v-show="appInfo.uploadList.length<4"
                         ref="upload"
                         :show-upload-list="false"
                         :default-file-list="defaultList"
-                        :format="['jpg','png']"
-                        :max-size="1024"
-                        :on-format-error="handleFormatError"
-                        :on-exceeded-size="handleMaxSize"
+                        :accept='".jpg,.png"'
                         :before-upload="handleBeforeUpload"
-                        multiple
                         type="drag"
                         action=""
-                        style="display: inline-block;width:180px;">
-                        <div style="width: 180px;height:280px;line-height: 280px;">
+                        style="display: inline-block;width:140px;">
+                        <div style="width: 140px;height:250px;line-height: 250px;">
                             <Icon type="plus" size="20"></Icon>
                         </div>
                     </Upload>
@@ -163,7 +162,7 @@
 
                   </div>
                 </div>
-                <p style="font-size:12px;margin-bottom:20px">请上传2-4张截图（尺寸保持一致），单张图片不超过1M。截图不能小于320*480像素，推荐480*800像素。JPG、PNG格式。</p> 
+                <p style="font-size:12px;margin-bottom:20px">请上传2-4张截图、单张大小不超过1M。JPG、PNG格式，像素540*960、720*1080、1080*1920。</p> 
               </FormItem>
 
             </Form>
@@ -182,7 +181,7 @@
     <Modal v-model="progressModal" :closable='false' :mask-closable='false' class-name="vertical-center-modal" class="progressModal">
       <div id="progress">
         <p>正在上传: <span>{{fileName}}</span> </p>
-        <Progress :percent="50"></Progress>
+        <Progress :percent="percent"></Progress>
         <div style="color:red;position:absolute;right:20px;top:65px;cursor:pointer"  @click='stopUpload'><Icon type="close-circled" size='24'></Icon></div>
       </div>
     </Modal>
@@ -201,7 +200,7 @@ export default {
 
 // mounted-------------------------------------------------------------------------------------
   mounted(){
-    this.uploadList = this.$refs.upload.fileList;
+    this.appInfo.uploadList = this.$refs.upload.fileList;
   },
 
 // data----------------------------------------------------------------------------------------
@@ -217,9 +216,9 @@ export default {
           callback()
         }
         // 查重
-        this.axios.get('/api').then(res=>{
+        // this.axios.get('/api').then(res=>{
 
-        })
+        // })
     }
     const introValidate = (rule,value,callback)=>{
         var str = /(((ht|f)tps?):\/\/)?[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?/g;
@@ -233,7 +232,17 @@ export default {
           callback()
         }
     }
+    const listValidate = (rule,value,callback)=>{
+        if(value.length==0){
+          callback(new Error('请上传应用截图'))      
+        }else if(value.length<2){
+          callback(new Error('请至少上传2张应用截图'))
+        }else{
+          callback()
+        }
+    }
     return {
+      percent:0,
       isFirst:true,
       progressModal:false,
       isUploading:false,
@@ -265,7 +274,9 @@ export default {
         authority: "",
         ifChare: "",
         hasAd: "",
-        supportLanguage: ""
+        supportLanguage: "",
+        iconUrl:"",
+        uploadList:[]
       },
       app: {
         theme:"",
@@ -275,9 +286,7 @@ export default {
         name:"",
         size:""
       },
-      ruleValidate:validate(nameValidate,introValidate),
-
-
+      ruleValidate:validate(nameValidate,introValidate,listValidate),
       defaultList: [
         {
             'name': 'a42bdcc1178e62b4694c830f028db5c0',
@@ -291,21 +300,16 @@ export default {
             'name': 'a42bdcc1178e62b4694c830f028db5c0',
             'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
         },
-        {
-            'name': 'bc7521e033abdd1e92222d733590f104',
-            'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-        },
         
       ],
       imgName: '',
       visible: false,
-      uploadList: []
     }
   },
 
 // methods-------------------------------------------------------------------------------
   methods: {
-    // 上传图片处理
+    // 上传APK处理
     handleBeforeUploadApk(file){
       console.log(file)
        this.fileName = file.name
@@ -338,54 +342,77 @@ export default {
         
     },
 
-    // 取消上传图标
+    // 取消上传APK
     stopUpload(){
       // this.currentAjax.abort()
       this.progressModal = false
-      console.log(1111111111111)
+
     },
 
     // 提交应用信息
     submit(){
-      this.$refs['formValidate'].validate((valid) => {
-            if(valid && this.shotFiles != '' && this.iconFile != '') {
-              console.log(11111)
-            }
+      if(this.validateForm('formValidate')&&this.validateForm('formValidate1')||this.validateForm('formValidate1')&&this.validateForm('formValidate')){
+        console.log(11111111111111)
+      }
+    },
+
+    // 判断表单是否验证通过
+    validateForm(name){
+      this.$refs[name].validate((valid) => {
+          if(valid) {
+              return true
+          }
       })
     },
 
 
+    // handleView (name) {
+    //     this.imgName = name;
+    //     this.visible = true;
+    // },
 
-
-
-    handleView (name) {
-        this.imgName = name;
-        this.visible = true;
-    },
+    // 删除截图
     handleRemove (file) {
         const fileList = this.$refs.upload.fileList;
         this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
     },
-    // handleSuccess (res, file) {
-    //     file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-    //     file.name = '7eb99afb9d5f317c912f08b5212fd69a';
-    // },
-    handleFormatError (file) {
-        this.$Message.warning({
-            content: '文件' + file.name + '不符合格式要求！请选择jpg、png格式的图片！'
-        });
-    },
-    handleMaxSize (file) {
-        this.$Message.warning({
-            content: '文件：' + file.name + '太大了！请选择小于1M的图片！'
-        });
-    },
-    handleBeforeUpload () {
-        const check = this.uploadList.length < 5;
-        if (!check) {
-           
+
+    // 上传图片
+    handleBeforeUpload (file) {
+      console.log(file)
+      const size = file.size / 2048 / 2048
+      if(size>1){
+        this.$Message.error({
+          content:"图片大小不超过1M!",
+          duration:3
+        })
+        return;
+      }
+      var that = this
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
+
+      reader.onload = function(e){ 
+
+        var base = this.result;
+        var img = new Image()
+        img.src = base
+
+        img.onload = function(){
+          if(img.width/img.height!=0.5625&&(img.width!=540&&img.height!=960)){
+            that.$Message.error({
+              content:"请上传像素540*960、720*1080、1080*1920的图片！",
+              duration:3
+            })
+            return
+          }
         }
+        
+      }
+      return false
     }
+
+
   }
 
 }
@@ -483,21 +510,22 @@ export default {
 
     .demo-upload-list{
         display: inline-block;
-        width: 180px;
-        height: 280px;
+        width: 140px;
+        height: 250px;
         text-align: center;
-        line-height: 280px;
+        line-height: 250px;
         border: 1px solid transparent;
         border-radius: 5px;
         overflow: hidden;
         background: #fff;
         position: relative;
         box-shadow: 0 1px 1px rgba(0,0,0,.2);
-        margin-right: 20px;
+        margin-right: 10px;
     }
     .demo-upload-list img{
-        width: 100%;
-        height: 100%;
+        width: 136px;
+        height: 242px;
+        vertical-align: middle;
     }
     .demo-upload-list-cover{
         display: none;
@@ -517,6 +545,14 @@ export default {
         cursor: pointer;
         margin: 0 2px;
     } 
+    .delShot{
+          font-size:20px;
+          position:absolute;
+          right:0;
+          top:0;
+          cursor:pointer;
+          color:red;
+        }
 </style>
 
 

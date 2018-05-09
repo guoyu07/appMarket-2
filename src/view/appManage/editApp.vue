@@ -20,8 +20,8 @@
             </div>
           </div>
           <div class="upload">
-            <Upload action="" :before-upload="handleBeforeUpload">
-                <Button type="success" icon="ios-cloud-upload-outline">重新上传</Button>
+            <Upload action="" :before-upload="handleBeforeUpload"  :accept='".apk"'>
+                <Button type="success" icon="ios-cloud-upload-outline" >重新上传</Button>
             </Upload>
           </div>
         </div>
@@ -104,11 +104,11 @@
           <div class="appInfo">
             <Form :label-width="110">
                 <FormItem label="应用图标">
-                  <div style="width:60px;height:60px;margin:10px 0;border:1px solid #ccc">
-                    <img src="../../assets/img/1.png" alt="">
+                  <div style="width:66px;height:66px;margin:10px 0;border:1px solid #ccc">
+                    <img src="../../assets/img/1.png" alt="" style="width:100%;height:100%">
                   </div>
                   <div>
-                    <Upload action="" :before-upload="handleBeforeUpload">
+                    <Upload action="" :before-upload="handleBeforeUpload" :accept='".jpg,.png"'>
                         <Button type="success" icon="ios-cloud-upload-outline">重新上传</Button>
                     </Upload>
                   </div>

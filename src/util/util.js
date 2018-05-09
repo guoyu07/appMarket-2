@@ -1,6 +1,6 @@
 import axios from  '../api/axios_api.js'
 // 上传app表单的验证规则----------------------------------------------------------------
-export function validate(nameValidate,introValidate){
+export function validate(nameValidate,introValidate,listValidate){
   const validate = {
     name: [
       { required: true, validator: nameValidate, trigger: 'blur' },
@@ -38,6 +38,13 @@ export function validate(nameValidate,introValidate){
     supportLanguage: [
       { required: true, message: '请选择支持语言', trigger: 'change' }
     ],
+    iconUrl: [
+      { required: true, message: '请选择图标', trigger: 'change' }
+    ],
+    uploadList:[
+      { required: true,  validator: listValidate, trigger: 'blur' }
+    ],
+    
   }
   return validate
 
