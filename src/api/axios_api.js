@@ -15,20 +15,23 @@ axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded;
 
 
 // http request 拦截器
-// axios.interceptors.request.use(
-//     config => {
-//         if (localStorage.getItem('token')) {
-//             config.headers.Authorization = `token ${localStorage.getItem('token')}`;
-//         }
-//         return config;
-//     },
-//     err => {
-//         return Promise.reject(err);
-//     });
+axios.interceptors.request.use(
+    config => {
+        // if (localStorage.getItem('token')) {
+        //     config.headers.Authorization = `token ${localStorage.getItem('token')}`;
+        // }
+        return config;
+    },
+    err => {
+        return Promise.reject(err);
+    });
 
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
+        // if(response.data.success!='1'){
+        //     this.$Message.error(response.data.msg)
+        // }
         return response.data;
     },
     error => {
@@ -43,8 +46,7 @@ axios.interceptors.response.use(
                     })
             }
         }
-        console.log(error);
-        // return Promise.reject(error.response.data)
+        return Promise.reject(error)
     });
 
 export default axios;

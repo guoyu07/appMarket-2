@@ -81,6 +81,7 @@ export default {
 // data------------------------------------------------------------------------------------------ 
   data(){
     return {
+      appNum:"",
     }
   },
 
@@ -162,6 +163,60 @@ export default {
 
 // methods-----------------------------------------------------------------------------------------
   methods: {
+     // 查询应用数量
+     queryAppNum(){
+       this.axios.get('/statistic/appDistribution').then(res=>{
+         if(res && res.success=='1'){
+
+         }
+       })
+     },
+
+     // 查询用户状态
+     queryUserState(){
+       this.axios.get('/statistic/userStateDistribution').then(res=>{
+         if(res && res.success=='1'){
+
+         }
+       })
+     },
+
+     // 设备型号分布图
+     queryDeviceModel(){
+       this.axios.get('/statistic/deviceModelDistribution').then(res=>{
+         if(res && res.success=='1'){
+           
+         }
+       })
+     },
+
+     // 客户端统计图
+     queryAppVersion(){
+       this.axios.get('/statistic/appVersionDistribution').then(res=>{
+         if(res && res.success=='1'){
+           
+         }
+       })
+     },
+
+     // 违规设备分布图
+     queryState(){
+       this.axios.get('/statistic/stateDistribution').then(res=>{
+         if(res && res.success=='1'){
+           
+         }
+       })
+     },
+
+     // 应用安装情况
+     queryInstall(){
+       this.axios.get('/statistic/installDistribution').then(res=>{
+         if(res && res.success=='1'){
+           
+         }
+       })
+     },
+
      // 渲染饼图
      renderPie(options){
         Highcharts.chart(options.ele, {

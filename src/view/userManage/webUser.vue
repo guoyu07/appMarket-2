@@ -18,7 +18,7 @@
             </Select>
           </FormItem>
           <FormItem>
-            <Button type="primary" @click="searchTable">筛选</Button>
+            <Button type="primary" @click="queryTable">筛选</Button>
           </FormItem>
         </Form>
       </div>
@@ -31,8 +31,8 @@
                 </div>
                 <div class="btns_wrap">
                     <Button type="primary" style="margin-right:15px" @click="addUser"><Icon type="plus"></Icon> 添加用户</Button>
-                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
-                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
+                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected('1')?startUseModal = true:''">启用</Button>
+                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected('2')?forbiddenUseModal = true:''">禁用</Button>
                 </div>
            </div>
            <div style="position:relative">
@@ -63,8 +63,7 @@
           </FormItem>
           <FormItem label="角色名称" prop="roleId">
             <Select v-model="addUserData.roleId">
-                <Option value="1">管理员</Option>
-                <Option value="2">普通用户</Option>
+                <Option :value="item.id" v-for="item in roleData" :key="item.id">{{item.mask}}</Option>
             </Select>
           </FormItem>
           <FormItem label="状态" prop="state">
@@ -98,7 +97,7 @@
           </FormItem>
           <FormItem label="角色名称" prop="roleId">
             <Select v-model="editUserData.roleId">
-                <Option :value="item.roleId" v-for="item in roleData" :key="item.roleId">{{item.roleName}}</Option>
+                <Option :value="item.id" v-for="item in roleData" :key="item.id">{{item.mask}}</Option>
             </Select>
           </FormItem>
           <FormItem label="状态" prop="state">
@@ -118,19 +117,25 @@
     <Modal
         title="启用"
         v-model="startUseModal"
-        @on-ok="confirmUse"
         :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定启用该用户吗？</p>
+        <div slot="footer">
+            <Button  size="large" @click="startUseModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmIsUse('1')">确定</Button>
+        </div>
     </Modal>
     <!-- 禁用模态框 -->
     <Modal
         title="禁用"
         v-model="forbiddenUseModal"
-        @on-ok="confirmForbidden"
         :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">确定禁用该用户吗？</p>
+        <div slot="footer">
+            <Button  size="large" @click="forbiddenUseModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmIsUse('2')">确定</Button>
+        </div>
     </Modal>
   </div>
 </template>
@@ -141,7 +146,7 @@ export default {
 // created-----------------------------------------------------------------------------
   created(){
     document.title = "用户管理-平台用户"
-    this.searchTable()
+    this.queryTable()
     this.queryRole()
   },
 
@@ -151,19 +156,21 @@ export default {
         if(value==''){
           callback(new Error('请输入用户名'))      
         }else{
-          callback()
+            // 查重
+          this.axios.get('/userPerm/checkUserName',{
+            params:{
+              userName:value,
+              userType:'1'
+            }
+          }).then(res=>{
+              if(res.success==0){
+                callback(new Error('该用户名已存在'))
+              }else{
+                callback()
+              }
+          })
         }
-        // // 查重
-        // this.axios.get('/userPerm/checkUserName',{
-        //   params:{
-        //     userName:value,
-        //     userType:'1'
-        //   }
-        // }).then(res=>{
-        //     if(res.success==1){
-
-        //     }
-        // })
+        
     }
     const phoneValidate = (rule,value,callback) =>{
        if(value==''){
@@ -175,16 +182,8 @@ export default {
         }
     }
     return {
-      roleData:[
-        {
-          roleId:1,
-          roleName:"管理员"
-        },
-        {
-          roleId:2,
-          roleName:"普通员工"
-        },
-      ],
+      roleData:[],
+      startRow:1,
       loading:false,
       addUserModal: false,
       editUserModal: false,
@@ -203,13 +202,13 @@ export default {
           { required: true, validator:phoneValidate , trigger: 'blur' },
         ],
         roleId:[
-          { required: true, message:'请选择角色名称' , trigger: 'change' },
+          { type:"number", required: true, message:'请选择角色名称' , trigger: 'change' },
         ],
         state:[
           { required: true, message:'请选择状态' , trigger: 'change' },
         ],
       },
-       ruleValidate1:{
+      ruleValidate1:{
         userName:[
           { required: true, message:'请输入用户名' , trigger: 'blur' },
         ],
@@ -230,7 +229,8 @@ export default {
         content:"",
         state: '-1',
         pageNo:1,
-        pageSize:10
+        pageSize:10,
+        type:'1'
       },
       columns: [
         {
@@ -239,10 +239,12 @@ export default {
             align: 'center'
         },
         {
-            type: 'index',
             width: 70,
-            align: 'center',
-            title: "序号"
+            // align: 'center',
+            title: "序号",
+            render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
         },
         {
             title: "用户名",
@@ -290,18 +292,18 @@ export default {
                                 .then(res=>{
                                   if(res.success=='1' && res.data){
                                     const data = res.data
-                                    
-                                    this.editUserData.userName = data.userName
                                     this.editUserData.id = data.id
+                                    this.editUserData.userName = data.userName
                                     this.editUserData.pwd = data.pwd
                                     this.editUserData.phone = data.phone
                                     this.editUserData.roleId = data.roleId
                                     this.editUserData.state = data.state
-
                                     this.tmpwd = data.pwd
+                                    this.editUserModal = true
+                                    
                                   }
                                 })
-                                this.editUserModal = true  
+                                  
                             }
                         }
                     }, '编辑')
@@ -310,23 +312,17 @@ export default {
         }
       ],
       webUserData: [],
-      selectedUserData: [],
+      selectedUserData: '',
+      selectedState:null,
       addUserData: {
         userName: '',
         pwd: '111111',
         phone:"",
-        roleId: '1',
+        roleId: 1,
         state: '1',
         userType:'1'
       },
-      editUserData: {
-        id:"",
-        userName: '',
-        pwd:'',
-        phone:"",
-        roleId: '',
-        state: ''
-      },
+      editUserData:{},
       tmpwd:""
     }
   },
@@ -337,24 +333,23 @@ export default {
     queryRole(){
       this.axios.get("/userPerm/qryRoleList").then(res=>{
         if(res&&res.success==1){
-
+          this.roleData = res.data
         }
       })
     },
 
     // 表格查询
-    searchTable(){
+    queryTable(){
       this.loading = true
       this.axios.get("/userPerm/listUsers",{
           params:this.searchData
       }).then(res => {
-        console.log(res)
+        this.loading = false
         if(res && res.success==1 && res.data){
-          this.loading = false
           const data = res.data
           this.totalPage = data.total
           this.webUserData = data.list
-          
+          this.startRow = data.startRow
         }
       })
     },
@@ -364,23 +359,46 @@ export default {
 
       console.log(current)
       this.searchData.pageNo = current
-      this.searchTable()
+      this.queryTable()
 
     },
 
     // 选中数据改变
     selectUserChange(selection){
-      this.selectedUserData = selection
+      if(selection.length==0){
+        this.selectedUserData = ''
+      }else{
+        this.selectedUserData = selection.map(item=>{
+          return item.id
+        }).join(";")
+        this.selectedState = selection.map(item=>{
+          return item.state
+        })
+      }
     },
 
     // 判断是否选中用户
-    isSelected(){
+    isSelected(flag){
       if(this.selectedUserData.length==0){
           this.$Message.warning('请至少选择一位用户！');
           breakTips()
           return false
-      }else{
+      }else if(flag=='1'){
+        if(this.selectedState.indexOf("1")!=-1){
+          this.$Message.warning('含有已是启用状态的数据！');
+          breakTips()
+          return false
+        }else{
           return true
+        }
+      }else if(flag=='2'){
+        if(this.selectedState.indexOf("2")!=-1){
+          this.$Message.warning('含有已是禁用状态的数据！');
+          breakTips()
+          return false
+        }else{
+          return true
+        }
       }
     },
 
@@ -390,14 +408,21 @@ export default {
        this.addUserModal=true      
     },
 
-    // 确定启用
-    confirmUse(){
-
-    },
-
-    // 确定禁用
-    confirmForbidden() {
-
+    // 确定启用/禁用
+    confirmIsUse(flag){
+      this.axios.get('/userPerm/changeUserState',{params:{
+        userIds:this.selectedUserData,
+        flag:flag
+      }}).then(res=>{
+        if(res && res.success == '1'){
+          this.$Message.success("操作成功！")
+          flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
+          this.queryTable()
+        }else{
+          this.$Message.success("操作失败！")
+          flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
+        }
+      })
     },
 
     // 确定添加用户
@@ -408,9 +433,13 @@ export default {
                   params:this.addUserData
               }).then(res=>{
                 if(res.success==1){
-                  this.$Message.success("添加成功！")
+                  this.$Message.success("操作成功！")
                   this.addUserModal = false
-                  this.searchTable()
+                  this.searchData.pageNo = 1
+                  this.queryTable()
+                }else{
+                    this.$Message.success("操作失败！")
+                    this.addUserModal = false
                 }
               })
             }
@@ -428,9 +457,12 @@ export default {
                 this.axios.get('/userPerm/updateUser',{params:this.editUserData})
                 .then(res=>{
                   if(res.success==1){
-                    this.$Message.success("编辑成功！")
+                    this.$Message.success("操作成功！")
                     this.editUserModal = false
-                    this.searchTable()
+                    this.queryTable()
+                  }else{
+                    this.$Message.success("操作失败！")
+                    this.editUserModal = false
                   }
                 })
               }else{
@@ -443,9 +475,12 @@ export default {
                 }})
                 .then(res=>{
                   if(res.success==1){
-                    this.$Message.success("编辑成功！")
+                    this.$Message.success("操作成功！")
                     this.editUserModal = false
-                    this.searchTable()
+                    this.queryTable()
+                  }else{
+                    this.$Message.success("操作失败！")
+                    this.editUserModal = false
                   }
                 })
               }

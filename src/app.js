@@ -29,7 +29,7 @@ Vue.directive('has', {
 Vue.prototype.$_has = function(value) {
     let isExist=false;
     let buttonpermsStr=localStorage.getItem("buttenpremissions");
-    console.log('buttonpermsStr',buttonpermsStr)
+    // console.log('buttonpermsStr',buttonpermsStr)
     if(buttonpermsStr==undefined || buttonpermsStr==null){
       return false;
     }
@@ -46,7 +46,7 @@ Vue.prototype.$_has = function(value) {
 
 let authList = window.localStorage.getItem('authList')
 
-console.log(authList) // 用户权限
+// console.log(authList) // 用户权限
 
 if (authList) {
     store.commit(types.ADD_MENU, authList)

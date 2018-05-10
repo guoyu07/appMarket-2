@@ -8,11 +8,11 @@
       <div class="search_wrap">
         <Form inline :model="searchData"  :label-width="55">
           <FormItem label="应用名">
-            <Input v-model="searchData.appName"  placeholder="请输入应用名"></Input>
+            <Input v-model="searchData.content"  placeholder="请输入应用名"></Input>
           </FormItem>
           <FormItem label="状态">
-            <Select v-model="searchData.type"  style="width:100px">
-                <Option value="0">全部</Option>
+            <Select v-model="searchData.state"  style="width:100px">
+                <Option value="-1">全部</Option>
                 <Option value="1">启用</Option>
                 <Option value="2">禁用</Option>
             </Select>
@@ -31,62 +31,39 @@
                 </div>
                 <div class="btns_wrap">
                     <Button type="primary" v-has="'addbtn'" style="margin-right:15px" @click="$router.push({path:'/index/addApp'})"><Icon type="plus"></Icon> 添加应用</Button>
-                    <Button type="primary" v-has="'addbtn'"  class='isDisabled' style="margin-right:15px"  @click="isSelected()?startUseModal = true:''">启用</Button>
-                    <Button type="primary" v-has="'addbtn'"  class='isDisabled' style="margin-right:15px"  @click="isSelected()?forbiddenUseModal = true:''">禁用</Button>
-                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected()?blackListsModal = true:''">黑名单</Button>
-                    <Button type="primary" class='isDisabled'  @click="isSelected()?whiteListsModal = true:''" >白名单</Button>
+                    <Button type="primary" v-has="'addbtn'"  class='isDisabled' style="margin-right:15px"  @click="isSelected('1')?handleClick('1'):''">启用</Button>
+                    <Button type="primary" v-has="'addbtn'"  class='isDisabled' style="margin-right:15px"  @click="isSelected('2')?handleClick('2'):''">禁用</Button>
+                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected('3')?handleClick('3'):''">黑名单</Button>
+                    <Button type="primary" class='isDisabled'  @click="isSelected('4')?handleClick('4'):''" >白名单</Button>
                 </div>
            </div>
 
            <div style="position:relative">
                 <Table border :columns="columns" :loading="loading" :data="appData" @on-selection-change="selectAppChange" no-data-text="暂无数据"></Table>            
-                <Page :total="2" show-total class="appPage page_wrap"></Page>
-                <Spin fix v-if='loading'>
+                <Page :total="totalPage" show-total class="appPage page_wrap"></Page>
+                <!-- <Spin fix v-if='loading'>
                     <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
                     <div>loading...</div>
-                </Spin>
+                </Spin> -->
            </div>
            
       </div>
       
     </div>
     
-    <!-- 启用模态框 -->
+    <!-- 启用、禁用、黑白名单 模态框 -->
     <Modal
-        title="启用"
-        v-model="startUseModal"
-        @on-ok="confirmUse"
+        :title="title"
+        v-model="actionModal"
         :mask-closable="false"
         class-name="vertical-center-modal">
-        <p class="modalp">确定启用该应用吗？</p>
+        <p class="modalp">{{content}}</p>
+        <div slot="footer">
+            <Button  size="large" @click="actionModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmAction(flag)">确定</Button>
+        </div>
     </Modal>
-    <!-- 禁用模态框 -->
-    <Modal
-        title="禁用"
-        v-model="forbiddenUseModal"
-        @on-ok="confirmForbidden"
-        :mask-closable="false"
-        class-name="vertical-center-modal">
-        <p class="modalp">确定禁用该应用吗？</p>
-    </Modal>
-    <!-- 黑名单模态框 -->
-    <Modal
-        title="黑名单"
-        v-model="blackListsModal"
-        @on-ok="confirmBlack"
-        :mask-closable="false"
-        class-name="vertical-center-modal">
-        <p class="modalp">确定将该应用的类型修改为黑名单吗？</p>
-    </Modal>
-    <!-- 白名单模态框 -->
-    <Modal
-        title="白名单"
-        v-model="whiteListsModal"
-        @on-ok="confirmWhite"
-        :mask-closable="false"
-        class-name="vertical-center-modal">
-        <p class="modalp">确定将该应用的类型修改为白名单吗？</p>
-    </Modal>
+  
     <!-- 下发模态框 -->
     <Modal
         title="用户"
@@ -119,6 +96,7 @@ export default {
 // created------------------------------------------------------------------------------------
   created(){
     document.title = "应用管理";
+    this.queryTable()
   },
 
 // data---------------------------------------------------------------------------------------
@@ -126,10 +104,17 @@ export default {
     return{
       perms:null,
       loading:false,
+      totalPage:1,
+      currentPage:1,
       searchData: {
-        appName: "",
-        type: "0"
+        content: "",
+        state: "-1",
+        pageNo:1,
+        pageSize:10
       },
+      flag:'1',
+      title:"",
+      content:"",
       // 应用表格
       columns: [
         {
@@ -146,6 +131,9 @@ export default {
         {
             title: "类型",
             key: 'isBlacklist',
+            render:(h,params)=>{
+                return ('div',params.row.isBlacklist=='0'?'黑名单':'白名单')
+            }
         },
         {
             title: '应用名',
@@ -157,7 +145,10 @@ export default {
         },
         {
             title: '应用标签',
-            key: 'tag'
+            key: 'tag',
+            render:(h,params)=>{
+                return ('div',params.row.tag=='1'?'工作':'生活')
+            }
         },
         {
             title: '下载次数',
@@ -172,7 +163,10 @@ export default {
         {
             title: '状态',
             key: 'state',
-            width:70
+            width:70,
+            render:(h,params)=>{
+                return ('div',params.row.state=='1'?'启用':'禁用')
+            }
         },
         {
             title: '操作',
@@ -245,36 +239,15 @@ export default {
             }
         }
       ],
-      appData: [
-        {
-          isBlacklist:"白名单",
-          name: "微信",
-          versionId: "v3.0",
-          tag: '工作',
-          downCnt: '11',
-          updateDate: '2018-04-03 14:14:14',
-          state: "启用"
-
-        },
-        {
-          isBlacklist:"黑名单",
-          name: "QQ",
-          versionId: "v3.0",
-          tag: '生活',
-          downCnt: '11',
-          updateDate: '2018-04-03 14:14:14',
-          state: "启用"
-
-        }
-      ],
+      appData: [],
       // 模态框
-      startUseModal:false,
-      forbiddenUseModal:false,
-      whiteListsModal:false,
-      blackListsModal:false,
+      actionModal:false,
       dispatchModal: false,
       // 复选框选中数据
       selectedAppData: [],
+      selectedState:null,
+      selectedIsBlacklist:null,
+      startRow:1,
       selectedUserData: [],
       searchUser: '',  // 下发用户筛选
       // 下发用户表格
@@ -309,45 +282,116 @@ export default {
 
 // methods------------------------------------------------------------------------------------
   methods:{
-    queryRights(value){
-        let isExist=false;
-        let buttonpermsStr=localStorage.getItem("buttenpremissions");
-        console.log('buttonpermsStr',buttonpermsStr)
-        if(buttonpermsStr==undefined || buttonpermsStr==null){
-        return false;
-        }
-        let buttonperms=JSON.parse(buttonpermsStr);
-        for(let i=0;i<buttonperms.length;i++){
-        if(buttonperms[i].perms.indexOf(value)>-1){
-            isExist=true;
-            break;
-        }
-        }
-        return isExist;
-    },
+
      // 查询表格
      queryTable(){
-
+         this.loading = true
+         this.axios.get('/app/listApps',{params:this.searchData})
+         .then(res=>{
+             if(res && res.success=='1' && res.data){
+                 this.loading = false
+                 const data = res.data
+                 this.totalPage = data.total
+                 this.appData = data.list
+                 this.startRow = data.startRow
+             }else{
+                 this.loading = false                 
+             }
+         })
      },
 
-     // 判断是否选中应用
-     isSelected(){
-        if(this.selectedAppData.length==0){
-            this.$Message.warning('请至少选择一项应用！');
-            // 解决多次连续点击问题
-            breakTips()
-            return false
+    // 选中应用改变
+     selectAppChange(selection){
+        if(selection.length==0){
+            this.selectedAppData = ''
         }else{
-            return true
+            this.selectedAppData = selection.map(item=>{
+            return item.id
+            }).join(";")
+            this.selectedState = selection.map(item=>{
+            return item.state
+            })
+            this.selectedIsBlacklist = selection.map(item=>{
+            return item.isBlacklist
+            })
         }
      },
 
-     // 确定启用
-     confirmUse(){
-          this.axios.get('/index',{
+
+     // 判断是否选中应用
+    isSelected(flag){
+      if(this.selectedAppData.length==0){
+          this.$Message.warning('请至少选择一项应用！');
+          breakTips()
+          return false
+      }else if(flag=='1'){
+        if(this.selectedState.indexOf("1")!=-1){
+          this.$Message.warning('含有已是启用状态的数据！');
+          breakTips()
+          return false
+        }else{
+          return true
+        }
+      }else if(flag=='2'){
+        if(this.selectedState.indexOf("2")!=-1){
+          this.$Message.warning('含有已是禁用状态的数据！');
+          breakTips()
+          return false
+        }else{
+          return true
+        }
+      }else if(flag=='3'){
+        if(this.selectedIsBlacklist.indexOf("0")!=-1){
+          this.$Message.warning('含有已是黑名单的数据！');
+          breakTips()
+          return false
+        }else{
+          return true
+        }
+      }else if(flag=='4'){
+        if(this.selectedIsBlacklist.indexOf("1")!=-1){
+          this.$Message.warning('含有已是白名单的数据！');
+          breakTips()
+          return false
+        }else{
+          return true
+        }
+      }
+    },
+
+    // 按钮点击判断
+    handleClick(type){
+        this.actionModal = true
+        switch (type){
+            case '1':
+                this.title = '启用';
+                this.content = '确定启用该应用吗？';
+                this.flag = "1";
+                break;
+            case '2':
+                this.title = '禁用';
+                this.content = '确定禁用该应用吗？';
+                this.flag = "2";
+                break;
+            case '3':
+                this.title = '黑名单';
+                this.content = '确定将该应用的类型修改为黑名单吗？';
+                this.flag = "3";
+                break;
+            case '4':
+                this.title = '白名单';
+                this.content = '确定将该应用的类型修改为白名单吗？';
+                this.flag = "4";
+                break;
+        }
+    },
+
+     // 确定启用/禁用/黑名单/白名单
+     confirmAction(flag){
+          this.axios.get('/app/changeState',{
               params:{
-                  name:"zs",
-                  age:'20'
+                  appIds:this.selectedAppData,
+                  flag:flag
               }
           })
           .then(res=>{
@@ -355,20 +399,6 @@ export default {
           })
      },
 
-     // 确定禁用
-     confirmForbidden(){
-        alert(1)
-     },
-
-     // 确定黑名单
-     confirmBlack(){
-        alert(1)
-     },
-
-     // 确定白名单
-     confirmWhite(){
-        alert(1)
-     },
 
      // 确定下发
      confirmDispatch(){
@@ -380,11 +410,7 @@ export default {
         this.dispatchModal = false
      },
 
-     // 选中应用改变
-     selectAppChange(selection){
-         this.selectedAppData = selection
-         console.log(this.selectedAppData)
-     },
+     
 
      // 选中用户改变
      selectUserChange(selection){

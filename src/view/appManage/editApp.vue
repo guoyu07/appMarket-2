@@ -21,7 +21,7 @@
           </div>
           <div class="upload">
             <Upload action="" :before-upload="handleBeforeUpload"  :accept='".apk"'>
-                <Button type="success" icon="ios-cloud-upload-outline" >重新上传</Button>
+                <Button type="info" icon="ios-cloud-upload-outline" >重新上传</Button>
             </Upload>
           </div>
         </div>
@@ -109,7 +109,7 @@
                   </div>
                   <div>
                     <Upload action="" :before-upload="handleBeforeUpload" :accept='".jpg,.png"'>
-                        <Button type="success" icon="ios-cloud-upload-outline">重新上传</Button>
+                        <Button type="info" icon="ios-cloud-upload-outline">重新上传</Button>
                     </Upload>
                   </div>
                   <p style="font-size:12px;">请上传尺寸512*512，大小200K以内，JPG、PNG格式，建议使用直角图标。</p>

@@ -9,7 +9,7 @@
         <!-- 首次上传时显示 -->
         <div class="upload" v-if='isFirst'>
           <Upload action="" :before-upload="handleBeforeUploadApk" :accept='".apk"'>
-              <Button type="success" icon="ios-cloud-upload-outline">上传apk</Button>
+              <Button type="info" icon="ios-cloud-upload-outline">上传apk</Button>
           </Upload>
           
         </div>
@@ -17,9 +17,9 @@
         <!-- 上传成功后显示 -->
         <div class="intro" v-else>
           <div class="info clearfix">
-            <img src="" alt="" class="img_wrap">
+            <img :src="app.logoPath" alt="" class="img_wrap">
             <div class="left">
-              <p>主题：{{app.theme}}</p>
+              <p>主题：{{app.subject}}</p>
               <p>包名：{{app.packageName}}</p>
               <p>签名：{{app.sign}}</p>
             </div>
@@ -31,7 +31,7 @@
           </div>
           <div class="upload1">
             <Upload action="" :before-upload="handleBeforeUploadApk" :show-upload-list="false"  :accept='"apk"'>
-                <Button type="success" icon="ios-cloud-upload-outline">重新上传</Button>
+                <Button type="info" icon="ios-cloud-upload-outline">重新上传</Button>
             </Upload>
           </div>
         </div>
@@ -56,7 +56,7 @@
             </FormItem>
             <FormItem label="种类" prop="type">
               <Select v-model="appInfo.type" placeholder="请选择" style="width:200px">
-                  <Option value="1">应用</Option>
+                  <Option value="0">应用</Option>
               </Select>
             </FormItem>
             <FormItem label="分类" prop="classify">
@@ -111,7 +111,7 @@
                 <div>
                   <img :src="appInfo.iconUrl" alt="" style="display:none" id="icon" > 
                   <Upload action="">                                
-                      <Button type="success">上传图标</Button>
+                      <Button type="info">上传图标</Button>
                   </Upload>
                 </div>
                 <p style="font-size:12px;">请上传尺寸512*512，大小200K以内，JPG、PNG格式，建议使用直角图标。</p>
@@ -210,7 +210,7 @@ export default {
           callback(new Error('请输入应用名'))      
         }else if(value.length>100){
           callback(new Error('建议20字以内，不超过100个字。'))
-        }else if(value!=this.app.theme){
+        }else if(value!=this.app.subject){
           callback(new Error('应用名应与主题名一致'))      
         }else{
           callback()
@@ -245,7 +245,6 @@ export default {
       percent:0,
       isFirst:true,
       progressModal:false,
-      isUploading:false,
       currentAjax:'',
       appFile:'',
       fileName:'',
@@ -265,8 +264,8 @@ export default {
       },
       appInfo:{
         name: "",
-        tag: "",
-        type: "1",
+        tag: "1",
+        type: "0",
         classify: "09",
         summary:"",
         introduce: "",
@@ -279,12 +278,13 @@ export default {
         uploadList:[]
       },
       app: {
-        theme:"",
+        subject:"",
         packageName: "",
         sign:"",
         versionNumber: "",
         name:"",
-        size:""
+        size:"",
+        logoUrl:""
       },
       ruleValidate:validate(nameValidate,introValidate,listValidate),
       defaultList: [
@@ -307,38 +307,45 @@ export default {
     }
   },
 
-// methods-------------------------------------------------------------------------------
+// methods------------------------------------------------------------------------------------
   methods: {
     // 上传APK处理
     handleBeforeUploadApk(file){
-      console.log(file)
-       this.fileName = file.name
-        this.isUploading = true
+        this.progressModal = true // 显示上传进度模态框
+
+        this.fileName = file.name
+        // 读取文件
         var reader = new FileReader();
         reader.readAsDataURL(file);
-        var data; 
         var that = this
+        // 读取完成后
         reader.onload = function(e){ 
-          // console.log(e)
-          console.log(this.result)
           that.appFile = this.result
-          
-          // 发送ajax请求上传apk
-          console.log(that.appFile)
+          // 显示上传进度
           var config = {
             onUploadProgress: progressEvent => {
-              var complete = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%'
-              this.progress = complete
+              var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+              that.percent = complete
             }
           }
-          that.progressModal = true
-          that.currentAjax = that.axios.post('/login',qs.stringify({file:this.appFile}),config).then(res=>{
-
+          // 上传apk
+          that.currentAjax = that.axios.post('/file/uploadApk',qs.stringify({
+            fileStr:that.appFile,
+            fileName:that.fileName
+          }),config).then(res=>{
+            if(res && res.success=='1'){
+              that.$Message.success("上传成功！")
+              that.progressModal=false
+              that.percent = 0
+            }else{
+              that.$Message.success("上传失败,请重新上传！")
+              that.progressModal=false
+              that.percent = 0
+            }
           })
         }
-        
 
-        return false // 用于自定义上传
+        return false 
         
     },
 
@@ -352,7 +359,11 @@ export default {
     // 提交应用信息
     submit(){
       if(this.validateForm('formValidate')&&this.validateForm('formValidate1')||this.validateForm('formValidate1')&&this.validateForm('formValidate')){
-        console.log(11111111111111)
+        this.axios.get('/app/addApp',{params:{
+
+        }}).then(res=>{
+
+        })
       }
     },
 

@@ -14,12 +14,12 @@
            </div>
            
            <div style="position:relative">
-                <Table border :columns="columns" :data="roleData" no-data-text="暂无数据"></Table>            
+                <Table border :columns="columns" :loading="loading" :data="roleData" no-data-text="暂无数据"></Table>            
                 <Page :total="2" show-total class="page_wrap"></Page>
-                <Spin fix v-if='loading'>
+                <!-- <Spin fix v-if='loading'>
                     <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
                     <div>loading...</div>
-                </Spin>
+                </Spin> -->
            </div>
       </div>
     </div>
@@ -82,6 +82,7 @@ export default {
 // created------------------------------------------------------------------------------
   created(){
     document.title = "权限管理"
+    this.queryTable()
   },
 
 // data---------------------------------------------------------------------------------
@@ -154,17 +155,7 @@ export default {
             }
         }
       ],
-      roleData: [
-        {
-            mask: '管理员',
-            description: "管理员",
-        },
-        {
-            mask: '普通成员',
-            description: "普通成员",
-        },
-        
-      ],
+      roleData: [],
       deleteModal:false,
       editModal:false,
       addModal: false,
@@ -182,6 +173,17 @@ export default {
 
 // methods------------------------------------------------------------------------------
   methods: {
+    // 查询表格
+    queryTable(){
+      this.loading = true
+      this.axios.get("/userPerm/qryRoleList").then(res=>{
+        if(res&&res.success==1){
+          this.roleData = res.data
+          this.loading = false
+        }
+      })
+    },
+
       // 点击添加角色按钮
       addRole(){
         this.$refs['formValidate'].resetFields() 

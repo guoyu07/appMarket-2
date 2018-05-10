@@ -16,10 +16,8 @@
         <div id="app"></div>
         <script>
             var isIE = function(){ 
-                console.log(window.navigator.userAgent.indexOf("MSIE"))
                  return (window.navigator.userAgent.indexOf("MSIE")>=1);  
              }
-             console.log(isIE)
              // 修复IE10及以下版本不支持dataset属性的问题，兼容transfer-dom.js中使用了dataset的问题
              if (isIE() && window.HTMLElement) {
                  if (Object.getOwnPropertyNames(HTMLElement.prototype).indexOf('dataset') === -1) {

@@ -76,12 +76,12 @@ export default {
                     duration: 0
                 });
                 // 发送登录请求
-                this.axios.post('/login',qs.stringify(this.loginData))
-                .then((res)=>{
-                    // console.log(res.data.success=='1')
-                    this.count = 0;
+                // this.axios.post('/login',qs.stringify(this.loginData))
+                // .then((res)=>{
+                //     // console.log(res.data.success=='1')
+                //     this.count = 0;
                     
-                    if(res.success=='1'){
+                //     if(res.success=='1'){
                         this.$Message.destroy(msg)
                         this.$Message.success("登陆成功！")
 
@@ -101,9 +101,11 @@ export default {
                         // 跳转到首页
                         this.$router.push({path: '/index/homepage'})
                         window.localStorage.setItem('currentMenu','/index/homepage')
-                    }
-                })
-               
+                    // }else{
+                    //    this.$Message.destroy(msg)
+                    //    this.$Message.success("登陆失败！") 
+                    // }
+                // })             
             }
         })
       },
