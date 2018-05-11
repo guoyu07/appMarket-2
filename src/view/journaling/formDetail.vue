@@ -10,33 +10,43 @@
                     <Icon type="navicon-round"></Icon> {{formName}}
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary"><Icon type="ios-download-outline" style="font-size:14px"></Icon> 导出</Button>
+                    <Button type="primary" @click="exportExcel"><Icon type="ios-download-outline" style="font-size:14px"></Icon> 导出</Button>
                 </div>
            </div>
            <Table border :columns="columns" :data="formData" no-data-text="暂无数据"></Table>            
-           <Page :total="2" show-total class="appPage page_wrap"></Page>
+           <Page :total="totalPage" :current='pageNo' @on-change='changePage' show-total class="appPage page_wrap"></Page>
       </div>
     </div>
+
   </div>
 </template>
 
 <script>
+import qs from 'qs'
 export default {
   created(){
-    this.formName = this.$route.query.type==1?"设备报表":(this.$route.query.type==2?'客户端统计报表':'数据流量报表')
-    this.columns = this.$route.query.type==1?this.columns1:(this.$route.query.type==2?this.columns2:this.columns3)
+    this.reportType= this.$route.query.type
+    this.formName = this.reportType==1?"设备报表":(this.reportType==2?'客户端统计报表':'数据流量报表')
+    this.columns = this.reportType==1?this.columns1:(this.reportType==2?this.columns2:this.columns3)
     document.title = "日志报表-报表-详情"
+    // this.queryTable()
   },
 
   data(){
     return {
+      loading:false,
+      totalPage:1,
+      pageNo:1,
       formName:'',
       columns:[],
       columns1:[
         {
-            type: 'index',
+            // type: 'index',
             align: 'center',
-            title: "序号"
+            title: "序号",
+             render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
         },
         {
             title: "设备名称",
@@ -93,9 +103,12 @@ export default {
       ],
       columns2:[
         {
-            type: 'index',
+            // type: 'index',
             align: 'center',
-            title: "序号"
+            title: "序号",
+             render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
         },
         {
             title: "设备名称",
@@ -124,9 +137,12 @@ export default {
       ],
       columns3:[
         {
-            type: 'index',
+            // type: 'index',
             align: 'center',
-            title: "序号"
+            title: "序号",
+             render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
         },
         {
             title: "用户名",
@@ -159,7 +175,44 @@ export default {
       ],
       formData:[]
     }
-  }
+  },
+
+// methods------------------------------------------------------------------------------------------------
+    methods:{
+        // 查询表格
+        queryTable(){
+            this.loading=true
+            this.axios.post('/device/listReportData',qs.stringify({
+                reprotType:this.reportType,
+                pageNo:this.pageNo,
+                pageSize:10
+            })).then(res=>{
+                if(res && res.success=='1' && res.data){
+                    this.loading = false
+                    const data = res.data
+                    this.columns = data.list
+                    this.totalPage = data.total
+                }
+            })
+        },
+
+        // 改变页码
+        changePage(current){
+            this.pageNo = current
+            this.queryTable()
+        },
+
+        // 导出报表
+        exportExcel(){
+            this.axios.post('/document/exportExcel',qs.stringify({reportType:this.reportType}))
+            .then(res=>{
+                if(res && res.success=='1'){
+                    this.$Message.success("导出成功！")
+                }
+                
+            })
+        }
+    }
 }
 </script>
 

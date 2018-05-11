@@ -9,7 +9,7 @@
             <Input v-model="searchData.search"  placeholder="用户名/IME"></Input>
           </FormItem>
           <FormItem>
-            <Button type="primary">筛选</Button>
+            <Button type="primary" @click='queryTable'>筛选</Button>
           </FormItem>
         </Form>
       </div>
@@ -23,8 +23,8 @@
                     <Button type="primary"  @click="addDevice"><Icon type="plus"></Icon> 添加设备</Button>
                 </div>
            </div>
-           <Table border :columns="columns" :data="deviceData" no-data-text="暂无数据"></Table>            
-           <Page :total="2" show-total class="page_wrap"></Page>
+           <Table border :columns="columns" :loading='loading' :data="deviceData" no-data-text="暂无数据"></Table>            
+           <Page :total="totalPage" :current='searchData.pageNo' @on-change='changePage' show-total class="page_wrap"></Page>
       </div>
     </div>
 
@@ -82,15 +82,22 @@
 </template>
 
 <script>
+import qs from 'qs'
 export default {
   created(){
     document.title = "设备管理"
+    // this.queryTable()
   },
   data(){
     return {
+      loading:false,
       searchData:{
-        search:''
+        searchText:'',
+        pageNo:1,
+        pageSize:10
       },
+      startRow:1,
+      totalPage:1,
       ruleValidate:{
           userName:[
             { required: true,  message:'请选择用户', trigger: 'change' },
@@ -119,9 +126,12 @@ export default {
       },
       columns: [
         {
-            type: 'index',
+            // type: 'index',
             align: 'center',
-            title: "序号"
+            title: "序号",
+            render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
         },
         {
             title: '设备名称',
@@ -156,8 +166,7 @@ export default {
                         },
                         on: {
                             click: () => {
-                                this.$router.push({path:'/index/deviceDetail'})
-                                
+                                this.$router.push({path:'/index/deviceDetail',query:{id:params.row.id}})     
                             }
                         }
                     }, '详情')
@@ -167,6 +176,7 @@ export default {
       ],
       deviceData: [
         {
+            id:1,
             name: 'Q787',
             model: "ZXH-Q787",
             imei:'1234455',
@@ -191,6 +201,27 @@ export default {
   },
 
   methods: {
+      // 查询表格
+      queryTable(){
+        this.loading=true
+        this.axios.post('/device/listDevices',qs.stringify(this.searchData))
+        .then(res=>{
+          if(res&&res.success=='1'&&res.data){
+            this.loading=false
+            const data = res.data
+            this.deviceData = data.list
+            this.totalPage = data.total
+            this.startRow = data.startRow
+          }
+        })
+      },
+
+      // 切换页码
+      changePage(current){
+        this.searchData.pageNo =current
+        this.queryTable()
+      },
+
       // 点击添加设备按钮
       addDevice(){
         this.$refs['formValidate'].resetFields() 
@@ -201,7 +232,17 @@ export default {
       confirmAdd(){
         this.$refs['formValidate'].validate((valid) => {
             if(valid) {
-            console.log(11111)
+              this.axios.post('/device/addDevice',qs.stringify(this.addDeviceData))
+              .then(res=>{
+                if(res&&res.success=='1'){
+                  this.$Message.success("操作成功！")
+                  this.addModal=false
+                  this.queryTable()
+                }else{
+                  this.$Message.success("操作失败！")
+                  this.addModal=false
+                }
+              })
             }
         })
       },

@@ -11,7 +11,6 @@
           <Upload action="" :before-upload="handleBeforeUploadApk" :accept='".apk"'>
               <Button type="info" icon="ios-cloud-upload-outline">上传apk</Button>
           </Upload>
-          
         </div>
 
         <!-- 上传成功后显示 -->
@@ -21,12 +20,12 @@
             <div class="left">
               <p>主题：{{app.subject}}</p>
               <p>包名：{{app.packageName}}</p>
-              <p>签名：{{app.sign}}</p>
+              <p>包大小：{{app.size}}</p>
             </div>
             <div class="right">
               <p>版本号：{{app.versionNumber}}</p>
-              <p>版本名：{{app.name}}</p>
-              <p>包大小：{{app.size}}</p>
+              <p>版本名：{{app.versionName}}</p>
+              
             </div>
           </div>
           <div class="upload1">
@@ -247,6 +246,7 @@ export default {
       progressModal:false,
       currentAjax:'',
       appFile:'',
+      apkUrl:"",
       fileName:'',
       iconFile:'',
       shotFiles:'',
@@ -280,11 +280,10 @@ export default {
       app: {
         subject:"",
         packageName: "",
-        sign:"",
         versionNumber: "",
-        name:"",
+        versionName:"",
         size:"",
-        logoUrl:""
+        iconUrl:""
       },
       ruleValidate:validate(nameValidate,introValidate,listValidate),
       defaultList: [
@@ -311,47 +310,52 @@ export default {
   methods: {
     // 上传APK处理
     handleBeforeUploadApk(file){
+        const size = file.size / 1024 / 1024
+        if(size>100){
+          this.$Message.error({
+            content:"文件大小不超过100M!",
+            duration:3
+          })
+          return;
+        }
         this.progressModal = true // 显示上传进度模态框
-
-        this.fileName = file.name
-        // 读取文件
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        var that = this
-        // 读取完成后
-        reader.onload = function(e){ 
-          that.appFile = this.result
-          // 显示上传进度
-          var config = {
+        let form = new FormData()
+        form.append("file",file)
+        var config = {
             onUploadProgress: progressEvent => {
               var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
-              that.percent = complete
+              this.percent = complete
             }
           }
-          // 上传apk
-          that.currentAjax = that.axios.post('/file/uploadApk',qs.stringify({
-            fileStr:that.appFile,
-            fileName:that.fileName
-          }),config).then(res=>{
+          this.currentAjax = this.axios.post('/file/uploa',form,config).then(res=>{
             if(res && res.success=='1'){
-              that.$Message.success("上传成功！")
-              that.progressModal=false
-              that.percent = 0
+              this.$Message.success("上传成功！")
+              this.progressModal=false
+              this.isFirst = false 
+              // 设置数据
+              const data = res.data
+              this.app.iconUrl = data.iconUrl
+              this.app.packageName = data.packageName
+              this.app.size = data.size
+              this.app.subject = data.subject
+              this.app.versionName = data.versionName
+              this.app.versionNumber = data.versionNumber
+              this.apkUrl = data.apkUrl
+              this.percent = 0
             }else{
-              that.$Message.success("上传失败,请重新上传！")
-              that.progressModal=false
-              that.percent = 0
+              this.$Message.success("上传失败,请重新上传！")
+              this.progressModal=false
+              this.percent = 0
             }
           })
-        }
-
+       
         return false 
         
     },
 
     // 取消上传APK
     stopUpload(){
-      // this.currentAjax.abort()
+      this.currentAjax.abort()
       this.progressModal = false
 
     },
@@ -391,7 +395,7 @@ export default {
     // 上传图片
     handleBeforeUpload (file) {
       console.log(file)
-      const size = file.size / 2048 / 2048
+      const size = file.size / 1024 / 1024
       if(size>1){
         this.$Message.error({
           content:"图片大小不超过1M!",

@@ -37,7 +37,7 @@
            
            <div style="position:relative">
                 <Table border :columns="columns" :loading='loading' :data="phoneUserData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>            
-                <Page :total="totalPage" show-total class="page_wrap"></Page>
+                <Page :total="totalPage" :current='searchData.pageNo' @on-change='changePage' show-total class="page_wrap"></Page>
            </div>
            
       </div>

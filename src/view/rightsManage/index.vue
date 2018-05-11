@@ -15,7 +15,7 @@
            
            <div style="position:relative">
                 <Table border :columns="columns" :loading="loading" :data="roleData" no-data-text="暂无数据"></Table>            
-                <Page :total="2" show-total class="page_wrap"></Page>
+                <Page :total="totalPage" :current='pageNo' @on-change='changePage' show-total class="page_wrap" @></Page>
                 <!-- <Spin fix v-if='loading'>
                     <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
                     <div>loading...</div>
@@ -78,17 +78,22 @@
 </template>
 
 <script>
+import qs from 'qs'
+
 export default {
 // created------------------------------------------------------------------------------
   created(){
     document.title = "权限管理"
-    this.queryTable()
+    // this.queryTable()
   },
 
 // data---------------------------------------------------------------------------------
   data(){
     return {
       loading:false,
+      pageNo:1,
+      totalPage:1,
+      startRow:1,
       ruleValidate:{
         mask:[
           { required: true,  message:'请输入角色名称', trigger: 'blur' },
@@ -99,9 +104,12 @@ export default {
       },
       columns: [
         {
-            type: 'index',
+            // type: 'index',
             align: 'center',
-            title: "序号"
+            title: "序号",
+            render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
         },
         {
             title: '角色名称',
@@ -124,8 +132,17 @@ export default {
                         },
                         on: {
                             click: () => {
-                                this.editModal = true
                                 
+                                this.axios.post('/userPerm/listRoles',qs.stringify({id:params.row.id}))
+                                .then(res=>{
+                                    if(res&&res.success=='1'){
+                                        this.editModal = true
+                                        const data  = res.data 
+                                        this.editRoleData.id = data.list[0].id
+                                        this.editRoleData.mask = data.list[0].mask
+                                        this.editRoleData.description = data.list[0].description
+                                    }
+                                })
                             }
                         }
                     }, '编辑'),
@@ -137,6 +154,7 @@ export default {
                         on: {
                             click: () => {
                                 this.deleteModal = true
+                                this.delId = params.row.id
                             }
                         }
                     }, '删除'),
@@ -147,7 +165,7 @@ export default {
                         },
                         on: {
                             click: () => {
-                                this.$router.push({path:'/index/dispatchRight'})
+                                this.$router.push({path:'/index/dispatchRight',query:{roleId:params.row.id}})
                             }
                         }
                     }, '分配权限')
@@ -155,7 +173,24 @@ export default {
             }
         }
       ],
-      roleData: [],
+      roleData: [
+      {
+        "id": 2,
+        "description": "普通用户",
+        "mask": "ordinary",
+        "available": "1",
+        "createDate": "2018-05-10 00:00:00",
+        "updateDate": "2018-05-10 00:00:00"
+      },
+      {
+        "id": 1,
+        "description": "管理员",
+        "mask": "admin",
+        "available": "1",
+        "createDate": "2018-04-30 00:00:00",
+        "updateDate": "2018-04-30 00:00:00"
+      }
+    ],
       deleteModal:false,
       editModal:false,
       addModal: false,
@@ -164,9 +199,11 @@ export default {
           description:''
       },
       editRoleData: {
-          mask:'管理员',
-          description:'管理员管理员管理员'
-      }
+          id:"",
+          mask:'',
+          description:''
+      },
+      delId:""
 
     }
   },
@@ -176,12 +213,24 @@ export default {
     // 查询表格
     queryTable(){
       this.loading = true
-      this.axios.get("/userPerm/qryRoleList").then(res=>{
+      this.axios.post("/userPerm/listRoles",qs.stringify({
+          pageNo:this.pageNo,
+          pageSize:10
+      })).then(res=>{
         if(res&&res.success==1){
-          this.roleData = res.data
+          const data = res.data
+          this.totalPage = data.total
+          this.roleData = data.list
+          this.startRow = data.startRow
           this.loading = false
         }
       })
+    },
+
+    // 改变页码
+    changePage(current){
+      this.pageNo = current
+      this.queryTable()
     },
 
       // 点击添加角色按钮
@@ -194,7 +243,17 @@ export default {
       confirmAdd(){
         this.$refs['formValidate'].validate((valid) => {
             if(valid) {
-            console.log(11111)
+                this.axios.post('/userPerm/addRole',qs.stringify(this.addRoleData))
+                .then(res=>{
+                    if(res&&res.success=='1'){
+                        this.$Message.success("操作成功！")
+                        this.addModal = flase
+                        this.queryTable()
+                    }else{
+                        this.$Message.success("操作失败！")
+                        this.addModal = flase
+                    }
+                })
             }
         })
       },
@@ -203,14 +262,34 @@ export default {
       confirmEdit(){
           this.$refs['formValidate1'].validate((valid) => {
             if(valid) {
-            console.log(11111)
+                this.axios.post('/userPerm/upRole',qs.stringify(thia.editRoleData))
+                .then(res=>{
+                    if(res&&res.success=='1'){
+                        this.$Message.success("操作成功！")
+                        this.editModal = false
+                        this.queryTable()
+                    }
+                })
             }
         })
       },
 
       // 确认删除
       confirmDelete(){
-
+          this.axios.get('/userPerm/delRole',{
+              params:{
+                  id: this.delId
+              }
+          }).then(res=>{
+              if(res&&res.success=='1'){
+                  this.$Message.success("操作成功！")
+                  this.deleteModal=false
+                  this.queryTable()
+              }else{
+                  this.$Message.success("操作失败！")
+                  this.deleteModal=false
+              }
+          })
       }
   }
 

@@ -123,10 +123,13 @@ export default {
             align: 'center'
         },
         {
-            type: 'index',
+            // type: 'index',
             width: 70,
             align: 'center',
-            title: "序号"
+            title: "序号",
+            render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
         },
         {
             title: "类型",

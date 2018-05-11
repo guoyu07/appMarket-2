@@ -48,15 +48,21 @@
 </template>
 
 <script>
+import qs from 'qs'
+
 export default {
 // created----------------------------------------------------------------------------------------------
   created(){
     document.title="权限管理-分配权限";
+    // 获取用户id
+    this.roleId = this.$route.query.roleId
+    console.log(this.roleId)
   },
 
 // data-------------------------------------------------------------------------------------------------
   data(){
     return {
+      roleId:"",
       rightsData:[
         {
             title: '一级菜单',
@@ -98,6 +104,18 @@ export default {
 
 // methods----------------------------------------------------------------------------------------------
    methods:{
+       // 权限树查询
+       queryTree(){
+           this.axios.post('/userPerm/listRoles/getPermissionTree',qs.stringify({
+               id:this.roleId
+           }))
+           .then(res=>{
+               if(res&&res.success=='1'){
+
+               }
+           })
+       },
+
        // 全选
        selectAll(){
 

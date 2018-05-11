@@ -49,7 +49,9 @@
 
             <!-- 应用安装 -->
             <TabPane label="应用安装" name="name2">
-                <Table border :columns="columns" :data="appInstallData" no-data-text="暂无数据"></Table>            
+                <Table border :columns="columns" :data="appInstallData" no-data-text="暂无数据"></Table> 
+                <Page :total="totalPage" :current='pageNo' @on-change='changePage' show-total class="page_wrap"></Page>
+           
             </TabPane>
 
             <!-- 底部按钮 -->
@@ -67,11 +69,19 @@
 
 <script>
 export default {
+// created-----------------------------------------------------------------------------------
   created(){
     document.title="设备管理-详情"
+    this.queryDetail()
   },
+
+// data---------------------------------------------------------------------------------------
   data(){
     return {
+      loading:false,
+      pageNo:1,
+      totalPage:1,
+      startRow:1,
       deviceData:{
         type:"",
         belongto:"",
@@ -101,9 +111,12 @@ export default {
       },
       columns:[
         {
-            type: 'index',
+            // type: 'index',
             align: 'center',
-            title: "序号"
+            title: "序号",
+            render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
         },
         {
             title: "应用名称",
@@ -114,16 +127,44 @@ export default {
             key: 'createDate',
         }
       ],
-      appInstallData:[
-        {
-          name: 'QQ',
-          createDate: '2018-04-02'
-        },
-        {
-          name: '微信',
-          createDate: '2018-04-03'
+      appInstallData:[]
+    }
+  },
+
+// methods------------------------------------------------------------------------------------
+  methods:{
+    // 查询详情
+    queryDetail(){
+      this.axios.get('/device/getDetail',{params:{
+        id:this.$route.query.id
+      }}).then(res=>{
+        if(res&&res.success=='1'&&res.data){
+          const data = res.data
+          this.deviceData = data
         }
-      ]
+      })
+    },
+
+    // 查询应用安装情况
+    queryInstall(){
+      this.loading = true
+      this.axios.get('/device/getAppinstall',{params:{
+        deviceId:this.$route.query.id
+      }}).then(res=>{
+          if(res&&res.success=='1'&&res.data){
+            this.loading=false
+            const data = res.data
+            this.appInstallData = data.list
+            this.totalPage = data.total
+            this.startRow = data.startRow
+          }
+      })
+    },
+
+    // 页码改变
+    changePage(current){
+      this.pageNo = current
+      this.queryInstall()
     }
   }
 }
