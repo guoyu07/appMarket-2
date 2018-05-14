@@ -5,18 +5,18 @@
       
         <!-- 简介 -->
         <div class="intro">
-          <p style="margin-left:20%">{{appInfo.name}}</p>
+          <p style="margin-left:23%">{{appInfo.appName}}</p>
           <div class="info clearfix">
-            <img src="" alt="" class="img_wrap">
+            <img :src="appInfo.logoPath" alt="" class="img_wrap">
             <div class="left">
-              <p>主题：{{app.theme}}</p>
-              <p>包名：{{app.packageName}}</p>
-              <p>签名：{{app.sign}}</p>
+              <p>主题：{{appInfo.subject}}</p>
+              <p>包名：{{appInfo.packageName}}</p>
+              <p>包大小：{{appInfo.size}}</p>
             </div>
             <div class="right">
-              <p>版本号：{{app.versionNumber}}</p>
-              <p>版本名：{{app.name}}</p>
-              <p>更新时间：{{app.updateDate}}</p>
+              <p>版本号：{{appInfo.versionNumber}}</p>
+              <p>版本名：{{appInfo.versionName}}</p>
+              <p>更新时间：{{appInfo.updateDate}}</p>
             </div>
           </div>
         </div>
@@ -26,17 +26,17 @@
           <h2>应用信息</h2>
           <div class="appInfo">
               <Form :label-width="100">
-                <FormItem label="应用名">{{appInfo.name}}</FormItem>
-                <FormItem label="应用标签">{{appInfo.tag}}</FormItem>
-                <FormItem label="种类">{{appInfo.type}}</FormItem>
-                <FormItem label="分类">{{appInfo.classify}}</FormItem>
+                <FormItem label="应用名">{{appInfo.appName}}</FormItem>
+                <FormItem label="应用标签">{{appInfo.tag=='1'?'工作':'生活'}}</FormItem>
+                <FormItem label="种类">{{appInfo.type=='0'?'应用':'其他'}}</FormItem>
+                <FormItem label="分类">{{appClassify[appInfo.classify]}}</FormItem>
                 <FormItem label="一句话简介">{{appInfo.summary}}</FormItem>
                 <FormItem label="应用描述">{{appInfo.introduce}}</FormItem>
                 <FormItem label="新版本特征">{{appInfo.featureDesc}}</FormItem>
                 <FormItem label="权限获取说明">{{appInfo.authority}}</FormItem>
-                <FormItem label="收费描述">{{appInfo.ifChare}}</FormItem>
-                <FormItem label="广告状态">{{appInfo.hasAd}}</FormItem>
-                <FormItem label="支持语言">{{appInfo.supportLanguage}}</FormItem>
+                <FormItem label="收费描述">{{appIfChare[appInfo.ifChare]}}</FormItem>
+                <FormItem label="广告状态">{{appHasAd[appInfo.hasAd]}}</FormItem>
+                <FormItem label="支持语言">{{appSupportLanguage[appInfo.supportLanguage]}}</FormItem>
               </Form>
           </div>
         </div>
@@ -52,8 +52,8 @@
                   </div>
                 </FormItem>
                 <FormItem label="应用截图">
-                  <div class="urls" v-for='(item,index) in appInfo.captureUrls' :key='index'>
-                    <img src="" alt="" style="width:100%;height:100%">
+                  <div class="urls" v-for='(item,index) in uploadList' :key='index'>
+                    <img :src="item" alt="" style="width:100%;height:100%;display:block">
                   </div>
                 </FormItem>
               </Form>
@@ -69,25 +69,34 @@
 </template>
 
 <script>
+import {validate,appClassify,appIfChare,appHasAd,appSupportLanguage} from '../../util/util.js'
+
 export default {
 // created-----------------------------------------------------------------------------------
   created(){
     document.title = "应用管理-详情"
+    this.appId = this.$route.query.id
+    this.queryDetail()
   },
 
 // data--------------------------------------------------------------------------------------
   data(){
     return {
-      app: {
-        theme:"",
+      appId:"",
+      uploadList:[],
+      appClassify:appClassify,
+      appIfChare:appIfChare,
+      appHasAd:appHasAd,
+      appSupportLanguage:appSupportLanguage,
+      appInfo: {
+        logoPath:"",
+        subject:"",
         packageName: "",
         sign:"",
         versionNumber: "",
-        name:"",
-        updateDate:""
-      },
-      appInfo:{
-        name: "",
+        versionName:"",
+        updateDate:"",
+        appName: "",
         tag: "",
         type: "1",
         classify: "",
@@ -99,8 +108,24 @@ export default {
         hasAd: "",
         supportLanguage: "",
         iconUrl:"",
-        captureUrls:[1,2,3]
+        captureUrls:''
       },
+    }
+  },
+
+// methods---------------------------------------------------------------------------------------------
+  methods:{
+    // 查询详情
+    queryDetail(){
+      this.axios.get('/app/getDetail',{params:{
+        appId:this.appId
+      }}).then(res=>{
+        if(res && res.success=='1'){
+          const data = res.data
+          this.appInfo = data
+          this.uploadList = data.captureUrls.split(";")
+        }
+      })
     }
   }
   
@@ -114,7 +139,7 @@ export default {
         padding:20px;
         background:#fff;
         .info{
-          margin-left:20%;
+          margin-left:23%;
           
           .img_wrap,.left,.right{
             float:left;
@@ -124,8 +149,8 @@ export default {
             }
           }
           .img_wrap{
-            width:80px;
-            height: 80px;
+            width:48px;
+            height: 48px;
             background:#ccc
           }
         }

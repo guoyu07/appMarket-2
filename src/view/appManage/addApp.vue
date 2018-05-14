@@ -44,8 +44,8 @@
         <div class="form_wrap">
           <!-- 表单 -->
           <Form ref='formValidate' :model="appInfo" :label-width="110" :rules="ruleValidate">
-            <FormItem label="应用名"  prop="name">
-               <Input v-model="appInfo.name" placeholder="建议20字以内，不超过100个字。" style="width:400px"></Input>
+            <FormItem label="应用名"  prop="appName">
+               <Input v-model="appInfo.appName" placeholder="建议20字以内，不超过100个字。" style="width:400px"></Input>
             </FormItem>
             <FormItem label="应用标签"  prop="tag">
               <Select v-model="appInfo.tag" placeholder="请选择" style="width:200px">
@@ -108,8 +108,8 @@
             <Form ref='formValidate1' :model="appInfo" :label-width="110" :rules="ruleValidate">
               <FormItem label="应用图标" prop='iconUrl'>
                 <div>
-                  <img :src="appInfo.iconUrl" alt="" style="display:none" id="icon" > 
-                  <Upload action="">                                
+                  <img :src="appInfo.iconUrl" alt=""  id="icon" v-if='appInfo.iconUrl!=""'> 
+                  <Upload :accept='".jpg,.png"' :before-upload="handleUploadIcon"  action="" >                                
                       <Button type="info">上传图标</Button>
                   </Upload>
                 </div>
@@ -118,22 +118,10 @@
               <FormItem label="应用截图" prop='uploadList'>
                 <div class="clearfix" >
                   <div class="screenShot">
-                    <!-- <Upload
-                        multiple
-                        type="drag"
-                        action="">
-                        <div style="padding: 50px">
-                            <Icon type="plus" size="52" style="color: #f2f3f3"></Icon>
-                        </div>
-                    </Upload> -->
                     <div class="demo-upload-list" v-for="(item,index) in appInfo.uploadList" :key="index">
-                        <template v-if="item.status === 'finished'">
+                        <template v-if="item!=''">
                             <Icon type="close-circled" class="delShot"  @click.native="handleRemove(item)"></Icon>
                             <img :src="item.url">
-                            <!-- <div class="demo-upload-list-cover">
-                                <Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>
-                                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-                            </div> -->
                             <div></div>
                         </template>
                         <template v-else>
@@ -146,7 +134,7 @@
                         :show-upload-list="false"
                         :default-file-list="defaultList"
                         :accept='".jpg,.png"'
-                        :before-upload="handleBeforeUpload"
+                        :before-upload="handleUploadCaputer"
                         type="drag"
                         action=""
                         style="display: inline-block;width:140px;">
@@ -154,11 +142,6 @@
                             <Icon type="plus" size="20"></Icon>
                         </div>
                     </Upload>
-                    <Modal title="图片预览" v-model="visible" class-name="vertical-center-modal viewModal" :mask-closable="false">
-                        <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width:360px;height:480px;">
-                    </Modal>
-
-
                   </div>
                 </div>
                 <p style="font-size:12px;margin-bottom:20px">请上传2-4张截图、单张大小不超过1M。JPG、PNG格式，像素540*960、720*1080、1080*1920。</p> 
@@ -189,7 +172,7 @@
 
 <script>
 import qs from 'qs'
-import {validate} from '../../util/util.js'
+import {validate,appClassify} from '../../util/util.js'
 
 export default {
 // created------------------------------------------------------------------------------------
@@ -210,14 +193,20 @@ export default {
         }else if(value.length>100){
           callback(new Error('建议20字以内，不超过100个字。'))
         }else if(value!=this.app.subject){
-          callback(new Error('应用名应与主题名一致'))      
+          callback(new Error('应用名应与apk包主题名一致'))      
         }else{
-          callback()
+          // 查重
+          this.axios.get('/app/checkAppName',{params:{
+            appName:value,
+            systemType:'01'
+          }}).then(res=>{
+              if(res.success==0){
+                callback(new Error('该应用名已存在'))
+              }else{
+                callback()
+              }
+          })
         }
-        // 查重
-        // this.axios.get('/api').then(res=>{
-
-        // })
     }
     const introValidate = (rule,value,callback)=>{
         var str = /(((ht|f)tps?):\/\/)?[\w\-]+(\.[\w\-]+)+([\w\-\.,@?^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?/g;
@@ -244,29 +233,13 @@ export default {
       percent:0,
       isFirst:true,
       progressModal:false,
-      currentAjax:'',
-      appFile:'',
-      apkUrl:"",
       fileName:'',
-      iconFile:'',
-      shotFiles:'',
-      allType:{
-        '01':'生活服务',
-        '02':'购物',
-        '03':'运动健康',
-        '04':'社交',
-        '05':'教育学习',
-        '06':'旅游酒店',
-        '07':'视频',
-        '08':'音乐',
-        '09':'出行',
-        '10':'阅读',
-      },
+      allType:appClassify,
       appInfo:{
-        name: "",
+        appName: "",
         tag: "1",
         type: "0",
-        classify: "09",
+        classify: "",
         summary:"",
         introduce: "",
         featureDesc: "",
@@ -275,7 +248,8 @@ export default {
         hasAd: "",
         supportLanguage: "",
         iconUrl:"",
-        uploadList:[]
+        captureUrls:"",
+        uploadList:[], // 上传截图数组
       },
       app: {
         subject:"",
@@ -283,24 +257,14 @@ export default {
         versionNumber: "",
         versionName:"",
         size:"",
-        iconUrl:""
+        logoPath:"",
+        source:"1",
+        systemType:'01',
+        apkPath:"", 
+        updateDate:"",
       },
       ruleValidate:validate(nameValidate,introValidate,listValidate),
-      defaultList: [
-        {
-            'name': 'a42bdcc1178e62b4694c830f028db5c0',
-            'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-        },
-        {
-            'name': 'bc7521e033abdd1e92222d733590f104',
-            'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-        },
-         {
-            'name': 'a42bdcc1178e62b4694c830f028db5c0',
-            'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-        },
-        
-      ],
+      defaultList: [],
       imgName: '',
       visible: false,
     }
@@ -321,33 +285,39 @@ export default {
         this.progressModal = true // 显示上传进度模态框
         let form = new FormData()
         form.append("file",file)
+        
+        this.source = this.axios.CancelToken.source()
         var config = {
             onUploadProgress: progressEvent => {
               var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
               this.percent = complete
-            }
+            },
+            cancelToken: this.source.token
+        }
+        this.axios.post('/file/uploa',form,config).then(res=>{
+          if(res && res.success=='1'){
+            this.$Message.success("上传成功！")
+            this.progressModal=false
+            this.isFirst = false 
+            // 设置数据
+            const data = res.data
+            this.app.logoPath = data.iconUrl
+            this.app.packageName = data.packageName
+            this.app.size = data.size
+            this.app.subject = data.subject
+            this.app.versionName = data.versionName
+            this.app.versionNumber = data.versionNumber
+            this.app.apkPath = data.apkUrl
+            this.percent = 0
+          }else{
+            this.$Message.success("上传失败,请重新上传！")
+            this.progressModal=false
+            this.percent = 0
           }
-          this.currentAjax = this.axios.post('/file/uploa',form,config).then(res=>{
-            if(res && res.success=='1'){
-              this.$Message.success("上传成功！")
-              this.progressModal=false
-              this.isFirst = false 
-              // 设置数据
-              const data = res.data
-              this.app.iconUrl = data.iconUrl
-              this.app.packageName = data.packageName
-              this.app.size = data.size
-              this.app.subject = data.subject
-              this.app.versionName = data.versionName
-              this.app.versionNumber = data.versionNumber
-              this.apkUrl = data.apkUrl
-              this.percent = 0
-            }else{
-              this.$Message.success("上传失败,请重新上传！")
-              this.progressModal=false
-              this.percent = 0
-            }
-          })
+        }).catch(res=>{
+            this.$Message.warning("取消上传！")
+            this.percent = 0
+        })
        
         return false 
         
@@ -355,27 +325,21 @@ export default {
 
     // 取消上传APK
     stopUpload(){
-      this.currentAjax.abort()
+      // 中断ajax请求
+      this.source.cancel()
       this.progressModal = false
 
     },
 
-    // 提交应用信息
-    submit(){
-      if(this.validateForm('formValidate')&&this.validateForm('formValidate1')||this.validateForm('formValidate1')&&this.validateForm('formValidate')){
-        this.axios.get('/app/addApp',{params:{
 
-        }}).then(res=>{
-
-        })
-      }
-    },
 
     // 判断表单是否验证通过
     validateForm(name){
       this.$refs[name].validate((valid) => {
           if(valid) {
               return true
+          }else{
+            return false
           }
       })
     },
@@ -392,8 +356,40 @@ export default {
         this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
     },
 
-    // 上传图片
-    handleBeforeUpload (file) {
+    // 上传图标
+    handleUploadIcon(file){
+      var reader = new FileReader()
+      reader.readAsDataURL(file)
+      var that = this
+      reader.onload = function(e){
+        var base = this.result
+        console.log(base)
+        var img = new Image()
+        img.src = base
+        img.onload = function(){
+          if(img.width!=512 || img.height!=512){
+            that.$Message.error({
+              content:"请上传像素512*512的图片！",
+              duration:3
+            })
+            return
+          }
+          that.axios.post('/file/uploadImage',qs.stringify({
+            imageStr:base
+          })).then(res=>{
+            if(res&&res.success=='1'){
+              that.appInfo.iconUrl = res.data.imagePath
+            }
+          })
+        }
+        
+      } 
+
+      return false
+    },
+
+    // 上传截图
+    handleUploadCaputer (file) {
       console.log(file)
       const size = file.size / 1024 / 1024
       if(size>1){
@@ -421,15 +417,46 @@ export default {
             })
             return
           }
+          that.axios.post('/file/uploadImage',qs.stringify({
+            imageStr:base
+          })).then(res=>{
+            if(res&&res.success=='1'){
+              let obj = {}
+              obj.url = res.data.imagePath
+              that.appInfo.uploadList.push(obj)
+              that.appInfo.captureUrls = that.appInfo.uploadList.map(item=>{
+                return item.url
+              }).join(";")
+            }
+          })
         }
-        
       }
       return false
+    },
+
+    // 提交应用信息
+    submit(){
+       this.$refs['formValidate'].validate((valid) => {
+          if(valid) {
+            this.$refs['formValidate1'].validate((valid) => {
+              if(valid) {
+                console.log(this.appInfo.captureUrls)
+                 this.axios.post('/app/addApp',{
+                    ...this.app,
+                    ...this.appInfo,
+                    captureUrls:this.appInfo.captureUrls
+                  }).then(res=>{
+                    if(res && res.success=='1'){
+                      this.$Message.success("操作成功！")
+                      this.$router.push({path:'/index/appManage'})
+                    }
+                  })
+              }
+          })
+        }
+      })
     }
-
-
   }
-
 }
 </script>
 
@@ -463,14 +490,15 @@ export default {
       }
     }
     .intro {
-        padding:20px;
+        padding-top:35px;
         background:#fff;
         .upload1 {
           text-align:center;
           margin:30px auto;
         }
         .info{
-          margin-left:20%;
+          margin:0 auto;
+          width:500px;
           
           .img_wrap,.left,.right{
             float:left;
@@ -480,8 +508,8 @@ export default {
             }
           }
           .img_wrap{
-            width:80px;
-            height: 80px;
+            width:48px;
+            height: 48px;
             background:#ccc
           }
         }
@@ -561,13 +589,22 @@ export default {
         margin: 0 2px;
     } 
     .delShot{
-          font-size:20px;
-          position:absolute;
-          right:0;
-          top:0;
-          cursor:pointer;
-          color:red;
-        }
+      font-size:20px;
+      position:absolute;
+      right:0;
+      top:0;
+      cursor:pointer;
+      color:red;
+    }
+    #icon{
+        width: 64px;
+        height: 64px;
+        display: block;
+        border: 1px solid #ccc;
+        margin-top: 10px;
+        margin-bottom: 5px;
+    }
+
 </style>
 
 

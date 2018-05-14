@@ -40,11 +40,7 @@
 
            <div style="position:relative">
                 <Table border :columns="columns" :loading="loading" :data="appData" @on-selection-change="selectAppChange" no-data-text="暂无数据"></Table>            
-                <Page :total="totalPage" show-total class="appPage page_wrap"></Page>
-                <!-- <Spin fix v-if='loading'>
-                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
-                    <div>loading...</div>
-                </Spin> -->
+                <Page :total="totalPage" :current='searchData.pageNo'  @on-change='changePage' show-total class="appPage page_wrap"></Page>
            </div>
            
       </div>
@@ -71,10 +67,10 @@
         :mask-closable="false"
         class-name="vertical-center-modal">
         <div style="margin-bottom:20px">
-            <Input type="text" placeholder="姓名/用户名/手机号" v-model="searchUser" style="width:250px;margin-right:20px"></Input>
-            <Button type="primary">筛选</Button>
+            <Input type="text" placeholder="用户名/手机号" v-model="searchUserData.content" style="width:250px;margin-right:20px"></Input>
+            <Button type="primary" @click="queryUserTable">筛选</Button>
         </div>
-        <Table border ref="selection" :columns="columns2" :data="userData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>
+        <Table border ref="selection"  :loading='loading2' :columns="columns2" :data="userData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>
         <div slot="footer">
             <Button  size="large" @click="dispatchModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmDispatch">确定</Button>
@@ -105,12 +101,12 @@ export default {
       perms:null,
       loading:false,
       totalPage:1,
-      currentPage:1,
       searchData: {
         content: "",
         state: "-1",
         pageNo:1,
-        pageSize:10
+        pageSize:10,
+        orderStr:'0'
       },
       flag:'1',
       title:"",
@@ -135,7 +131,7 @@ export default {
             title: "类型",
             key: 'isBlacklist',
             render:(h,params)=>{
-                return ('div',params.row.isBlacklist=='0'?'黑名单':'白名单')
+              return h('div',params.row.isBlacklist=='0'?'黑名单':'白名单')
             }
         },
         {
@@ -144,31 +140,129 @@ export default {
         },
         {
             title: '版本号',
-            key: 'versionId'
+            key: 'versionNumber'
         },
         {
             title: '应用标签',
             key: 'tag',
             render:(h,params)=>{
-                return ('div',params.row.tag=='1'?'工作':'生活')
+                return h('div',params.row.tag=='1'?'工作':'生活')
             }
         },
         {
-            title: '下载次数',
             key: 'downCnt',
-            sortable: true
+            renderHeader:(h,params)=>{
+                return h('div',[
+                    h('strong','下载次数'),
+                    h('div',{
+                        style:{
+                            position:"relative",
+                            display:'inline-block'
+                        },
+                        on:{
+                            click: (event) => {
+                                console.log(window.event.target)
+                            
+                                $(window.event.target).css("color",'#63c185')
+                                $(window.event.target).siblings().css("color",'#555')
+                                if(window.event.target.className.indexOf('ivu-icon-arrow-up-b')!=-1){
+                                    this.searchData.orderStr = '1'
+                                    this.queryTable()
+                                }else if(window.event.target.className.indexOf('ivu-icon-arrow-down-b')!=-1){
+                                    this.searchData.orderStr = '1'
+                                    this.queryTable()
+                                }
+                                
+                            }
+                        }
+                    },[
+                        h('Icon',{
+                            props:{
+                                type:"arrow-up-b",
+                            },
+                            style:{
+                                position:'absolute',
+                                left:'5px',
+                                top:'-15px',
+                                cursor:'pointer'
+                            },
+                            
+                        }),
+                        h('Icon',{
+                            props:{
+                                type:"arrow-down-b"
+                            },
+                            style:{
+                                position:'absolute',
+                                left:'5px',
+                                bottom:'-5px',
+                                cursor:'pointer'
+                            }
+                        }),
+                    ])
+                ])
+            }
         },
         {
-            title: '更新时间',
             key: 'updateDate',
-            sortable: true
+            renderHeader:(h,params)=>{
+                return h('div',[
+                    h('strong','更新时间'),
+                    h('div',{
+                        style:{
+                            position:"relative",
+                            display:'inline-block'
+                        },
+                        on:{
+                            click: (event) => {
+                                console.log(window.event.target)
+                            
+                                $(window.event.target).css("color",'#63c185')
+                                $(window.event.target).siblings().css("color",'#555')
+                                if(window.event.target.className.indexOf('ivu-icon-arrow-up-b')!=-1){
+                                    this.searchData.orderStr = '3'
+                                    this.queryTable()
+                                }else if(window.event.target.className.indexOf('ivu-icon-arrow-down-b')!=-1){
+                                    this.searchData.orderStr = '4'
+                                    this.queryTable()
+                                }
+                                
+                            }
+                        }
+                    },[
+                        h('Icon',{
+                            props:{
+                                type:"arrow-up-b",
+                            },
+                            style:{
+                                position:'absolute',
+                                left:'5px',
+                                top:'-15px',
+                                cursor:'pointer'
+                            },
+                            
+                        }),
+                        h('Icon',{
+                            props:{
+                                type:"arrow-down-b"
+                            },
+                            style:{
+                                position:'absolute',
+                                left:'5px',
+                                bottom:'-5px',
+                                cursor:'pointer'
+                            }
+                        }),
+                    ])
+                ])
+            }
         },
         {
             title: '状态',
             key: 'state',
             width:70,
             render:(h,params)=>{
-                return ('div',params.row.state=='1'?'启用':'禁用')
+                return h('div',params.row.state=='1'?'启用':'禁用')
             }
         },
         {
@@ -192,7 +286,7 @@ export default {
                         props: {
                             hasName: 'addbtn',
                             textName: '版本升级',
-                            id:params.row.name
+                            id:params.row.id
                         }
                     }),
                     h(Action, {
@@ -205,7 +299,7 @@ export default {
                         props: {
                             hasName: 'addbtn',
                             textName: '详情',
-                            // id:params.row.name
+                            id:params.row.id
                         }
                     }),
                     h(Action, {
@@ -218,22 +312,24 @@ export default {
                         props: {
                             hasName: 'addbtn',
                             textName: '编辑',
-                            id:params.row.name
+                            id:params.row.id
                         }
                     }),
                     h('a', {
                         style: {
                             // marginRight: '10px',
-                            color:params.row.isBlacklist=="白名单"?'#ccc':'#63c185',
-                            cursor:params.row.isBlacklist=="白名单"?'not-allowed':'pointer'
+                            color:params.row.isBlacklist=="1"?'#ccc':'#63c185',
+                            cursor:params.row.isBlacklist=="1"?'not-allowed':'pointer'
                         },
                         on: {
                             click: () => {
-                                if(params.row.isBlacklist=='白名单'){
+                                if(params.row.isBlacklist=='1'){
                                     return
                                 }
-                                this.$refs.selection.selectAll(false);
-                                this.searchUser = ''
+                                // this.$refs.selection.selectAll(false);
+                                this.searchUserData.content = ''
+                                this.searchUserData.appId = params.row.id
+                                this.queryUserTable()
                                 this.dispatchModal = true
                             }
                         }
@@ -252,17 +348,18 @@ export default {
       selectedIsBlacklist:null,
       startRow:1,
       selectedUserData: [],
-      searchUser: '',  // 下发用户筛选
+      loading2:false,
+      searchUserData:{
+        content: '',
+        state: '1',
+        appId:"" 
+      },
       // 下发用户表格
       columns2: [
           {
             type: 'selection',
             width: 60,
-            align: 'center'
-          },
-          {
-              title: "姓名",
-              key: "name"
+            align: 'center',
           },
           {
               title: "用户名",
@@ -273,13 +370,9 @@ export default {
               key: "phone"
           },
       ],
-      userData: [
-          {
-              name: "小雪",
-              userName: '开元',
-              phone: '18888888888'
-          }
-      ]
+      userData: [],
+      userIds:"",
+      
     }
   },
 
@@ -299,6 +392,31 @@ export default {
                  this.startRow = data.startRow
              }else{
                  this.loading = false                 
+             }
+         })
+     },
+     // 页码改变
+     changePage(current){
+         this.searchData.pageNo = current
+         this.queryTable()
+     },
+     // 查询用户表格
+     queryUserTable(){
+         this.loading2 = true
+         this.axios.get('/app/listUsers',{params:this.searchUserData})
+         .then(res=>{
+             if(res&&res.success=='1'){
+                 this.loading2 = false 
+                 const data = res.data
+                 // 默认选中数据
+                 data.forEach(item=>{
+                     item.blackFlag=='1'?item._checked=true:item._checked=false
+                     item.blackFlag=='1'?this.selectedUserData.push(item):''
+                 })
+                  this.userIds = this.selectedUserData.map(item=>{
+                     return item.id
+                  }).join(";")
+                 this.userData = data
              }
          })
      },
@@ -379,14 +497,16 @@ export default {
             case '3':
                 this.title = '黑名单';
                 this.content = '确定将该应用的类型修改为黑名单吗？';
-                this.flag = "3";
+                this.flag = "4";
                 break;
             case '4':
                 this.title = '白名单';
                 this.content = '确定将该应用的类型修改为白名单吗？';
-                this.flag = "4";
+                this.flag = "3";
                 break;
         }
+
+        
     },
 
      // 确定启用/禁用/黑名单/白名单
@@ -398,7 +518,11 @@ export default {
               }
           })
           .then(res=>{
-
+              if(res && res.success=='1'){
+                  this.$Message.success("操作成功！")
+                  this.actionModal = false
+                  this.queryTable()
+              }
           })
      },
 
@@ -409,8 +533,17 @@ export default {
             this.$Message.warning('请至少选择一位用户！');
             return
         }
-
-        this.dispatchModal = false
+        this.axios.get('/app/assignApp',{params:{
+            appId:this.searchUserData.appId,
+            userIds:this.userIds
+        }}).then(res=>{
+            if(res && res.success=='1'){
+                this.$Message.success("操作成功！")
+                this.dispatchModal = false
+            }else{
+                this.$Message.error("操作失败！")
+            }
+        })
      },
 
      
@@ -419,6 +552,9 @@ export default {
      selectUserChange(selection){
          this.selectedUserData = selection
          console.log(this.selectedUserData)
+         this.userIds = this.selectedUserData.map(item=>{
+             return item.id
+         }).join(";")
      },
 
   }
