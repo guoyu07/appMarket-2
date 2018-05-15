@@ -6,10 +6,10 @@
       <div class="search_wrap">
         <Form inline :model="searchData">
           <FormItem label="">
-            <Input v-model="searchData.search"  placeholder="用户名/IME"></Input>
+            <Input v-model="searchData.searchText"  placeholder="用户名/IME"></Input>
           </FormItem>
           <FormItem>
-            <Button type="primary" @click='queryTable'>筛选</Button>
+            <Button type="primary" @click='queryDeviceTable'>筛选</Button>
           </FormItem>
         </Form>
       </div>
@@ -37,26 +37,25 @@
         class-name="vertical-center-modal">
        <Form ref="formValidate" :rules="ruleValidate" :model="addDeviceData"  :label-width="80" style="width:70%;margin:10px auto 0">
           <FormItem label="用户名" prop="userName">
-            <Select v-model="addDeviceData.userName"  style="width:200px">
-                <Option value="0">小雪</Option>
-                <Option value="1">张三</Option>
-                <Option value="2">小明</Option>
+            <Select v-model="addDeviceData.userName" filterable style="width:200px">
+                <Option :value="item.userName" v-for='(item,index) in userData' :key='index'>{{item.userName}}</Option>
             </Select>
+            <!-- <Button type='primary' @click='handleSelect'>选择用户</Button> -->
           </FormItem>
-          <FormItem label="设备平台" prop="platName">
-            <Select v-model="addDeviceData.platName"  style="width:200px">
-                <Option value="0">Andriod</Option>
+          <FormItem label="设备平台" prop="plateName">
+            <Select v-model="addDeviceData.plateName"  style="width:200px">
+                <Option value="01">Andriod</Option>
             </Select>
           </FormItem>
           <FormItem label="设备类型" prop="type">
             <Select v-model="addDeviceData.type"  style="width:200px">
-                <Option value="0">手机</Option>
+                <Option value="01">手机</Option>
             </Select>
           </FormItem>
           <FormItem label="设备归属" prop="belongto">
             <Select v-model="addDeviceData.belongto"  style="width:200px">
-                <Option value="0">企业</Option>
-                <Option value="1">个人</Option>
+                <Option value="01">企业</Option>
+                <Option value="02">个人</Option>
             </Select>
           </FormItem>
           <FormItem label="资产编号" prop="assetNum">
@@ -78,18 +77,54 @@
         </div>
     </Modal>
 
+
+    <!-- 选择用户模态框 -->
+     <Modal
+        title="选择用户"
+        v-model="userModal"
+        :mask-closable="false"
+        class-name="vertical-center-modal">
+       <Form inline :model='userSearch'>
+          <FormItem label="">
+             <Input v-model='userSearch.content' placeholder="用户名/手机号"></Input>
+            <Button type='primary'>筛选</Button>
+          </FormItem>
+       </Form>
+      <Table border :columns="columns2" :loading='loading' :data="userData" no-data-text="暂无数据"></Table>   
+        <div slot="footer">
+            <Button  size="large" @click="addModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmAdd">确定</Button>
+        </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 import qs from 'qs'
+import {mapActions,mapGetters} from 'vuex'
 export default {
+// created-----------------------------------------------------------------------------------
   created(){
     document.title = "设备管理"
-    // this.queryTable()
+    this.searchData.pageNo = this.devicePage
+    this.queryTable()
+    this.queryUser()
   },
+
+// computed---------------------------------------------------------------------------------
+  computed:{
+    ...mapGetters(['devicePage'])
+  },
+
+// data-------------------------------------------------------------------------------------
   data(){
     return {
+      userModal:false,
+      userSearch:{
+        content:""
+      },
+      userData:[],
+      columns2:[],
       loading:false,
       searchData:{
         searchText:'',
@@ -102,7 +137,7 @@ export default {
           userName:[
             { required: true,  message:'请选择用户', trigger: 'change' },
           ],
-          platName:[
+          plateName:[
             { required: true,  message:'请选择设备平台', trigger: 'change' },
           ],
           type: [
@@ -138,6 +173,10 @@ export default {
             key: 'name'
         },
         {
+            title: '用户名',
+            key: 'userName'
+        },
+        {
             title: '设备型号',
             key: 'model'
         },
@@ -147,12 +186,15 @@ export default {
         },
         {
             title: '归属',
-            key: 'belongto'
+            key: 'belongto',
+            render:(h,params)=>{
+              return h('div',this.allBelongTo[params.row.belongto])
+            }
         },
-        {
-            title: '系统版本',
-            key: 'sysVersion'
-        },
+        // {
+        //     title: '系统版本',
+        //     key: 'sysVersion'
+        // },
         {
             title: '操作',
             key: 'action',
@@ -166,6 +208,7 @@ export default {
                         },
                         on: {
                             click: () => {
+                                this.setPage3(this.searchData.pageNo)
                                 this.$router.push({path:'/index/deviceDetail',query:{id:params.row.id}})     
                             }
                         }
@@ -188,23 +231,29 @@ export default {
       addModal: false,
       addDeviceData: {
           userName:'',
-          platName:'0',
-          type: '0',
-          belongto:'0',
+          plateName:'01',
+          type: '01',
+          belongto:'01',
           assetNum: '',
           name:'',
           imei:"",
           model:''
+      },
+      allBelongTo:{
+        '01':'企业',
+        '02':'个人'
       }
 
     }
   },
 
+// methods----------------------------------------------------------------------------------
   methods: {
+      ...mapActions(['setPage3']),
       // 查询表格
       queryTable(){
         this.loading=true
-        this.axios.post('/device/listDevices',qs.stringify(this.searchData))
+        this.axios.post('/device/listDevices',this.searchData)
         .then(res=>{
           if(res&&res.success=='1'&&res.data){
             this.loading=false
@@ -216,10 +265,25 @@ export default {
         })
       },
 
+      // 点击筛选按钮
+      queryDeviceTable(){
+        this.searchData.pageNo = 1
+        this.queryTable()
+      },
+
       // 切换页码
       changePage(current){
         this.searchData.pageNo =current
         this.queryTable()
+      },
+
+      // 查询所有启用状态的用户
+      queryUser(){
+        this.axios.get("/userPerm/listAppUsers").then(res => {
+          if(res&&res.success=='1'){
+            this.userData = res.data
+          }
+        })
       },
 
       // 点击添加设备按钮
@@ -232,14 +296,14 @@ export default {
       confirmAdd(){
         this.$refs['formValidate'].validate((valid) => {
             if(valid) {
-              this.axios.post('/device/addDevice',qs.stringify(this.addDeviceData))
+              this.axios.get('/device/addDevice',{params:this.addDeviceData})
               .then(res=>{
                 if(res&&res.success=='1'){
                   this.$Message.success("操作成功！")
                   this.addModal=false
                   this.queryTable()
                 }else{
-                  this.$Message.success("操作失败！")
+                  this.$Message.error("操作失败！")
                   this.addModal=false
                 }
               })
@@ -247,6 +311,11 @@ export default {
         })
       },
 
+      // 
+      handleSelect(){
+        this.addModal = false
+        this.userModal = true
+      }
   }
 }
 </script>

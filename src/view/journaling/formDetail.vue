@@ -29,7 +29,7 @@ export default {
     this.formName = this.reportType==1?"设备报表":(this.reportType==2?'客户端统计报表':'数据流量报表')
     this.columns = this.reportType==1?this.columns1:(this.reportType==2?this.columns2:this.columns3)
     document.title = "日志报表-报表-详情"
-    // this.queryTable()
+    this.queryTable()
   },
 
   data(){
@@ -38,6 +38,7 @@ export default {
       totalPage:1,
       pageNo:1,
       formName:'',
+      startRow:1,
       columns:[],
       columns1:[
         {
@@ -55,6 +56,9 @@ export default {
         {
             title: "设备归属",
             key: 'belongto',
+            render:(h,params)=>{
+              return h('div',this.allBelongTo[params.row.belongto])
+            }
         },
         {
             title: "用户名",
@@ -70,7 +74,10 @@ export default {
         },
         {
             title: "平台",
-            key: 'platName',
+            key: 'plateName',
+            render:(h,params)=>{
+              return h('div',params.row.plateName=='01'?'Andriod':'其他')
+            }
         },
         {
             title: "系统版本",
@@ -87,10 +94,16 @@ export default {
         {
             title: "是否Rooted/越狱",
             key: 'rooted',
+            render:(h,params)=>{
+              return h('div',this.isRooted[params.row.rooted])
+            }
         },
         {
             title: "设备状态",
             key: 'state',
+            render:(h,params)=>{
+              return h('div',params.row.state=='0'?'异常':'正常')
+            }
         },
         {
             title: "激活时间",
@@ -124,7 +137,10 @@ export default {
         },
         {
             title: "平台",
-            key: 'platName',
+            key: 'plateName',
+            render:(h,params)=>{
+              return h('div',params.row.plateName=='01'?'Andriod':'其他')
+            }
         },
         {
             title: "当前版本",
@@ -159,6 +175,9 @@ export default {
         {
             title: "设备归属",
             key: 'belongto',
+            render:(h,params)=>{
+              return h('div',this.allBelongTo[params.row.belongto])
+            }
         },
         {
             title: "月份",
@@ -173,7 +192,15 @@ export default {
             key: 'count',
         },
       ],
-      formData:[]
+      formData:[],
+      allBelongTo:{
+        '01':'企业',
+        '02':'个人'
+      },
+      isRooted:{
+        '0':'否',
+        '1':'是'
+      }
     }
   },
 
@@ -182,16 +209,17 @@ export default {
         // 查询表格
         queryTable(){
             this.loading=true
-            this.axios.post('/device/listReportData',qs.stringify({
-                reprotType:this.reportType,
+            this.axios.post('/device/listReportData',{
+                reportType:this.reportType,
                 pageNo:this.pageNo,
                 pageSize:10
-            })).then(res=>{
+            }).then(res=>{
                 if(res && res.success=='1' && res.data){
                     this.loading = false
                     const data = res.data
-                    this.columns = data.list
+                    this.formData = data.list
                     this.totalPage = data.total
+                    this.startRow = data.startRow
                 }
             })
         },
@@ -204,7 +232,7 @@ export default {
 
         // 导出报表
         exportExcel(){
-            this.axios.post('/document/exportExcel',qs.stringify({reportType:this.reportType}))
+            this.axios.post('/document/exportExcel',{reportType:this.reportType})
             .then(res=>{
                 if(res && res.success=='1'){
                     this.$Message.success("导出成功！")

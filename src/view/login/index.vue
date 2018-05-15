@@ -101,10 +101,10 @@ export default {
                         // 跳转到首页
                         this.$router.push({path: '/index/homepage'})
                         window.localStorage.setItem('currentMenu','/index/homepage')
-                    // }else{
-                    //    this.$Message.destroy(msg)
-                    //    this.$Message.success("登陆失败！") 
-                    // }
+                //     }else{
+                //        this.$Message.destroy(msg)
+                //        this.$Message.error("登陆失败！") 
+                //     }
                 // })             
             }
         })

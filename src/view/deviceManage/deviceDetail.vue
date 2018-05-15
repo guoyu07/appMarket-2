@@ -11,36 +11,37 @@
               <div class="clearfix">
                 <div class="left_content">
                   <Form :label-width="120" style="width:60%;margin:0 auto;">
-                    <FormItem label="设备类型">{{deviceData.type}}</FormItem>
-                    <FormItem label="设备归属">{{deviceData.belongto}}</FormItem>
+                    <FormItem label="设备类型">{{deviceData.type=='01'?'Andriod':''}}</FormItem>
+                    <FormItem label="设备归属">{{allBelongTo[deviceData.belongto]}}</FormItem>
                     <FormItem label="资产编号">{{deviceData.assetNum}}</FormItem>
                     <FormItem label="设备名称">{{deviceData.name}}</FormItem>
-                    <FormItem label="设备序列号">{{deviceData.serialNum}}</FormItem>
-                    <FormItem label="操作系统">{{deviceData.actSys}}</FormItem>
-                    <FormItem label="系统版本">{{deviceData.sysVersion}}</FormItem>
-                    <FormItem label="激活时间">{{deviceData.activeDate}}</FormItem>
-                    <FormItem label="最近上线">{{deviceData.lastDate}}</FormItem>
-                    <FormItem label="上次更新时间">{{deviceData.updateDate}}</FormItem>
-                    <FormItem label="设备厂商">{{deviceData.manufacturer}}</FormItem>
+                    <FormItem label="用户名">{{deviceData.userName}}</FormItem>
+                    <FormItem label="设备序列号">{{deviceData.serialNum||'---'}}</FormItem>
+                    <FormItem label="操作系统">{{deviceData.actSys||'---'}}</FormItem>
+                    <FormItem label="系统版本">{{deviceData.sysVersion||'---'}}</FormItem>
+                    <FormItem label="激活时间">{{deviceData.activeDate||'---'}}</FormItem>
+                    <FormItem label="最近上线">{{deviceData.lastDate||'---'}}</FormItem>
+                    <FormItem label="上次更新时间">{{deviceData.updateDate||'---'}}</FormItem>
+                    <FormItem label="设备厂商">{{deviceData.manufacturer||'---'}}</FormItem>
                     <FormItem label="型号">{{deviceData.model}}</FormItem>
-                    <FormItem label="CPU">{{deviceData.cpu}}</FormItem>
+                    <FormItem label="CPU">{{deviceData.cpu||'---'}}</FormItem>
                   </Form>
                 </div>
                 <div class="right_content">
                   <Form :label-width="120" style="width:60%;margin:0 auto;">
-                    <FormItem label="RAM">{{deviceData.ram}}</FormItem>
-                    <FormItem label="ROM总容量">{{deviceData.rom}}</FormItem>
-                    <FormItem label="ROM可用容量">{{deviceData.availableRom}}</FormItem>
-                    <FormItem label="相机">{{deviceData.camera}}</FormItem>
-                    <FormItem label="蓝牙MAC地址">{{deviceData.bluetoothMac}}</FormItem>
-                    <FormItem label="WiFiMAC地址">{{deviceData.wifi}}</FormItem>
-                    <FormItem label="SD卡容量">{{deviceData.totalSd}}</FormItem>
-                    <FormItem label="SD卡可用容量">{{deviceData.availableSd}}</FormItem>
-                    <FormItem label="SD卡序列号">{{deviceData.serialnumberSd}}</FormItem>
-                    <FormItem label="电源状态">{{deviceData.battState}}</FormItem>
-                    <FormItem label="是否Rooted/越狱">{{deviceData.rooted}}</FormItem>
+                    <FormItem label="RAM">{{deviceData.ram||'---'}}</FormItem>
+                    <FormItem label="ROM总容量">{{deviceData.rom||'---'}}</FormItem>
+                    <FormItem label="ROM可用容量">{{deviceData.availableRom||'---'}}</FormItem>
+                    <FormItem label="相机">{{deviceData.camera||'---'}}</FormItem>
+                    <FormItem label="蓝牙MAC地址">{{deviceData.bluetoothMac||'---'}}</FormItem>
+                    <FormItem label="WiFiMAC地址">{{deviceData.wifi||'---'}}</FormItem>
+                    <FormItem label="SD卡容量">{{deviceData.totalSd||'---'}}</FormItem>
+                    <FormItem label="SD卡可用容量">{{deviceData.availableSd||'---'}}</FormItem>
+                    <FormItem label="SD卡序列号">{{deviceData.serialnumberSd||'---'}}</FormItem>
+                    <FormItem label="电源状态">{{deviceData.battState||'---'}}</FormItem>
+                    <FormItem label="是否Rooted/越狱">{{isRooted[deviceData.rooted]}}</FormItem>
                     <FormItem label="IMEI">{{deviceData.imei}}</FormItem>
-                    <FormItem label="IMSI">{{deviceData.imsi}}</FormItem>
+                    <FormItem label="IMSI">{{deviceData.imsi||'---'}}</FormItem>
                   </Form>
                 </div>
               </div>
@@ -73,6 +74,7 @@ export default {
   created(){
     document.title="设备管理-详情"
     this.queryDetail()
+    this.queryInstall()
   },
 
 // data---------------------------------------------------------------------------------------
@@ -120,14 +122,23 @@ export default {
         },
         {
             title: "应用名称",
-            key: 'name',
+            key: 'appName',
         },
         {
             title: "安装时间",
-            key: 'createDate',
+            key: 'installDate',
         }
       ],
-      appInstallData:[]
+      appInstallData:[],
+      allBelongTo:{
+        '01':'企业',
+        '02':'个人'
+      },
+      isRooted:{
+        '0':'否',
+        '1':'是'
+      }
+
     }
   },
 
@@ -148,9 +159,9 @@ export default {
     // 查询应用安装情况
     queryInstall(){
       this.loading = true
-      this.axios.get('/device/getAppinstall',{params:{
+      this.axios.post('/device/getAppinstall',{
         deviceId:this.$route.query.id
-      }}).then(res=>{
+      }).then(res=>{
           if(res&&res.success=='1'&&res.data){
             this.loading=false
             const data = res.data

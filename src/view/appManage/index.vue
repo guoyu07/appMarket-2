@@ -18,7 +18,7 @@
             </Select>
           </FormItem>
           <FormItem>
-            <Button type="primary" @click='queryTable'>筛选</Button>
+            <Button type="primary" @click='queryAppTable'>筛选</Button>
           </FormItem>
         </Form>
       </div>
@@ -85,13 +85,23 @@
 <script>
 import {breakTips} from '../../util/util'
 import Action from '../../components/Action.vue'
+import {mapGetters} from 'vuex'
+
 export default {
-    components:{
-        Action
-    },
+// components---------------------------------------------------------------------------------
+  components:{
+    Action
+  },
+// computed-----------------------------------------------------------------------------------
+  computed:{
+    ...mapGetters(['appPage'])
+  },
 // created------------------------------------------------------------------------------------
   created(){
     document.title = "应用管理";
+
+    // 使用vuex解决版本升级、详情、编辑后返回页码的问题
+    this.searchData.pageNo = this.appPage
     this.queryTable()
   },
 
@@ -161,15 +171,16 @@ export default {
                         },
                         on:{
                             click: (event) => {
-                                console.log(window.event.target)
-                            
+                         
                                 $(window.event.target).css("color",'#63c185')
                                 $(window.event.target).siblings().css("color",'#555')
                                 if(window.event.target.className.indexOf('ivu-icon-arrow-up-b')!=-1){
                                     this.searchData.orderStr = '1'
+                                    this.searchData.pageNo = 1
                                     this.queryTable()
                                 }else if(window.event.target.className.indexOf('ivu-icon-arrow-down-b')!=-1){
-                                    this.searchData.orderStr = '1'
+                                    this.searchData.orderStr = '2'
+                                    this.searchData.pageNo = 1
                                     this.queryTable()
                                 }
                                 
@@ -211,19 +222,20 @@ export default {
                     h('div',{
                         style:{
                             position:"relative",
-                            display:'inline-block'
+                            display:'inline-block',
                         },
                         on:{
                             click: (event) => {
-                                console.log(window.event.target)
                             
                                 $(window.event.target).css("color",'#63c185')
                                 $(window.event.target).siblings().css("color",'#555')
                                 if(window.event.target.className.indexOf('ivu-icon-arrow-up-b')!=-1){
                                     this.searchData.orderStr = '3'
+                                    this.searchData.pageNo = 1
                                     this.queryTable()
                                 }else if(window.event.target.className.indexOf('ivu-icon-arrow-down-b')!=-1){
                                     this.searchData.orderStr = '4'
+                                    this.searchData.pageNo = 1
                                     this.queryTable()
                                 }
                                 
@@ -286,7 +298,8 @@ export default {
                         props: {
                             hasName: 'addbtn',
                             textName: '版本升级',
-                            id:params.row.id
+                            id:params.row.id,
+                            pageNo:this.searchData.pageNo
                         }
                     }),
                     h(Action, {
@@ -299,7 +312,8 @@ export default {
                         props: {
                             hasName: 'addbtn',
                             textName: '详情',
-                            id:params.row.id
+                            id:params.row.id,
+                            pageNo:this.searchData.pageNo
                         }
                     }),
                     h(Action, {
@@ -312,7 +326,8 @@ export default {
                         props: {
                             hasName: 'addbtn',
                             textName: '编辑',
-                            id:params.row.id
+                            id:params.row.id,
+                            pageNo:this.searchData.pageNo
                         }
                     }),
                     h('a', {
@@ -326,7 +341,7 @@ export default {
                                 if(params.row.isBlacklist=='1'){
                                     return
                                 }
-                                // this.$refs.selection.selectAll(false);
+                                this.$refs.selection.selectAll(false);
                                 this.searchUserData.content = ''
                                 this.searchUserData.appId = params.row.id
                                 this.queryUserTable()
@@ -395,11 +410,19 @@ export default {
              }
          })
      },
+
+     // 点击筛选
+     queryAppTable(){
+         this.searchData.pageNo = 1
+         this.queryTable()
+     },
+
      // 页码改变
      changePage(current){
          this.searchData.pageNo = current
          this.queryTable()
      },
+
      // 查询用户表格
      queryUserTable(){
          this.loading2 = true
@@ -438,9 +461,8 @@ export default {
         }
      },
 
-
      // 判断是否选中应用
-    isSelected(flag){
+     isSelected(flag){
       if(this.selectedAppData.length==0){
           this.$Message.warning('请至少选择一项应用！');
           breakTips()
@@ -478,10 +500,10 @@ export default {
           return true
         }
       }
-    },
+     },
 
-    // 按钮点击判断
-    handleClick(type){
+     // 按钮点击判断
+     handleClick(type){
         this.actionModal = true
         switch (type){
             case '1':
@@ -507,7 +529,7 @@ export default {
         }
 
         
-    },
+     },
 
      // 确定启用/禁用/黑名单/白名单
      confirmAction(flag){
@@ -526,7 +548,6 @@ export default {
           })
      },
 
-
      // 确定下发
      confirmDispatch(){
         if(this.selectedUserData.length==0){
@@ -540,13 +561,12 @@ export default {
             if(res && res.success=='1'){
                 this.$Message.success("操作成功！")
                 this.dispatchModal = false
+                this.queryTable()
             }else{
                 this.$Message.error("操作失败！")
             }
         })
      },
-
-     
 
      // 选中用户改变
      selectUserChange(selection){

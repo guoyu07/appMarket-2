@@ -10,8 +10,8 @@
             <!-- 应用 -->
             <div class="app_num">
               <div class="num">
-                <p class="number">50</p>
-                <p>安卓应用</p>
+                <p class="number">{{appCnt}}</p>
+                <p>{{allSystemType[systemType]}}</p>
               </div>
               <div class="name">
                 <p class="right_icon"><span class="mar-20 item">应用</span><Icon type="cube"></Icon></p>
@@ -21,19 +21,9 @@
               <!-- 用户 -->
             <div class="user_num">
 
-              <div class="num">
-                <p class="number">128</p>
-                <p>在线用户</p>
-              </div>
-
-              <div class="num">
-                <p class="number">108</p>
-                <p>已激活用户</p>
-              </div>
-
-              <div class="num">
-                <p class="number">120</p>
-                <p>未激活用户</p>
+              <div class="num" v-for='(item,index) in loginUserData' :key='index'>
+                <p class="number">{{item.cnt}}</p>
+                <p>{{allLoginState[item.loginState]}}</p>
               </div>
               
               <div class="name">
@@ -76,82 +66,73 @@
 var Highcharts = require('highcharts')
 // 在 Highcharts 加载之后加载功能模块
 require('highcharts/modules/exporting')(Highcharts)
+import {allSystemType} from '../../util/util.js'
 export default {
 
 // data------------------------------------------------------------------------------------------ 
   data(){
     return {
-      appNum:"",
+      allSystemType:allSystemType,
+      allLoginState:{
+        '01':'在线用户',
+        '02':'已激活用户',
+        '03':'未激活用户',
+      },
+      appCnt:"",
+      systemType:"",
+
+      loginUserData:null,
+      data1:null,
+      
     }
   },
 
 // created----------------------------------------------------------------------------------------
   created(){
     document.title = '首页-应用市场管理平台'
+    this.queryAppNum()
+    this.queryUserState()
+    this.queryDeviceModel()
+    this.queryAppVersion()
+    this.queryState()
+    this.queryInstall()
   },
 
 // mounted----------------------------------------------------------------------------------------
   mounted(){
-    
-    this.renderPie({
-      ele:"chart1",
-      title:"设备型号分布图",
-      data:[
-                ['787手机', 45.0],
-                ['华为手机', 26.8],
-            ],
-    })
-    this.renderPie({
-      ele:"chart2",
-      title:"Andriod客户端版本分布图",
-      data:[
-                ['Andriod8.0', 45.0],
-                ['Andriod7.0', 26.8],
-                ['Andriod9.0', 76.8],
-                ['Andriod9.0', 76.8],
-                ['Andriod9.0', 76.8],
-            ],
-    })
-    this.renderPie({
-      ele:"chart3",
-      title:"违规设备分布图",
-      data:[
-                ['正常设备', 45.0],
-                ['违规设备', 26.8],
-            ],
-    })
-    this.renderColumn({
-      ele:"chart4",
-      data:[{
-                name: '应用名称',
-                data: [{
-                    name: 'qq',
-                    y: 56.33},
-                    {
-                    name: '微信',
-                    y: 24.03},
-                    {
-                    name: '微博',
-                    y: 10.38}, 
-                    {
-                    name: '网易新闻',
-                    y: 4.77}, 
-                    {
-                    name: '知乎',
-                    y: 0.91}, 
-                    {
-                    name: '抖音',
-                    y: 0.2}, 
-                    {
-                    name: '简书',
-                    y: 6.72}, 
-                    {
-                    name: '支付宝',
-                    y: 3.98
-                }]
-            }],
 
-    })
+    // this.renderColumn({
+    //   ele:"chart4",
+    //   data:[{
+    //             // name: '应用名称',
+    //             data: [{
+    //                 name: 'qq',
+    //                 y: 56.33},
+    //                 {
+    //                 name: '微信',
+    //                 y: 24.03},
+    //                 {
+    //                 name: '微博',
+    //                 y: 10.38}, 
+    //                 {
+    //                 name: '网易新闻',
+    //                 y: 4.77}, 
+    //                 {
+    //                 name: '知乎',
+    //                 y: 0.91}, 
+    //                 {
+    //                 name: '抖音',
+    //                 y: 0.2}, 
+    //                 {
+    //                 name: '简书',
+    //                 y: 6.72}, 
+    //                 {
+    //                 name: '支付宝',
+    //                 y: 3.98
+    //             }]
+    //         }],
+
+    // })
   },
 
 // computed----------------------------------------------------------------------------------------
@@ -167,7 +148,9 @@ export default {
      queryAppNum(){
        this.axios.get('/statistic/appDistribution').then(res=>{
          if(res && res.success=='1'){
-
+           const data = res.data
+           this.systemType = data[0].systemType
+           this.appCnt = data[0].cnt
          }
        })
      },
@@ -176,7 +159,8 @@ export default {
      queryUserState(){
        this.axios.get('/statistic/userStateDistribution').then(res=>{
          if(res && res.success=='1'){
-
+           const data = res.data
+            this.loginUserData = data
          }
        })
      },
@@ -185,7 +169,17 @@ export default {
      queryDeviceModel(){
        this.axios.get('/statistic/deviceModelDistribution').then(res=>{
          if(res && res.success=='1'){
-           
+           const data = res.data.map(item=>{
+             const arr = []
+             arr.push(item.model)
+             arr.push(item.cnt)
+             return arr
+           })
+           this.renderPie({
+            ele:"chart1",
+            title:"设备型号分布图",
+            data:data,
+          })
          }
        })
      },
@@ -194,7 +188,17 @@ export default {
      queryAppVersion(){
        this.axios.get('/statistic/appVersionDistribution').then(res=>{
          if(res && res.success=='1'){
-           
+           const data = res.data.map(item=>{
+             const arr = []
+             arr.push(item.appVersion||'3.0')
+             arr.push(item.cnt)
+             return arr
+           })
+           this.renderPie({
+            ele:"chart2",
+            title:"Andriod客户端版本分布图",
+            data:data
+          })
          }
        })
      },
@@ -203,7 +207,17 @@ export default {
      queryState(){
        this.axios.get('/statistic/stateDistribution').then(res=>{
          if(res && res.success=='1'){
-           
+              const data = res.data.map(item=>{
+                const arr = []
+                arr.push(item.isViolation)
+                arr.push(item.cnt)
+                return arr
+              })
+              this.renderPie({
+                ele:"chart3",
+                title:"违规设备分布图",
+                data:data,
+              })
          }
        })
      },
@@ -212,7 +226,20 @@ export default {
      queryInstall(){
        this.axios.get('/statistic/installDistribution').then(res=>{
          if(res && res.success=='1'){
-           
+            const data = res.data.map(item=>{
+              const obj =  {}
+              obj.name = item.appName
+              obj.y = Number(item.percent.split("%")[0])
+              return obj
+            })
+            this.renderColumn({
+              ele:"chart4",
+              data:[{
+                name:'应用名称',
+                data:data
+              }],
+            })
+              
          }
        })
      },
@@ -238,7 +265,7 @@ export default {
             },
             tooltip: {
                 headerFormat: '{series.name}<br>',
-                pointFormat: '{point.name}: <b>{point.percentage:.1f}%</b>'
+                pointFormat: '{point.name}: <b>{point.percentage:.2f}%</b>'
             },
             plotOptions: {
                 pie: {
@@ -246,7 +273,7 @@ export default {
                     cursor: 'pointer',
                     dataLabels: {
                         enabled: true,
-                        format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                        format: '<b>{point.name}</b>: {point.percentage:.2f} %',
                         style: {
                             color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
                         }
@@ -294,6 +321,7 @@ export default {
             plotOptions: {
                 series: {
                     borderWidth: 0,
+                    maxPointWidth: 30,
                     dataLabels: {
                         enabled: true,
                         format: '{point.y:.1f}%',
@@ -307,7 +335,8 @@ export default {
                 headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
                 pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b><br/>'
             },
-            series: options.data
+            series: options.data,
+            
         });
      }
 

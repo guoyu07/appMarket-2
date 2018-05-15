@@ -58,7 +58,11 @@
 export default {
 // created-----------------------------------------------------------------------------------
   created(){
-    //   this.sendWebSocket()
+      this.sendWebSocket()
+
+      window.onbeforeunload = function () {
+          this.websock.close()
+      }
   },
 
 // created-----------------------------------------------------------------------------------
@@ -69,6 +73,7 @@ export default {
 // data--------------------------------------------------------------------------------------
   data(){
       return {
+          websock:null,
           modifyAccountModal:false,
           accountForm: {
               userName: '13333333333',
@@ -84,6 +89,7 @@ export default {
              ]
           }
       }
+
   },
 
 // methods-----------------------------------------------------------------------------------
@@ -119,20 +125,21 @@ export default {
 
       // Websocket显示消息数量
       sendWebSocket(){
-          var ws = new WebSocket("wss://echo.websocket.org");
-            ws.onopen = function(evt) { 
-            console.log("Connection open ..."); 
-            ws.send("Hello WebSockets!");
-            };
+          this.websock = new WebSocket("wss://echo.websocket.org");
+          
+          this.websock.onopen = function(evt) { 
+            console.log("打开连接....."); 
+            this.send("哈哈啊哈");
+          };
 
-            ws.onmessage = function(evt) {
-            console.log( "Received Message: " + evt.data);
-            ws.close();
-            };
-
-            ws.onclose = function(evt) {
-            console.log("Connection closed.");
-            };      
+          this.websock.onmessage = function(evt) {
+            console.log( "收到信息 " + evt.data);
+            this.close();
+          };
+            
+          this.websock.onclose = function(evt) {
+            console.log("连接关闭");
+          };      
       }
   }
 }

@@ -18,7 +18,7 @@
             </Select>
           </FormItem>
           <FormItem>
-            <Button type="primary" @click="queryTable">筛选</Button>
+            <Button type="primary" @click="queryTable('1')">筛选</Button>
           </FormItem>
         </Form>
       </div>
@@ -339,8 +339,9 @@ export default {
     },
 
     // 表格查询
-    queryTable(){
+    queryTable(type){
       this.loading = true
+      type=='1' ? this.searchData.pageNo=1 : ""
       this.axios.get("/userPerm/listUsers",{
           params:this.searchData
       }).then(res => {

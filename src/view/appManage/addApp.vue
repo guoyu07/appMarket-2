@@ -283,6 +283,7 @@ export default {
           return;
         }
         this.progressModal = true // 显示上传进度模态框
+        this.fileName = file.name
         let form = new FormData()
         form.append("file",file)
         
