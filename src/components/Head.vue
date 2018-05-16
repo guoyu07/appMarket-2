@@ -43,7 +43,7 @@
             <Input type="text" v-model="accountForm.phone" style="width:350px" placeholder='手机号'></Input>
         </FormItem>
         <FormItem label="密码" prop="pwd">
-            <Input type="text" v-model="accountForm.pwd" style="width:350px" placeholder='密码'></Input>
+            <Input  v-model="accountForm.pwd" style="width:350px" placeholder='密码'></Input>
         </FormItem>
     </Form>
     <div slot="footer">
@@ -55,14 +55,11 @@
 </template>
 
 <script>
+import env from '../js/env.js'
 export default {
 // created-----------------------------------------------------------------------------------
   created(){
       this.sendWebSocket()
-
-      window.onbeforeunload = function () {
-          this.websock.close()
-      }
   },
 
 // created-----------------------------------------------------------------------------------
@@ -72,10 +69,31 @@ export default {
 
 // data--------------------------------------------------------------------------------------
   data(){
+      const phoneValidate = (rule,value,callback) =>{
+       if(value==''){
+          callback(new Error('请输入手机号'))      
+        }else if(!regTest(value,'phone')){
+          callback(new Error('请输入正确的手机号'))
+        }else if(value==this.tmpPhone){
+          callback()
+        }else{
+          this.axios.get("/userPerm/checkUserPhone",{params:{
+            phone:value,
+            userType:'1'
+          }}).then(res=>{
+            if(res&&res.success=='1'){
+              callback()
+            }else{
+              callback(new Error('手机号码已存在！'))
+            }
+          })
+        }
+    }
       return {
           websock:null,
           modifyAccountModal:false,
           accountForm: {
+              id:'',
               userName: '13333333333',
               phone: '13333333333',
               pwd: '123456'
@@ -85,7 +103,7 @@ export default {
                 { required: true, message: '请输入密码', trigger: 'blur' }
              ],
              phone: [
-                { required: true, message: '请输入手机号', trigger: 'blur' }
+                { required: true, validator:phoneValidate, trigger: 'blur' }
              ]
           }
       }
@@ -104,15 +122,22 @@ export default {
       },
       showModal() {
           this.modifyAccountModal = true
+          // 获取本地存储的用户信息
           this.accountForm.pwd = '123456'
           this.accountForm.phone = '13333333333'
       },
       // 确定修改密码
       modifyAccount() {
-          console.log(111)
           this.$refs['formValidate'].validate((valid) => {
                 if (valid) {
-                    this.$Message.success('Success!');
+                    this.axios.get("/userPerm/updateUser",{params:accountForm})
+                    .then(res=>{
+                        if(res&&res.success=='1'){
+                            this.$Message.success("操作成功！")
+                            // 修改本地存储的用户信息
+                            this.modifyAccountModal = false
+                        }
+                    })
                 }
             })
       },
@@ -125,11 +150,11 @@ export default {
 
       // Websocket显示消息数量
       sendWebSocket(){
-          this.websock = new WebSocket("wss://echo.websocket.org");
+          this.websock = new WebSocket("ws://"+env.host+"/websocket/socketServer.do");
           
           this.websock.onopen = function(evt) { 
             console.log("打开连接....."); 
-            this.send("哈哈啊哈");
+            this.send("哈哈哈");
           };
 
           this.websock.onmessage = function(evt) {

@@ -1,6 +1,7 @@
 import *  as types from '../types.js'
 const state = {
     userInfo:{},
+  // 解决跳转新页面后返回，table分页仍在当前页、刷新在第一页的问题
     appPage:1,
     rightPage:1,
     devicePage:1,

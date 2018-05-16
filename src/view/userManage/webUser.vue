@@ -36,7 +36,7 @@
                 </div>
            </div>
            <div style="position:relative">
-                <Table border :loading='loading' :columns="columns" :data="webUserData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>            
+                <Table border ref='selection1' :loading='loading' :columns="columns" :data="webUserData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>            
                 <Page :total="totalPage" :current='searchData.pageNo' @on-change='changePage' show-total class="page_wrap"></Page>
            </div>
            
@@ -177,8 +177,19 @@ export default {
           callback(new Error('请输入手机号'))      
         }else if(!regTest(value,'phone')){
           callback(new Error('请输入正确的手机号'))
+        }else if(this.editUserModal==true){
+          value==this.tmpPhone?callback():callback(new Error('手机号码已存在！'))
         }else{
-          callback()
+          this.axios.get("/userPerm/checkUserPhone",{params:{
+            phone:value,
+            userType:'1'
+          }}).then(res=>{
+            if(res&&res.success=='1'){
+              callback()
+            }else{
+              callback(new Error('手机号码已存在！'))
+            }
+          })
         }
     }
     return {
@@ -283,6 +294,7 @@ export default {
                         },
                         on: {
                             click: () => {
+                                this.$refs['formValidate1'].resetFields();
                                 // 请求用户数据
                                 this.axios.get("/userPerm/qryUserInfoById",{
                                   params:{
@@ -300,6 +312,8 @@ export default {
                                     this.editUserData.state = data.state
                                     this.tmpwd = data.pwd
                                     this.editUserModal = true
+
+                                    this.tmpPhone = data.phone
                                     
                                   }
                                 })
@@ -323,7 +337,8 @@ export default {
         userType:'1'
       },
       editUserData:{},
-      tmpwd:""
+      tmpwd:"",
+      tmpPhone:""
     }
   },
 
@@ -346,6 +361,7 @@ export default {
           params:this.searchData
       }).then(res => {
         this.loading = false
+        this.$refs.selection1.selectAll(false)
         if(res && res.success==1 && res.data){
           const data = res.data
           this.totalPage = data.total
@@ -420,7 +436,7 @@ export default {
           flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
           this.queryTable()
         }else{
-          this.$Message.success("操作失败！")
+          this.$Message.error("操作失败！")
           flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
         }
       })
@@ -439,7 +455,7 @@ export default {
                   this.searchData.pageNo = 1
                   this.queryTable()
                 }else{
-                    this.$Message.success("操作失败！")
+                    this.$Message.error("操作失败！")
                     this.addUserModal = false
                 }
               })
@@ -462,7 +478,7 @@ export default {
                     this.editUserModal = false
                     this.queryTable()
                   }else{
-                    this.$Message.success("操作失败！")
+                    this.$Message.error("操作失败！")
                     this.editUserModal = false
                   }
                 })
@@ -480,7 +496,7 @@ export default {
                     this.editUserModal = false
                     this.queryTable()
                   }else{
-                    this.$Message.success("操作失败！")
+                    this.$Message.error("操作失败！")
                     this.editUserModal = false
                   }
                 })

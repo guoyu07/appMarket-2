@@ -36,7 +36,7 @@
            </div>
            
            <div style="position:relative">
-                <Table border :columns="columns" :loading='loading' :data="phoneUserData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>            
+                <Table border ref="selection" :columns="columns" :loading='loading' :data="phoneUserData"  @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>            
                 <Page :total="totalPage" :current='searchData.pageNo' @on-change='changePage' show-total class="page_wrap"></Page>
            </div>
            
@@ -199,6 +199,7 @@ export default {
                         },
                         on: {
                             click: () => {
+                              this.$refs['formValidate'].resetFields();
                                  // 请求用户数据
                                 this.axios.get("/userPerm/qryUserInfoById",{
                                   params:{
@@ -242,13 +243,14 @@ export default {
     // 查询表格
     queryTable(type){
       this.loading = true
+      // 查询前清空选择列表
       type=='1' ? this.searchData.pageNo=1 : ""
       this.axios.get("/userPerm/listUsers",{
           params:this.searchData
       }).then(res => {
         this.loading = false
+        this.$refs.selection.selectAll(false);
         if(res && res.success==1 && res.data){
-          
           const data = res.data
           this.totalPage = data.total
           this.phoneUserData = data.list
@@ -316,7 +318,7 @@ export default {
           flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
           this.queryTable()
         }else{
-          this.$Message.success("操作失败！")
+          this.$Message.error("操作失败！")
           flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
         }
       })
@@ -335,7 +337,7 @@ export default {
                     this.editUserModal = false
                     this.queryTable()
                   }else{
-                    this.$Message.success("操作失败！")
+                    this.$Message.error("操作失败！")
                     this.editUserModal = false
                   }
                 })
@@ -355,7 +357,7 @@ export default {
                     this.editUserModal = false
                     this.queryTable()
                   }else{
-                    this.$Message.success("操作失败！")
+                    this.$Message.error("操作失败！")
                     this.editUserModal = false
                   }
                 })

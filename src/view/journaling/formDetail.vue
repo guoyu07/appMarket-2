@@ -1,7 +1,6 @@
 <template>
   <div id="formDetail">
      <h1><span>当前位置 > </span><span>日志报表 > </span><a href="#/index/reportForm">报表</a><span> > </span><span class="title_active">{{formName}}</span></h1>
-
      <div class="bottom_wrap">
       <!-- 表格 -->
       <div class="table_wrap">
@@ -13,16 +12,17 @@
                     <Button type="primary" @click="exportExcel"><Icon type="ios-download-outline" style="font-size:14px"></Icon> 导出</Button>
                 </div>
            </div>
-           <Table border :columns="columns" :data="formData" no-data-text="暂无数据"></Table>            
+           <Table border :columns="columns" :loading='loading' :data="formData" no-data-text="暂无数据"></Table>            
            <Page :total="totalPage" :current='pageNo' @on-change='changePage' show-total class="appPage page_wrap"></Page>
       </div>
     </div>
-
+    
   </div>
 </template>
 
 <script>
 import qs from 'qs'
+import env from '../../js/env.js'
 export default {
   created(){
     this.reportType= this.$route.query.type
@@ -232,13 +232,8 @@ export default {
 
         // 导出报表
         exportExcel(){
-            this.axios.post('/document/exportExcel',{reportType:this.reportType})
-            .then(res=>{
-                if(res && res.success=='1'){
-                    this.$Message.success("导出成功！")
-                }
-                
-            })
+
+            window.location.href = env.apiPath + '/document/exportExcel?reportType=' + this.reportType
         }
     }
 }

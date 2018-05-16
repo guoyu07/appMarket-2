@@ -70,7 +70,7 @@
             <Input type="text" placeholder="用户名/手机号" v-model="searchUserData.content" style="width:250px;margin-right:20px"></Input>
             <Button type="primary" @click="queryUserTable">筛选</Button>
         </div>
-        <Table border ref="selection"  :loading='loading2' :columns="columns2" :data="userData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>
+        <Table border ref="selection" :loading='loading2' :columns="columns2" :data="userData" @on-selection-change="selectUserChange" no-data-text="暂无数据"></Table>
         <div slot="footer">
             <Button  size="large" @click="dispatchModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmDispatch">确定</Button>
@@ -85,7 +85,7 @@
 <script>
 import {breakTips} from '../../util/util'
 import Action from '../../components/Action.vue'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 export default {
 // components---------------------------------------------------------------------------------
@@ -393,7 +393,7 @@ export default {
 
 // methods------------------------------------------------------------------------------------
   methods:{
-
+      ...mapActions(['setPage1']),
      // 查询表格
      queryTable(){
          this.loading = true
@@ -405,8 +405,8 @@ export default {
                  this.totalPage = data.total
                  this.appData = data.list
                  this.startRow = data.startRow
-             }else{
-                 this.loading = false                 
+
+                 this.setPage1(1)
              }
          })
      },

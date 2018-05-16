@@ -18,11 +18,11 @@ export default {
     handleClick(){
       this.setPage1(this.pageNo)      
       if(this.textName=='版本升级'){
-         this.$router.push({path:"/index/editApp",query:{type:0,id:this.id,pageNo:this.pageNo}})        
+         this.$router.push({path:"/index/editApp",query:{type:0,id:this.id}})        
       }else if(this.textName=='详情'){
-        this.$router.push({path:"/index/appDetail",query:{id:this.id,pageNo:this.pageNo}})
+        this.$router.push({path:"/index/appDetail",query:{id:this.id}})
       }else {
-        this.$router.push({path:"/index/editApp",query:{type:1,id:this.id,pageNo:this.pageNo}})
+        this.$router.push({path:"/index/editApp",query:{type:1,id:this.id}})
       }
     }
   }

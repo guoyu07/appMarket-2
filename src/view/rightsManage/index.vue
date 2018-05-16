@@ -79,16 +79,40 @@
 
 <script>
 import qs from 'qs'
-
+import {mapActions, mapGetters} from 'vuex'
 export default {
 // created------------------------------------------------------------------------------
   created(){
     document.title = "权限管理"
-    // this.queryTable()
+    this.pageNo = this.rightPage
+    this.queryTable()
   },
+
+// computed-----------------------------------------------------------------------------
+    computed:{
+        ...mapGetters(['rightPage'])
+    },
 
 // data---------------------------------------------------------------------------------
   data(){
+    const maskValidate = (rule,value,callback) => {
+        if(value==''){
+             callback(new Error('请输入角色名称')) 
+        }else if(this.editModal==true){
+            this.tmpMask == value?callback():callback(new Error('角色名称已存在'))
+        }else{
+            callback()
+        }
+        // else{
+        //     this.axios.get('',{roleName:value}).then(res=>{
+        //         if(res && res.success=='1'){
+        //             callback()
+        //         }else{
+        //             callback(new Error('角色名称已存在'))
+        //         }
+        //     })
+        // }
+    }
     return {
       loading:false,
       pageNo:1,
@@ -96,7 +120,7 @@ export default {
       startRow:1,
       ruleValidate:{
         mask:[
-          { required: true,  message:'请输入角色名称', trigger: 'blur' },
+          { required: true,  validator:maskValidate, trigger: 'blur' },
         ],
         description:[
           { required: true, message:'请输入角色描述' , trigger: 'blur' },
@@ -132,17 +156,12 @@ export default {
                         },
                         on: {
                             click: () => {
-                                
-                                this.axios.post('/userPerm/listRoles',qs.stringify({id:params.row.id}))
-                                .then(res=>{
-                                    if(res&&res.success=='1'){
-                                        this.editModal = true
-                                        const data  = res.data 
-                                        this.editRoleData.id = data.list[0].id
-                                        this.editRoleData.mask = data.list[0].mask
-                                        this.editRoleData.description = data.list[0].description
-                                    }
-                                })
+
+                                this.editModal = true
+                                this.editRoleData.id = params.row.id
+                                this.editRoleData.mask = params.row.mask
+                                this.editRoleData.description = params.row.description
+                                this.tmpMask = params.row.mask
                             }
                         }
                     }, '编辑'),
@@ -165,6 +184,8 @@ export default {
                         },
                         on: {
                             click: () => {
+                                this.setPage2(this.pageNo)
+                                console.log(this.rightPage)
                                 this.$router.push({path:'/index/dispatchRight',query:{roleId:params.row.id}})
                             }
                         }
@@ -173,24 +194,7 @@ export default {
             }
         }
       ],
-      roleData: [
-      {
-        "id": 2,
-        "description": "普通用户",
-        "mask": "ordinary",
-        "available": "1",
-        "createDate": "2018-05-10 00:00:00",
-        "updateDate": "2018-05-10 00:00:00"
-      },
-      {
-        "id": 1,
-        "description": "管理员",
-        "mask": "admin",
-        "available": "1",
-        "createDate": "2018-04-30 00:00:00",
-        "updateDate": "2018-04-30 00:00:00"
-      }
-    ],
+      roleData: [],
       deleteModal:false,
       editModal:false,
       addModal: false,
@@ -203,26 +207,30 @@ export default {
           mask:'',
           description:''
       },
-      delId:""
+      delId:"",
+      tmpMask:""
 
     }
   },
 
 // methods------------------------------------------------------------------------------
   methods: {
+    ...mapActions(['setPage2']),
     // 查询表格
     queryTable(){
       this.loading = true
-      this.axios.post("/userPerm/listRoles",qs.stringify({
+      this.axios.post("/userPerm/listRoles",{
           pageNo:this.pageNo,
           pageSize:10
-      })).then(res=>{
+      }).then(res=>{
         if(res&&res.success==1){
           const data = res.data
           this.totalPage = data.total
           this.roleData = data.list
           this.startRow = data.startRow
           this.loading = false
+          // 解决点击其他菜单栏再返回时页码问题
+          this.setPage2(1)
         }
       })
     },
@@ -247,11 +255,11 @@ export default {
                 .then(res=>{
                     if(res&&res.success=='1'){
                         this.$Message.success("操作成功！")
-                        this.addModal = flase
+                        this.addModal = false
                         this.queryTable()
                     }else{
-                        this.$Message.success("操作失败！")
-                        this.addModal = flase
+                        this.$Message.error("操作失败！")
+                        this.addModal = false
                     }
                 })
             }
@@ -262,12 +270,15 @@ export default {
       confirmEdit(){
           this.$refs['formValidate1'].validate((valid) => {
             if(valid) {
-                this.axios.post('/userPerm/upRole',qs.stringify(thia.editRoleData))
+                this.axios.post('/userPerm/upRole',this.editRoleData)
                 .then(res=>{
                     if(res&&res.success=='1'){
                         this.$Message.success("操作成功！")
                         this.editModal = false
                         this.queryTable()
+                    }else{
+                        this.$Message.error("操作失败！")
+                        this.editModal = false
                     }
                 })
             }
@@ -286,7 +297,7 @@ export default {
                   this.deleteModal=false
                   this.queryTable()
               }else{
-                  this.$Message.success("操作失败！")
+                  this.$Message.error("操作失败！")
                   this.deleteModal=false
               }
           })

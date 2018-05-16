@@ -37,7 +37,7 @@
         class-name="vertical-center-modal">
        <Form ref="formValidate" :rules="ruleValidate" :model="addDeviceData"  :label-width="80" style="width:70%;margin:10px auto 0">
           <FormItem label="用户名" prop="userName">
-            <Select v-model="addDeviceData.userName" filterable style="width:200px">
+            <Select v-model="addDeviceData.userName" filterable style="width:200px" @on-change='handleUserChange'>
                 <Option :value="item.userName" v-for='(item,index) in userData' :key='index'>{{item.userName}}</Option>
             </Select>
             <!-- <Button type='primary' @click='handleSelect'>选择用户</Button> -->
@@ -76,26 +76,6 @@
             <Button type="primary" size="large" @click="confirmAdd">确定</Button>
         </div>
     </Modal>
-
-
-    <!-- 选择用户模态框 -->
-     <Modal
-        title="选择用户"
-        v-model="userModal"
-        :mask-closable="false"
-        class-name="vertical-center-modal">
-       <Form inline :model='userSearch'>
-          <FormItem label="">
-             <Input v-model='userSearch.content' placeholder="用户名/手机号"></Input>
-            <Button type='primary'>筛选</Button>
-          </FormItem>
-       </Form>
-      <Table border :columns="columns2" :loading='loading' :data="userData" no-data-text="暂无数据"></Table>   
-        <div slot="footer">
-            <Button  size="large" @click="addModal=false">取消</Button>
-            <Button type="primary" size="large" @click="confirmAdd">确定</Button>
-        </div>
-    </Modal>
   </div>
 </template>
 
@@ -119,12 +99,7 @@ export default {
 // data-------------------------------------------------------------------------------------
   data(){
     return {
-      userModal:false,
-      userSearch:{
-        content:""
-      },
       userData:[],
-      columns2:[],
       loading:false,
       searchData:{
         searchText:'',
@@ -231,6 +206,7 @@ export default {
       addModal: false,
       addDeviceData: {
           userName:'',
+          phone:"",
           plateName:'01',
           type: '01',
           belongto:'01',
@@ -242,7 +218,9 @@ export default {
       allBelongTo:{
         '01':'企业',
         '02':'个人'
-      }
+      },
+      loading2:false,
+
 
     }
   },
@@ -261,6 +239,8 @@ export default {
             this.deviceData = data.list
             this.totalPage = data.total
             this.startRow = data.startRow
+            
+            this.setPage3(1)
           }
         })
       },
@@ -311,10 +291,10 @@ export default {
         })
       },
 
-      // 
-      handleSelect(){
-        this.addModal = false
-        this.userModal = true
+      handleUserChange(){
+        this.addDeviceData.phone = this.userData.filter(item=>{
+            return item.userName==this.addDeviceData.userName
+        })[0].phone
       }
   }
 }

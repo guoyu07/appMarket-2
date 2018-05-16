@@ -10,8 +10,8 @@
             <!-- 应用 -->
             <div class="app_num">
               <div class="num">
-                <p class="number">{{appCnt}}</p>
-                <p>{{allSystemType[systemType]}}</p>
+                <p class="number">{{appCnt||0}}</p>
+                <p>{{allSystemType[systemType]||'暂无数据'}}</p>
               </div>
               <div class="name">
                 <p class="right_icon"><span class="mar-20 item">应用</span><Icon type="cube"></Icon></p>
@@ -38,22 +38,22 @@
             <div class="charts">
               <div class="left">
                 <h2>设备报表</h2>
-                <div id="chart1" class="chart_bg"></div>
+                <div id="chart1" class="chart_bg"><div style="text-align:center;line-height:250px" v-if='isShow1'>暂无数据</div></div>
               </div>
               <div class="right">
                 <h2>客户端统计</h2>
-                <div id="chart2" class="chart_bg"></div>
+                <div id="chart2" class="chart_bg"><div style="text-align:center;line-height:250px" v-if='isShow2'>暂无数据</div></div>
               </div>
             </div>
 
             <div class="charts">
               <div class="left">
                 <h2>设备违规统计</h2>
-                <div id="chart3" class="chart_bg"></div>
+                <div id="chart3" class="chart_bg"><div style="text-align:center;line-height:250px" v-if='isShow3'>暂无数据</div></div>
               </div>
               <div class="right">
                 <h2>应用安装情况</h2>
-                <div id="chart4" class="chart_bg"></div>
+                <div id="chart4" class="chart_bg"><div style="text-align:center;line-height:250px" v-if='isShow4'>暂无数据</div></div>
               </div>
             </div>
         </div>
@@ -82,7 +82,10 @@ export default {
       systemType:"",
 
       loginUserData:null,
-      data1:null,
+      isShow1:true,
+      isShow2:true,
+      isShow3:true,
+      isShow4:true,
       
     }
   },
@@ -100,46 +103,11 @@ export default {
 
 // mounted----------------------------------------------------------------------------------------
   mounted(){
-
-    // this.renderColumn({
-    //   ele:"chart4",
-    //   data:[{
-    //             // name: '应用名称',
-    //             data: [{
-    //                 name: 'qq',
-    //                 y: 56.33},
-    //                 {
-    //                 name: '微信',
-    //                 y: 24.03},
-    //                 {
-    //                 name: '微博',
-    //                 y: 10.38}, 
-    //                 {
-    //                 name: '网易新闻',
-    //                 y: 4.77}, 
-    //                 {
-    //                 name: '知乎',
-    //                 y: 0.91}, 
-    //                 {
-    //                 name: '抖音',
-    //                 y: 0.2}, 
-    //                 {
-    //                 name: '简书',
-    //                 y: 6.72}, 
-    //                 {
-    //                 name: '支付宝',
-    //                 y: 3.98
-    //             }]
-    //         }],
-
-    // })
   },
 
 // computed----------------------------------------------------------------------------------------
   computed: {
-    token(){
-      return this.$store.state.token
-    }
+   
   },
 
 // methods-----------------------------------------------------------------------------------------
@@ -168,7 +136,7 @@ export default {
      // 设备型号分布图
      queryDeviceModel(){
        this.axios.get('/statistic/deviceModelDistribution').then(res=>{
-         if(res && res.success=='1'){
+         if(res && res.success=='1'&&res.data){
            const data = res.data.map(item=>{
              const arr = []
              arr.push(item.model)
@@ -180,6 +148,7 @@ export default {
             title:"设备型号分布图",
             data:data,
           })
+          this.isShow1 = false
          }
        })
      },
@@ -187,7 +156,7 @@ export default {
      // 客户端统计图
      queryAppVersion(){
        this.axios.get('/statistic/appVersionDistribution').then(res=>{
-         if(res && res.success=='1'){
+         if(res && res.success=='1'&&res.data){
            const data = res.data.map(item=>{
              const arr = []
              arr.push(item.appVersion||'3.0')
@@ -199,6 +168,7 @@ export default {
             title:"Andriod客户端版本分布图",
             data:data
           })
+          this.isShow2 = false
          }
        })
      },
@@ -206,7 +176,7 @@ export default {
      // 违规设备分布图
      queryState(){
        this.axios.get('/statistic/stateDistribution').then(res=>{
-         if(res && res.success=='1'){
+         if(res && res.success=='1'&&res.data){
               const data = res.data.map(item=>{
                 const arr = []
                 arr.push(item.isViolation)
@@ -218,6 +188,7 @@ export default {
                 title:"违规设备分布图",
                 data:data,
               })
+              this.isShow3 = false
          }
        })
      },
@@ -225,7 +196,7 @@ export default {
      // 应用安装情况
      queryInstall(){
        this.axios.get('/statistic/installDistribution').then(res=>{
-         if(res && res.success=='1'){
+         if(res && res.success=='1'&&res.data){
             const data = res.data.map(item=>{
               const obj =  {}
               obj.name = item.appName
@@ -239,7 +210,7 @@ export default {
                 data:data
               }],
             })
-              
+            this.isShow4 = false
          }
        })
      },
@@ -252,7 +223,7 @@ export default {
                 // plotBorderWidth: null,
                 // plotShadow: false
             },
-            colors:['#f45853','#7bd5e9','#73dcb6','#ffbe31'],
+            colors:['#f45853','#7bd5e9','#73dcb6','#ffbe31','#a15db2','#446cb4','#60b730','#ebee13','#de9667','#1de4c1'],
             credits: {
                 enabled: false,
             },
@@ -423,6 +394,7 @@ export default {
       }
       .chart_bg{
         background:#fff;
+        position:relative;
       }
       #chart1,#chart2,#chart3,#chart4{
         width:100%;
