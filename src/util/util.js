@@ -122,6 +122,15 @@ export function breakTips(){
   },2000)
 }
 
+
+export function setValue(arr,key,flag){
+  for(var i = 0; i<arr.length; i++){
+    arr[i][key] = flag
+    if(arr[i].children.length!=0){
+      setValue(arr[i].children,key,flag)
+    }
+  }
+}
 // 日期格式化
 Date.prototype.format = function(fmt) { 
   var o = { 

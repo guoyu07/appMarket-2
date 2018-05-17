@@ -19,8 +19,6 @@
                 </FormItem>
             </Form>
         </div>
-
-        
     </div>
 </template>
 
@@ -84,6 +82,9 @@ export default {
                     if(res.success=='1'){
                         this.$Message.destroy(msg)
                         this.$Message.success("登陆成功！")
+                        // 本地存储token
+                        // localStorage.setItem("token",res.token)
+                        window.localStorage.setItem("token",'1234567890-0987654')
 
                         this.authList = [11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]
                         this.addMenu(this.authList)

@@ -45,6 +45,7 @@ Vue.prototype.$_has = function(value) {
 
 
 let authList = window.localStorage.getItem('authList')
+let token = window.localStorage.getItem('token')
 
 // console.log(authList) // 用户权限
 
@@ -55,10 +56,12 @@ if (authList) {
 }
 
 router.beforeEach((to, from, next) => {
-
     var userName = window.localStorage.getItem("userName")
     var password = window.localStorage.getItem("password")
-
+    // 匹配不到路由跳转到notfound页面
+    if (to.matched.length ===0) { 
+        next({path:'/notfound'})
+    }
     if(to.path === '/'){
         window.localStorage.clear()
         next({path:'/login'})
@@ -72,11 +75,12 @@ router.beforeEach((to, from, next) => {
         if(to.path=='/login'){
             console.log(333)
             next()
+            
         }else{
             console.log(444)
             next({path:'/login'})
         }
-        
+        window.localStorage.clear()
     }
 })
 

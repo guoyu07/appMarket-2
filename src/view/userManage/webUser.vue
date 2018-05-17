@@ -453,6 +453,8 @@ export default {
                   this.$Message.success("操作成功！")
                   this.addUserModal = false
                   this.searchData.pageNo = 1
+                  this.searchData.content = ''
+                  this.searchData.state = '-1'
                   this.queryTable()
                 }else{
                     this.$Message.error("操作失败！")
@@ -471,7 +473,10 @@ export default {
             if(valid) {
               // 若密码修改了，则传参密码
               if(this.editUserData.pwd != this.tmpwd){
-                this.axios.get('/userPerm/updateUser',{params:this.editUserData})
+                this.axios.get('/userPerm/updateUser',{params:{
+                  ...this.editUserData,
+                  userType:'1'
+                }})
                 .then(res=>{
                   if(res.success==1){
                     this.$Message.success("操作成功！")
@@ -488,7 +493,8 @@ export default {
                   userName:this.editUserData.userName,
                   phone:this.editUserData.phone,
                   roleId:this.editUserData.roleId,
-                  state:this.editUserData.state
+                  state:this.editUserData.state,
+                  userType:'1'
                 }})
                 .then(res=>{
                   if(res.success==1){

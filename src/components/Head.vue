@@ -9,10 +9,10 @@
       <Col span="20">
       <div id="right_wrap">
           <!-- 信息 -->
-            <router-link class="messages" v-bind:to="{path:'/index/messages'}" style="color:#fff"  title="消息">
+            <span class="messages" @click='viewMsg' style="color:#fff"  title="消息">
                 <Icon type="ios-email-outline"></Icon>
-                <div id="num">2</div>
-            </router-link>
+                <div id="num" v-if="count!=0">{{count}}</div>
+            </span>
 
           <!-- 用户名 -->
           <span @mousemove="tipsShow" @mouseleave="tipsHide">
@@ -56,6 +56,7 @@
 
 <script>
 import env from '../js/env.js'
+import {regTest} from '../util/util.js'
 export default {
 // created-----------------------------------------------------------------------------------
   created(){
@@ -75,6 +76,7 @@ export default {
         }else if(!regTest(value,'phone')){
           callback(new Error('请输入正确的手机号'))
         }else if(value==this.tmpPhone){
+            console.log(111)
           callback()
         }else{
           this.axios.get("/userPerm/checkUserPhone",{params:{
@@ -90,7 +92,10 @@ export default {
         }
     }
       return {
+          tmpPhone:'13333333333',
+          tmpPwd:'123456',
           websock:null,
+          count:1,
           modifyAccountModal:false,
           accountForm: {
               id:'',
@@ -121,6 +126,7 @@ export default {
           $(".tips").stop().slideUp(100)
       },
       showModal() {
+          this.$refs['formValidate'].resetFields()
           this.modifyAccountModal = true
           // 获取本地存储的用户信息
           this.accountForm.pwd = '123456'
@@ -130,14 +136,34 @@ export default {
       modifyAccount() {
           this.$refs['formValidate'].validate((valid) => {
                 if (valid) {
-                    this.axios.get("/userPerm/updateUser",{params:accountForm})
-                    .then(res=>{
-                        if(res&&res.success=='1'){
-                            this.$Message.success("操作成功！")
-                            // 修改本地存储的用户信息
-                            this.modifyAccountModal = false
-                        }
-                    })
+                    if(this.tmpPwd == this.accountForm.pwd){
+                      this.axios.get("/userPerm/updateUser",{params:{
+                          id:this.accountForm.id,
+                          userName:this.accountForm.userName,
+                          phone:this.accountForm.phone,
+                      }}).then(res=>{
+                            if(res&&res.success=='1'){
+                                this.$Message.success("操作成功！")
+                                // 修改本地存储的用户信息
+                                this.modifyAccountModal = false
+                            }else{
+                                this.$Message.error("操作失败！")
+                                this.modifyAccountModal = false
+                            }
+                       })  
+                    }else{
+                        this.axios.get("/userPerm/updateUser",{params:accountForm})
+                        .then(res=>{
+                            if(res&&res.success=='1'){
+                                this.$Message.success("操作成功！")
+                                // 修改本地存储的用户信息
+                                this.modifyAccountModal = false
+                            }else{
+                                this.$Message.error("操作失败！")
+                                this.modifyAccountModal = false
+                            }
+                        })
+                    }
                 }
             })
       },
@@ -146,26 +172,43 @@ export default {
       logout() {
           window.localStorage.clear();
           this.$router.push('/login')
+          this.closeWebSocket()
       },
 
       // Websocket显示消息数量
       sendWebSocket(){
-          this.websock = new WebSocket("ws://"+env.host+"/websocket/socketServer.do");
-          
+          this.websock = new WebSocket("ws://"+env.apiPath.slice(7,-1)+"/websocket/socketServer.do?token="+localStorage.getItem('token'));
           this.websock.onopen = function(evt) { 
             console.log("打开连接....."); 
-            this.send("哈哈哈");
+            this.send("111");
           };
 
           this.websock.onmessage = function(evt) {
-            console.log( "收到信息 " + evt.data);
-            this.close();
+            console.log( "收到信息 ");
+            if(evt.data){
+                this.count++
+            }
+            // this.close();
           };
             
-          this.websock.onclose = function(evt) {
+        //   ws.onclose = function(evt) {
+        //     console.log("连接关闭");
+        //   };      
+      },
+
+      // 关闭websocket
+      closeWebSocket(){
+         this.websock.onclose = function(evt) {
             console.log("连接关闭");
-          };      
+         };
+      },
+
+      //
+      viewMsg(){
+          this.$router.push({path:'/index/messages'})
+          this.count = 0
       }
+
   }
 }
 </script>

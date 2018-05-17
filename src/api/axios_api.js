@@ -17,9 +17,10 @@ axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded;
 // http request 拦截器
 axios.interceptors.request.use(
     config => {
-        // if (localStorage.getItem('token')) {
-        //     config.headers.Authorization = `token ${localStorage.getItem('token')}`;
-        // }
+        if (localStorage.getItem('token')) {
+            console.log(localStorage.getItem('token'))
+            config.headers.Authorization = `token ${localStorage.getItem('token')}`;
+        }
         return config;
     },
     err => {

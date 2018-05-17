@@ -20,7 +20,6 @@ let routes = [
                 path:'/index/homepage',
                 component: Home,
                 name:'首页',
-                // auth:11
             },
             {
                 path: '/notfound',

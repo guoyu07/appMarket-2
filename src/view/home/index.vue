@@ -179,7 +179,7 @@ export default {
          if(res && res.success=='1'&&res.data){
               const data = res.data.map(item=>{
                 const arr = []
-                arr.push(item.isViolation)
+                arr.push(item.isViolation=='0'?'未违规':'违规')
                 arr.push(item.cnt)
                 return arr
               })
@@ -295,7 +295,7 @@ export default {
                     maxPointWidth: 30,
                     dataLabels: {
                         enabled: true,
-                        format: '{point.y:.1f}%',
+                        format: '{point.y:.2f}%',
                         style: {
                             color: 'black'
                         }

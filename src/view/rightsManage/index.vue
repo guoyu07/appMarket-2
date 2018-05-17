@@ -101,17 +101,14 @@ export default {
         }else if(this.editModal==true){
             this.tmpMask == value?callback():callback(new Error('角色名称已存在'))
         }else{
-            callback()
+            this.axios.post('/userPerm/checkRoleName',qs.stringify({roleName:value})).then(res=>{
+                if(res && res.success=='1'){
+                    callback()
+                }else{
+                    callback(new Error('角色名称已存在'))
+                }
+            })
         }
-        // else{
-        //     this.axios.get('',{roleName:value}).then(res=>{
-        //         if(res && res.success=='1'){
-        //             callback()
-        //         }else{
-        //             callback(new Error('角色名称已存在'))
-        //         }
-        //     })
-        // }
     }
     return {
       loading:false,
@@ -157,6 +154,7 @@ export default {
                         on: {
                             click: () => {
 
+                                this.$refs['formValidate1'].resetFields()
                                 this.editModal = true
                                 this.editRoleData.id = params.row.id
                                 this.editRoleData.mask = params.row.mask
@@ -297,7 +295,7 @@ export default {
                   this.deleteModal=false
                   this.queryTable()
               }else{
-                  this.$Message.error("操作失败！")
+                  this.$Message.error(res.msg)
                   this.deleteModal=false
               }
           })

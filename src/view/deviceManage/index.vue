@@ -281,6 +281,8 @@ export default {
                 if(res&&res.success=='1'){
                   this.$Message.success("操作成功！")
                   this.addModal=false
+                  this.searchData.searchText=''
+                  this.searchData.pageNo=1
                   this.queryTable()
                 }else{
                   this.$Message.error("操作失败！")
