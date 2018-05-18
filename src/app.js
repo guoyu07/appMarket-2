@@ -28,14 +28,13 @@ Vue.directive('has', {
 });
 Vue.prototype.$_has = function(value) {
     let isExist=false;
-    let buttonpermsStr=localStorage.getItem("buttenpremissions");
-    // console.log('buttonpermsStr',buttonpermsStr)
-    if(buttonpermsStr==undefined || buttonpermsStr==null){
+    let btnPermsStr=window.localStorage.getItem("btnPerms");
+    if(btnPermsStr==undefined || btnPermsStr==null){
       return false;
     }
-    let buttonperms=JSON.parse(buttonpermsStr);
-    for(let i=0;i<buttonperms.length;i++){
-      if(buttonperms[i].perms.indexOf(value)>-1){
+    let btnPerms=JSON.parse(btnPermsStr);
+    for(let i=0;i<btnPerms.length;i++){
+      if(btnPerms[i].perms.indexOf(value)>-1){
         isExist=true;
         break;
       }
@@ -43,11 +42,8 @@ Vue.prototype.$_has = function(value) {
     return isExist;
   };
 
-
-let authList = window.localStorage.getItem('authList')
-let token = window.localStorage.getItem('token')
-
-// console.log(authList) // 用户权限
+  let authList = window.localStorage.getItem('authList')
+  let token = window.localStorage.getItem('token')
 
 if (authList) {
     store.commit(types.ADD_MENU, authList)

@@ -19,12 +19,13 @@
                 </FormItem>
             </Form>
         </div>
+
     </div>
 </template>
 
 <script>
 import qs from 'qs'
-import {mapActions,mapState,mapGetters} from 'vuex'
+import {mapActions,mapGetters} from 'vuex'
 
 export default {
   computed:{
@@ -38,6 +39,7 @@ export default {
 // data--------------------------------------------------------------------------------------
   data(){
       return {
+
           loginData: {
             userName: '',
             pwd: '',
@@ -83,10 +85,15 @@ export default {
                         this.$Message.destroy(msg)
                         this.$Message.success("登陆成功！")
                         // 本地存储token
-                        // localStorage.setItem("token",res.token)
-                        window.localStorage.setItem("token",'1234567890-0987654')
+                        window.localStorage.setItem("token",res.token)
 
+                        // 用户权限
+                        // this.authList = res.perms
                         this.authList = [11,21,22,23,24,31,32,41,42,51,52,61,62,63,64]
+                        let btnPerms = this.authList.map(item=>{
+                            return {perms:item}
+                        })
+
                         this.addMenu(this.authList)
                         if(!this.isLoadRoutes) {  
                             this.$router.addRoutes(this.menuitems)
@@ -97,7 +104,7 @@ export default {
                         window.localStorage.setItem("password",this.loginData.pwd)
                         window.localStorage.setItem("authList",JSON.stringify(this.authList))  
                         var buttenpremissions  = [{'perms':'addbtn'},{'perms':'delbtn'}]  
-                        window.localStorage.setItem("buttenpremissions",JSON.stringify(buttenpremissions))                
+                        window.localStorage.setItem("btnPerms",JSON.stringify(btnPerms))                
 
                         // 跳转到首页
                         this.$router.push({path: '/index/homepage'})
@@ -109,12 +116,6 @@ export default {
                 })             
             }
         })
-      },
-
-
-      // 点击刷新验证码
-      refreshAuth(){
-
       },
 
       // 忘记密码

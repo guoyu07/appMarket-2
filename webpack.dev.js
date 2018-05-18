@@ -18,5 +18,11 @@
      contentBase: './build',
      inline: true,
      historyApiFallback: true
-   }
+   },
+  //  proxyTable: {
+  //   '/api': {
+  //     target: 'http://133.100.108.56:8080/',//设置你调用的接口域名和端口号 别忘了加http
+  //     changeOrigin: true,
+  //   }
+  // }
  });

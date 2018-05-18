@@ -1,7 +1,7 @@
 <template>
   <div id="homepage">
 
-    <h1><span>当前位置 > </span>首页</h1>
+    <h1 @click='test'><span>当前位置 > </span >首页</h1>
     <div class="bottom_wrap">
       
         <!-- 统计数据部分 -->
@@ -67,8 +67,12 @@ var Highcharts = require('highcharts')
 // 在 Highcharts 加载之后加载功能模块
 require('highcharts/modules/exporting')(Highcharts)
 import {allSystemType} from '../../util/util.js'
-export default {
+import {mapActions,mapGetters} from 'vuex'
 
+export default {
+  computed:{
+    ...mapGetters(['isLoadRoutes','menuitems'])
+  }, 
 // data------------------------------------------------------------------------------------------ 
   data(){
     return {
@@ -112,6 +116,15 @@ export default {
 
 // methods-----------------------------------------------------------------------------------------
   methods: {
+    ...mapActions(['addMenu','loadRoutes',]),
+    test(){
+      // console.log(22222222222)
+      // window.localStorage.setItem("authList",JSON.stringify([22,23,24,31,32,41,42,51,52,61,62,63,64]))
+      //  this.addMenu([22,23,24,31,32,41,42,51,52,61,62,63,64])
+      //  this.$router.addRoutes(this.menuitems)
+      //  this.loadRoutes()  
+      // location.reload()
+    },
      // 查询应用数量
      queryAppNum(){
        this.axios.get('/statistic/appDistribution').then(res=>{
