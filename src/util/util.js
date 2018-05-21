@@ -122,12 +122,24 @@ export function breakTips(){
   },2000)
 }
 
-
+// 权限管理部分全选、取消全选与全部折叠、全部展开
 export function setValue(arr,key,flag){
   for(var i = 0; i<arr.length; i++){
     arr[i][key] = flag
     if(arr[i].children.length!=0){
       setValue(arr[i].children,key,flag)
+    }
+  }
+}
+
+export function getId(arr,arr1){
+  
+  for(var i = 0; i<arr.length;i++){
+    if(arr[i].checked==true){
+      arr1.push(arr[i].id)
+      if(arr[i].children.length!=0){
+        getId(arr[i].children,arr1)
+      }
     }
   }
 }

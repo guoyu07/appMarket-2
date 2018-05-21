@@ -178,7 +178,20 @@ export default {
         }else if(!regTest(value,'phone')){
           callback(new Error('请输入正确的手机号'))
         }else if(this.editUserModal==true){
-          value==this.tmpPhone?callback():callback(new Error('手机号码已存在！'))
+          if(value==this.tmpPhone){
+            callback()
+          }else{
+            this.axios.get("/userPerm/checkUserPhone",{params:{
+              phone:value,
+              userType:'1'
+            }}).then(res=>{
+              if(res&&res.success=='1'){
+                callback()
+              }else{
+                callback(new Error('手机号码已存在！'))
+              }
+            })
+          }
         }else{
           this.axios.get("/userPerm/checkUserPhone",{params:{
             phone:value,

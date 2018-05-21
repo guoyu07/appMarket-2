@@ -53,7 +53,7 @@ if (authList) {
 
 router.beforeEach((to, from, next) => {
     var userName = window.localStorage.getItem("userName")
-    var password = window.localStorage.getItem("password")
+    var password = window.localStorage.getItem("pwd")
     // 匹配不到路由跳转到notfound页面
     if (to.matched.length ===0) { 
         next({path:'/notfound'})

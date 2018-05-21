@@ -19,13 +19,13 @@
                 </FormItem>
             </Form>
         </div>
-
     </div>
 </template>
 
 <script>
 import qs from 'qs'
 import {mapActions,mapGetters} from 'vuex'
+import Trees from '../../components/Trees.vue'
 
 export default {
   computed:{
@@ -39,7 +39,7 @@ export default {
 // data--------------------------------------------------------------------------------------
   data(){
       return {
-
+         
           loginData: {
             userName: '',
             pwd: '',
@@ -86,6 +86,7 @@ export default {
                         this.$Message.success("登陆成功！")
                         // 本地存储token
                         window.localStorage.setItem("token",res.token)
+                        
 
                         // 用户权限
                         // this.authList = res.perms
@@ -101,7 +102,8 @@ export default {
                         }
                         // 获取用户权限并本地保存
                         window.localStorage.setItem("userName",this.loginData.userName)
-                        window.localStorage.setItem("password",this.loginData.pwd)
+                        window.localStorage.setItem("pwd",this.loginData.pwd)
+                        window.localStorage.setItem("userId",res.userId)
                         window.localStorage.setItem("authList",JSON.stringify(this.authList))  
                         var buttenpremissions  = [{'perms':'addbtn'},{'perms':'delbtn'}]  
                         window.localStorage.setItem("btnPerms",JSON.stringify(btnPerms))                

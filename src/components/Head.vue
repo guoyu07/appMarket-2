@@ -61,6 +61,10 @@ export default {
 // created-----------------------------------------------------------------------------------
   created(){
       this.sendWebSocket()
+      this.accountForm.id = window.localStorage.getItem("userId")
+      this.accountForm.userName = window.localStorage.getItem("userName")
+      this.accountForm.phone = window.localStorage.getItem("phone")
+      this.accountForm.pwd = window.localStorage.getItem("pwd")
   },
 
 // created-----------------------------------------------------------------------------------
@@ -99,9 +103,9 @@ export default {
           modifyAccountModal:false,
           accountForm: {
               id:'',
-              userName: '13333333333',
-              phone: '13333333333',
-              pwd: '123456'
+              userName: '',
+              phone: '',
+              pwd: ''
           },
           ruleValidate: {
              pwd: [
@@ -170,9 +174,17 @@ export default {
 
       // 退出登录
       logout() {
-          window.localStorage.clear();
-          this.$router.push('/login')
-          this.closeWebSocket()
+        //   this.axios.post("/loginout",qs.stringify({
+
+        //   })).then(res=>{
+        //       if(res&&res.success==1){
+                  this.$Message.success("退出登录！")
+                  window.localStorage.clear();
+                this.$router.push('/login')
+                this.closeWebSocket()
+        //       }
+        //   })
+          
       },
 
       // Websocket显示消息数量

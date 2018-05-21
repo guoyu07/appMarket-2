@@ -1,6 +1,6 @@
 <template>
   <div id="dispatchRight">
-    
+    <input type='checkbox'/>
     <h1><span>当前位置 > </span><a href="#/index/rightsManage">权限管理</a><span> > </span><span class="title_active">分配权限</span></h1>
     <div class="bottom_wrap clearfix">
         <div class="btn_wrap">
@@ -10,7 +10,7 @@
         <div class="tree_wrap">
             <div class="title">应用管理</div>
             <div class="inner">
-                <Tree :data="appData" ref='tree' show-checkbox multiple></Tree>
+                <Trees :data='appData'></Trees>
                 <div class="treeM"></div>
             </div>
             <Spin size="large" fix v-if="spinShow"></Spin>
@@ -18,7 +18,7 @@
         <div class="tree_wrap">
             <div class="title">用户管理</div>
             <div class="inner">
-                <Tree :data="userData" ref='tree1' show-checkbox multiple></Tree>
+                <Trees :data="userData"></Trees>
                 <div class="treeM"></div>
             </div>
             <Spin size="large" fix v-if="spinShow"></Spin>
@@ -26,7 +26,7 @@
         <div class="tree_wrap">
             <div class="title">权限管理</div>
             <div class="inner">
-                <Tree :data="rightsData" ref='tree2' show-checkbox multiple></Tree>
+                <Trees :data="rightsData"></Trees>
                 <div class="treeM"></div>
             </div>
             <Spin size="large" fix v-if="spinShow"></Spin>
@@ -34,7 +34,7 @@
         <div class="tree_wrap">
             <div class="title">设备管理</div>
             <div class="inner">
-                <Tree :data="deviceData" ref='tree3' show-checkbox multiple></Tree>
+                <Trees :data="deviceData"></Trees>
                 <div class="treeM"></div>
             </div>
             <Spin size="large" fix v-if="spinShow"></Spin>
@@ -42,7 +42,7 @@
         <div class="tree_wrap">
             <div class="title">日志报表</div>
             <div class="inner">
-                <Tree :data="logData" ref='tree4' show-checkbox multiple></Tree>
+                <Trees :data="logData"></Trees>
                 <div class="treeM"></div>
             </div>
             <Spin size="large" fix v-if="spinShow"></Spin>
@@ -58,7 +58,8 @@
 </template>
 
 <script>
-import {setValue} from '../../util/util.js'
+import {setValue,getId} from '../../util/util.js'
+import Trees from '../../components/Trees.vue'
 export default {
 // created----------------------------------------------------------------------------------------------
   created(){
@@ -68,19 +69,24 @@ export default {
     this.queryTree()
   },
 
+  components:{
+      Trees
+  },
+
 // data-------------------------------------------------------------------------------------------------
   data(){
     return {
       spinShow:false,
       roleId:"",
       data:[],
-      appData:[],
+      appData: [],
       userData:[],
       rightsData:[],
       deviceData:[],
       logData:[],
       flag:true,
       flag1:false,
+      idList:[]
     }
   },
 
@@ -105,6 +111,7 @@ export default {
                    this.rightsData = this.data[2]
                    this.deviceData = this.data[3]
                    this.logData = this.data[4]
+
                }
            })
        },
@@ -117,10 +124,6 @@ export default {
            setValue(this.rightsData,'checked',flag)
            setValue(this.deviceData,'checked',flag)
            setValue(this.logData,'checked',flag)
-            setTimeout(()=>{
-                $(".ivu-checkbox-indeterminate").removeClass("ivu-checkbox-indeterminate")
-
-            },100)
             this.flag=!flag
        },
 
@@ -137,22 +140,16 @@ export default {
 
        //确定提交权限
        submit(){
-           var auth = this.$refs.tree.getCheckedNodes().map(item=>{
-               return item.id
-           }).concat(this.$refs.tree1.getCheckedNodes().map(item=>{
-               return item.id
-           }),this.$refs.tree2.getCheckedNodes().map(item=>{
-               return item.id
-           }),this.$refs.tree3.getCheckedNodes().map(item=>{
-               return item.id
-           }),this.$refs.tree4.getCheckedNodes().map(item=>{
-               return item.id
-           })).join(";")
-
+           getId(this.appData,this.idList)
+           getId(this.userData,this.idList)
+           getId(this.rightsData,this.idList)
+           getId(this.deviceData,this.idList)
+           getId(this.logData,this.idList)
+           console.log(this.idList)
           this.axios.get('/userPerm/correlationPermissions',{
               params:{
                   roleId:this.roleId,
-                  permissionIds:auth
+                  permissionIds:this.idList.join(";")
               }
           }).then(res=>{
               if(res&&res.success=='1'){
