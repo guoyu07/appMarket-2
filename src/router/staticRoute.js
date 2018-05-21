@@ -47,92 +47,87 @@ let staticRoutes = [
                 path:'/index/appManage',
                 component: AppManage,
                 name:'应用管理',
-                auth:21
+                auth:1
             },
             {
                 path:'/index/addApp',
                 component: AddApp,
                 name:'添加应用',
-                auth:22
+                auth:6
             },
             {
                 path:'/index/appDetail',
                 component: AppDetail,
                 name:'应用详情',
-                auth:23
+                auth:1
             },
             {
                 path:'/index/editApp',
                 component: EditApp,
                 name:'应用编辑',
-                auth:24
+                auth:7
             },
             {
                 path:'/index/webUser',
                 component: WebUser,
                 name:'平台用户',
-                auth: 31
+                auth: 11
             },
             {
                 path:'/index/phoneUser',
                 component: PhoneUser,
                 name:'手机用户',
-                auth: 32
+                auth: 12
             },
             {
                 path:'/index/rightsManage',
                 component: RightsManage,
                 name:'权限管理',
-                auth: 41
+                auth: 3
             },
             {
                 path:'/index/dispatchRight',
                 component: DispatchRight,
                 name:'分配权限',
-                auth: 42
+                auth: 32
             },
             {
                 path:'/index/deviceManage',
                 component: DeviceManage,
                 name:'设备管理',
-                auth: 51
+                auth: 4
             },
             {
                 path:'/index/deviceDetail',
                 component: DeviceDetail,
                 name:'设备详情',
-                auth: 52
+                auth: 4
             },
             {
                 path:'/index/reportForm',
                 component: ReportForm,
                 name:'报表',
-                auth: 61
+                auth: 35
             },
             {
                 path:'/index/formDetail',
                 component: FormDetail,
                 name:'报表详情',
-                auth: 62
+                auth: 35
             },
             {
                 path:'/index/adminLog',
                 component: AdminLog,
                 name:'管理员日志',
-                auth: 63
+                auth: 36
             },
             {
                 path:'/index/userLog',
                 component: UserLog,
                 name:'用户日志',
-                auth: 64
+                auth: 37
             },
-            {
-                path:'/index/messages',
-                component: Messages,
-                name:'消息',
-                auth: 11
-            },
+            
         ]
     },
 ]

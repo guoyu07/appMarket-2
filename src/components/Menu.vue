@@ -7,38 +7,38 @@
                       <Icon type="android-home"></Icon>
                           首页
                   </MenuItem>
-                  <MenuItem name="/index/appManage" auth='21' class='isMenu'>
+                  <MenuItem name="/index/appManage" auth='1' class='isMenu'>
                           <Icon type="ios-keypad"></Icon>
                           应用管理
                   </MenuItem>
-                  <Submenu name="userManage">
+                  <Submenu name="userManage" auth='2' class='isMenu'>
                       <template slot="title">
                           <Icon type="android-people"></Icon>
                           用户管理
                       </template>
-                      <MenuItem name="/index/webUser"  auth='31' class='isMenu'>平台用户</MenuItem>
-                      <MenuItem name="/index/phoneUser" auth='32' class='isMenu'>手机用户</MenuItem>
+                      <MenuItem name="/index/webUser"  auth='11' class='isMenu'>平台用户</MenuItem>
+                      <MenuItem name="/index/phoneUser" auth='12' class='isMenu'>手机用户</MenuItem>
                   </Submenu>
-                  <MenuItem name="/index/rightsManage"  auth='41' class='isMenu'>
+                  <MenuItem name="/index/rightsManage"  auth='3' class='isMenu'>
                           <Icon type="android-settings"></Icon>
                           权限管理
                   </MenuItem>
-                  <MenuItem name="/index/deviceManage"  auth='51' class='isMenu'>
+                  <MenuItem name="/index/deviceManage"  auth='4' class='isMenu'>
                           <Icon type="android-phone-portrait"></Icon>
                           设备管理
                   </MenuItem>
-                  <Submenu name="journaling">
+                  <Submenu name="journaling"  auth='5' class='isMenu'>
                       <template slot="title">
                           <Icon type="stats-bars"></Icon>
                           日志报表
                       </template>
-                      <MenuItem name="/index/reportForm" auth='61' class='isMenu'>报表</MenuItem>
+                      <MenuItem name="/index/reportForm" auth='35' class='isMenu'>报表</MenuItem>
                       <Submenu name="log">
                           <template slot="title">
                               日志
                           </template> 
-                          <MenuItem name="/index/adminLog" auth='62' class='isMenu'>管理员日志</MenuItem>
-                          <MenuItem name="/index/userLog" auth='63' class='isMenu'>用户日志</MenuItem>
+                          <MenuItem name="/index/adminLog" auth='36' class='isMenu'>管理员日志</MenuItem>
+                          <MenuItem name="/index/userLog" auth='37' class='isMenu'>用户日志</MenuItem>
                       </Submenu>
                   </Submenu>
               </Menu>

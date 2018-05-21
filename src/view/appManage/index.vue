@@ -30,9 +30,9 @@
                     <Icon type="navicon-round"></Icon> 应用列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary" v-has="'addbtn'" style="margin-right:15px" @click="$router.push({path:'/index/addApp'})"><Icon type="plus"></Icon> 添加应用</Button>
-                    <Button type="primary" v-has="'addbtn'"  class='isDisabled' style="margin-right:15px"  @click="isSelected('1')?handleClick('1'):''">启用</Button>
-                    <Button type="primary" v-has="'addbtn'"  class='isDisabled' style="margin-right:15px"  @click="isSelected('2')?handleClick('2'):''">禁用</Button>
+                    <Button type="primary" v-has="'6'" style="margin-right:15px" @click="$router.push({path:'/index/addApp'})"><Icon type="plus"></Icon> 添加应用</Button>
+                    <Button type="primary" v-has="'9'"  class='isDisabled' style="margin-right:15px"  @click="isSelected('1')?handleClick('1'):''">启用</Button>
+                    <Button type="primary" v-has="'10'"  class='isDisabled' style="margin-right:15px"  @click="isSelected('2')?handleClick('2'):''">禁用</Button>
                     <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected('3')?handleClick('3'):''">黑名单</Button>
                     <Button type="primary" class='isDisabled'  @click="isSelected('4')?handleClick('4'):''" >白名单</Button>
                 </div>
@@ -296,7 +296,7 @@ export default {
                             // color:'#63c185',
                         },
                         props: {
-                            hasName: 'addbtn',
+                            hasName: '8',
                             textName: '版本升级',
                             id:params.row.id,
                             pageNo:this.searchData.pageNo
@@ -310,7 +310,7 @@ export default {
                             // color:'#63c185',
                         },
                         props: {
-                            hasName: 'addbtn',
+                            hasName: '1',
                             textName: '详情',
                             id:params.row.id,
                             pageNo:this.searchData.pageNo
@@ -324,7 +324,7 @@ export default {
                             // color:'#63c185',
                         },
                         props: {
-                            hasName: 'addbtn',
+                            hasName: '7',
                             textName: '编辑',
                             id:params.row.id,
                             pageNo:this.searchData.pageNo

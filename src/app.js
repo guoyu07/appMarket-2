@@ -34,7 +34,7 @@ Vue.prototype.$_has = function(value) {
     }
     let btnPerms=JSON.parse(btnPermsStr);
     for(let i=0;i<btnPerms.length;i++){
-      if(btnPerms[i].perms.indexOf(value)>-1){
+      if(btnPerms[i].perms==value){
         isExist=true;
         break;
       }
