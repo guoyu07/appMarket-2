@@ -145,7 +145,7 @@ export default {
            getId(this.rightsData,this.idList)
            getId(this.deviceData,this.idList)
            getId(this.logData,this.idList)
-           console.log(this.idList)
+          
           this.axios.get('/userPerm/correlationPermissions',{
               params:{
                   roleId:this.roleId,
@@ -161,7 +161,33 @@ export default {
           })
        },
 
-   }
+   },
+
+// watch---------------------------------------------------------------------------------
+    watch:{
+        'userData':{
+            handler:(curVal,oldVal)=>{
+                if(curVal[0].children[0].checked==false && curVal[0].children[1].checked==false){
+                    curVal[0].checked = false
+                }
+            },
+            deep:true
+        },
+        'logData':{
+            handler:(curVal,oldVal)=>{
+                if(curVal[0].children[0].checked==false && curVal[0].children[1].checked==false){
+                    curVal[0].checked = false
+                }
+                if(curVal[0].children[0].children[0].checked==false&&curVal[0].children[0].children[1].checked==false){
+                    curVal[0].children[0].checked = false
+                }
+                if(curVal[0].children[1].children[0].checked==false&&curVal[0].children[1].children[1].checked==false&&curVal[0].children[1].children[2].checked==false){
+                    curVal[0].children[1].checked = false
+                }
+            },
+            deep:true
+        }
+    }
 
 }
 </script>

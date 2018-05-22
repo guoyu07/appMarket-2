@@ -16,14 +16,22 @@ export default {
   methods:{
     ...mapActions(['setPage1']),
     handleClick(){
-      this.setPage1(this.pageNo)      
-      if(this.textName=='版本升级'){
-         this.$router.push({path:"/index/editApp",query:{type:0,id:this.id}})        
-      }else if(this.textName=='详情'){
-        this.$router.push({path:"/index/appDetail",query:{id:this.id}})
-      }else {
-        this.$router.push({path:"/index/editApp",query:{type:1,id:this.id}})
-      }
+       
+      switch (this.hasName) {
+        // 应用管理 版本升级、详情、编辑
+        case 'app_upper':
+          this.setPage1(this.pageNo);
+          this.$router.push({path:"/index/editApp",query:{type:0,id:this.id}});
+          break;
+        case 'app':
+          this.setPage1(this.pageNo);
+          this.$router.push({path:"/index/appDetail",query:{id:this.id}})
+          break;
+        case 'app_edit':
+          this.setPage1(this.pageNo);
+          this.$router.push({path:"/index/editApp",query:{type:1,id:this.id}})
+          break;
+      }     
     }
   }
 }

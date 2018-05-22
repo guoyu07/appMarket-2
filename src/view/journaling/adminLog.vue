@@ -6,7 +6,10 @@
       <div class="search_wrap">
         <Form inline :model="searchData"  :label-width="80">
           <FormItem label="操作类型" v-show='tabName=="name1"'>
-            <Input v-model="searchData.optType"  placeholder="请输入操作类型"></Input>
+            <Select v-model="searchData.optType"  style="width:200px">
+                <Option value="-1">全部</Option>                
+                <Option :value="item.optType" v-for='(item,index) in optData' :key='index'>{{item.optDesc}}</Option>
+            </Select>
           </FormItem>
           <FormItem label="用户类型">
             <Select v-model="searchData.userType"  style="width:100px">
@@ -57,12 +60,15 @@ import {format} from '../../util/util.js'
 export default {
   created(){
     document.title = "日志报表-日志-管理员日志"
-    this.queryLoginLog()
-    this.queryLog()
+    this.queryTable1()
+    // this.queryTable2()
+    this.queryOptType()
   },
 
   data(){
     return {
+      optData:[],
+      allOptData:{},
       type:'1',
       time:null,
       loading1:false,
@@ -74,10 +80,10 @@ export default {
       startRow1:1,
       startRow2:1,
       searchData:{
-        optType:'',
+        optType:'-1',
         userType: '-1',
-        fromDate: "",
-        toDate:"",
+        fromDate:null,
+        toDate:null,
         pageSize:10
       },
       columns1:[
@@ -96,6 +102,9 @@ export default {
         {
             title: "操作类型",
             key: 'optType',
+            render:(h,params)=>{
+              return h('div',this.allOptData[params.row.optType])
+            }
         },
         {
             title: "操作者",
@@ -129,7 +138,9 @@ export default {
         },
         {
             title: "操作类型",
-            key: 'optType',
+            render:(h,params)=>{
+              return h('div',this.allOptData[params.row.optType])
+            }
         },
         {
             title: "操作者",
@@ -151,51 +162,79 @@ export default {
   },
 
   methods: {
+    queryLog(){
+      this.pageNo1 = 1
+      this.queryTable1()
+    },
+    queryLoginLog(){
+      this.pageNo2 = 1
+      this.queryTable2()
+    },
+    // 查询操作类型
+    queryOptType(){
+      this.axios.get('/userPerm/getOptType').then(res=>{
+        if(res&&res.success==1){
+          const data = res.data
+          this.optData = data
+          data.forEach(item=>{
+           this.allOptData[item.optType] = item.optDesc
+          })
+          console.log(this.allOptData )
+        }
+      })
+    },
     // tab栏切换
     tabChange(name){
-      console.log(name)
+      // console.log(name)
+      this.searchData.optType = '-1'
+      this.searchData.userType = '-1'
+      this.searchData.fromDate = null
+      this.searchData.toDate = null
       this.tabName = name
+      name=='name1'?this.queryLog():this.queryLoginLog()
     },
 
     changePage1(current){
       this.pageNo1 = current
-      this.queryLog()
+      this.queryTable1()
     },
     changePage2(current){
       this.pageNo2 = current
-      this.queryLoginLog()
+      this.queryTable2()
     },
     // 查询非登录日志
-    queryLog(){
+    queryTable1(){
       this.loading1 = true
       this.axios.post('/userPerm/listoptLogs',{
         ...this.searchData,
         pageNo:this.pageNo1,
-        logType:'2'
+        logType:'1',
       }).then(res=>{
         if(res&&res.success=='1'&&res.data){
           this.loading1 = false
           const data = res.data
           this.actionData = data.list
-          this.totalPage1 = data.totalPage1
+          this.totalPage1 = data.total
           this.startRow1 = data.startRow
         }
       })
     },
 
     // 查询登录日志
-    queryLoginLog(){
+    queryTable2(){
       this.loading2 = true
       this.axios.post('/userPerm/listoptLogs',{
         userType:this.searchData.userType,
         pageNo:this.pageNo2,
-        logType:'1'
+        pageSize:10,
+        logType:'2',
+        isadmin:'1'
       }).then(res=>{
         if(res&&res.success=='1'&&res.data){
           this.loading2 = false
           const data = res.data
-          this.loginData = data.data
-          this.totalPage2 = data.totalPage2
+          this.loginData = data.list
+          this.totalPage2 = data.total
           this.startRow2 = data.startRow
         }
       })
@@ -206,9 +245,9 @@ export default {
 // watch------------------------------------------------------------------------------------------------
   watch:{
     'time':function(){
-      console.log(this.time)
-      this.searchData.fromDate = this.time[0]!=''?new Date(this.time[0]).format("yyyy-MM-dd"):''
-      this.searchData.toDate = this.time[1]!=""?new Date(this.time[1]).format("yyyy-MM-dd"):''
+      // console.log(this.time)
+      this.searchData.fromDate = this.time[0]!=''?new Date(this.time[0]).format("yyyy-MM-dd"):null
+      this.searchData.toDate = this.time[1]!=""?new Date(this.time[1]).format("yyyy-MM-dd"):null
     }
   }
 }
@@ -216,6 +255,7 @@ export default {
 
 <style lang="scss" scoped type="text/css">
   #adminLog{
+    padding-bottom:20px;
     .search_wrap {
         background:#fff;
         padding:20px 20px 0 0;

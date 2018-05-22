@@ -30,8 +30,8 @@
                     <Icon type="navicon-round"></Icon> 手机用户列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected('1')?startUseModal = true:''">启用</Button>
-                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected('2')?forbiddenUseModal = true:''">禁用</Button>
+                    <Button type="primary" v-has='"phone_u_enable"' class='isDisabled' style="margin-right:15px"  @click="isSelected('1')?startUseModal = true:''">启用</Button>
+                    <Button type="primary" v-has='"phone_u_disable"' class='isDisabled' style="margin-right:15px"  @click="isSelected('2')?forbiddenUseModal = true:''">禁用</Button>
                 </div>
            </div>
            
@@ -113,6 +113,8 @@ import {breakTips} from '../../util/util'
 export default {
 // created--------------------------------------------------------------------------------------
   created(){
+    const authList = JSON.parse(window.localStorage.getItem("authList"))
+    authList.indexOf('phone_u_edit')>-1?this.columns = this.columns1:this.columns = this.columns2
     document.title = "用户管理-手机用户"
     this.queryTable()
   },
@@ -145,7 +147,8 @@ export default {
         pageSize:10,
         type:'2'
       },
-      columns: [
+      columns: [],
+      columns1:[
         {
             type: 'selection',
             width: 60,
@@ -230,6 +233,47 @@ export default {
             }
         }
       ],
+      columns2:[
+        {
+            type: 'selection',
+            width: 60,
+            align: 'center'
+        },
+        {
+            width: 70,
+            // align: 'center',
+            title: "序号",
+            render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
+        },
+        {
+            title: "用户名",
+            key: 'userName',
+        },
+        {
+            title: '手机号',
+            key: 'phone'
+        },
+        {
+            title: '性别',
+            key: 'sex',
+            render:(h,params)=>{
+              return h('div',params.row.sex=='F'?'女':'男')
+            }
+        },
+        {
+            title: '角色名称',
+            key: 'roleName'
+        },
+        {
+            title: '状态',
+            key: 'state',
+            render:(h,params)=>{
+              return h('div',params.row.state=='1'?'启用':'禁用')
+            }
+        },
+      ],
       phoneUserData: [],
       selectedUserData: null,
       selectedState:'',
@@ -262,7 +306,7 @@ export default {
     // 改变页码
     changePage(current){
 
-      console.log(current)
+      // console.log(current)
       this.searchData.pageNo = current
       this.queryTable()
 

@@ -30,9 +30,9 @@
                     <Icon type="navicon-round"></Icon> 平台用户列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary" style="margin-right:15px" @click="addUser"><Icon type="plus"></Icon> 添加用户</Button>
-                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected('1')?startUseModal = true:''">启用</Button>
-                    <Button type="primary" class='isDisabled' style="margin-right:15px"  @click="isSelected('2')?forbiddenUseModal = true:''">禁用</Button>
+                    <Button type="primary" v-has='"plate_u_add"' style="margin-right:15px" @click="addUser"><Icon type="plus"></Icon> 添加用户</Button>
+                    <Button type="primary" v-has='"plate_u_enable"'  class='isDisabled' style="margin-right:15px"  @click="isSelected('1')?startUseModal = true:''">启用</Button>
+                    <Button type="primary" v-has='"plate_u_disable"'  class='isDisabled' style="margin-right:15px"  @click="isSelected('2')?forbiddenUseModal = true:''">禁用</Button>
                 </div>
            </div>
            <div style="position:relative">
@@ -142,9 +142,12 @@
 
 <script>
 import {breakTips,regTest} from '../../util/util'
+import Action from '../../components/Action.vue'
 export default {
 // created-----------------------------------------------------------------------------
-  created(){
+  created(){    
+    const authList = JSON.parse(window.localStorage.getItem("authList"))
+    authList.indexOf('plate_u_edit')>-1?this.columns = this.columns1:this.columns = this.columns2
     document.title = "用户管理-平台用户"
     this.queryTable()
     this.queryRole()
@@ -256,7 +259,8 @@ export default {
         pageSize:10,
         type:'1'
       },
-      columns: [
+      columns: [],
+      columns1:[
         {
             type: 'selection',
             width: 60,
@@ -299,7 +303,7 @@ export default {
             align: 'center',
             width: 220,
             render: (h, params) => {
-                return h('div', [
+                return h('div',[
                     h('a', {
                         style: {
                             marginRight: '10px',
@@ -337,6 +341,44 @@ export default {
                 ]);
             }
         }
+      ],
+      columns2:[
+        {
+            type: 'selection',
+            width: 60,
+            align: 'center'
+        },
+        {
+            width: 70,
+            // align: 'center',
+            title: "序号",
+            render:(h,params)=>{
+              return h('div',params.index + this.startRow)
+            }
+        },
+        {
+            title: "用户名",
+            key: 'userName',
+        },
+        {
+            title: '手机号',
+            key: 'phone'
+        },
+        {
+            title: '注册时间',
+            key: 'registerDate'
+        },
+        {
+            title: '角色名称',
+            key: 'roleName'
+        },
+        {
+            title: '状态',
+            key: 'state',
+            render:(h,params)=>{
+              return h('div',params.row.state=='1'?'启用':'禁用')
+            }
+        },
       ],
       webUserData: [],
       selectedUserData: '',
@@ -387,7 +429,7 @@ export default {
     // 改变页码
     changePage(current){
 
-      console.log(current)
+      // console.log(current)
       this.searchData.pageNo = current
       this.queryTable()
 
@@ -488,7 +530,8 @@ export default {
               if(this.editUserData.pwd != this.tmpwd){
                 this.axios.get('/userPerm/updateUser',{params:{
                   ...this.editUserData,
-                  userType:'1'
+                  userType:'1',
+                  flag:2
                 }})
                 .then(res=>{
                   if(res.success==1){
@@ -507,7 +550,8 @@ export default {
                   phone:this.editUserData.phone,
                   roleId:this.editUserData.roleId,
                   state:this.editUserData.state,
-                  userType:'1'
+                  userType:'1',
+                  flag:2
                 }})
                 .then(res=>{
                   if(res.success==1){

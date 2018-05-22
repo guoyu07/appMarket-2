@@ -63,7 +63,7 @@ export default {
       // 点击登录
       ...mapActions(['addMenu','loadRoutes',]),
       handleSubmit(name){
-        console.log(this)
+        // console.log(this)
         if(this.count>0){
             return
         }
@@ -87,26 +87,23 @@ export default {
                         // 本地存储token
                         window.localStorage.setItem("token",res.token)
                         
-
                         // 用户权限
-                        // this.authList = res.perms
-                        this.authList = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43]
-                        let btnPerms = this.authList.map(item=>{
-                            return {perms:item}
+                        this.authList = res.perms.map(item=>{
+                            return item.mask
                         })
-
+                        // 动态添加路由
                         this.addMenu(this.authList)
                         if(!this.isLoadRoutes) {  
                             this.$router.addRoutes(this.menuitems)
                             this.loadRoutes()  
                         }
                         // 获取用户权限并本地保存
-                        window.localStorage.setItem("userName",this.loginData.userName)
-                        window.localStorage.setItem("pwd",this.loginData.pwd)
-                        window.localStorage.setItem("userId",res.userId)
-                        window.localStorage.setItem("authList",JSON.stringify(this.authList))  
-                        var buttenpremissions  = [{'perms':'addbtn'},{'perms':'delbtn'}]  
-                        window.localStorage.setItem("btnPerms",JSON.stringify(btnPerms))                
+                        var obj = {}
+                        obj.userName = this.loginData.userName
+                        obj.pwd = this.loginData.pwd
+                        obj.userId = res.userId
+                        window.localStorage.setItem("userInfo",JSON.stringify(obj))
+                        window.localStorage.setItem("authList",JSON.stringify(this.authList))              
 
                         // 跳转到首页
                         this.$router.push({path: '/index/homepage'})

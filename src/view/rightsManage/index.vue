@@ -9,7 +9,7 @@
                     <Icon type="navicon-round"></Icon> 角色列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary"  @click="addRole"><Icon type="plus"></Icon> 添加角色</Button>
+                    <Button type="primary"  v-has='"perm_add_role"'  @click="addRole"><Icon type="plus"></Icon> 添加角色</Button>
                 </div>
            </div>
            
@@ -83,6 +83,10 @@ import {mapActions, mapGetters} from 'vuex'
 export default {
 // created------------------------------------------------------------------------------
   created(){
+    this.authList = JSON.parse(window.localStorage.getItem('authList'))
+    if(this.authList.indexOf('perm_edit')==-1&&this.authList.indexOf('perm_del')==-1&&this.authList.indexOf('perm_assign')==-1){
+        this.columns = this.columns1
+    }
     document.title = "权限管理"
     this.pageNo = this.rightPage
     this.queryTable()
@@ -111,6 +115,7 @@ export default {
         }
     }
     return {
+      authList:[],
       loading:false,
       pageNo:1,
       totalPage:1,
@@ -145,8 +150,9 @@ export default {
             key: 'action',
             align: 'center',
             render: (h, params) => {
-                return h('div', [
-                    h('a', {
+                
+                const arr = []
+                const act1 = h('a', {
                         style: {
                             marginRight: '10px',
                             color:'#63c185'
@@ -162,8 +168,8 @@ export default {
                                 this.tmpMask = params.row.mask
                             }
                         }
-                    }, '编辑'),
-                    h('a', {
+                    }, '编辑');
+                const act2 = h('a', {
                         style: {
                             marginRight: '10px',
                             color:'#63c185'
@@ -174,8 +180,9 @@ export default {
                                 this.delId = params.row.id
                             }
                         }
-                    }, '删除'),
-                     h('a', {
+                    }, '删除');
+
+                const act3 = h('a', {
                         style: {
                             marginRight: '10px',
                             color:'#63c185'
@@ -183,14 +190,35 @@ export default {
                         on: {
                             click: () => {
                                 this.setPage2(this.pageNo)
-                                console.log(this.rightPage)
+                                // console.log(this.rightPage)
                                 this.$router.push({path:'/index/dispatchRight',query:{roleId:params.row.id}})
                             }
                         }
-                    }, '分配权限')
-                ]);
+                    }, '分配权限');
+                if(this.authList.indexOf('perm_edit')>-1){arr.push(act1)}
+                if(this.authList.indexOf('perm_del')>-1){arr.push(act2)}
+                if(this.authList.indexOf('perm_assign')>-1){arr.push(act3)}
+                return h('div', arr);
             }
         }
+      ],
+      columns1:[
+           {
+                // type: 'index',
+                align: 'center',
+                title: "序号",
+                render:(h,params)=>{
+                return h('div',params.index + this.startRow)
+                }
+            },
+            {
+                title: '角色名称',
+                key: 'mask'
+            },
+            {
+                title: '角色描述',
+                key: 'description'
+            },
       ],
       roleData: [],
       deleteModal:false,
@@ -268,7 +296,7 @@ export default {
       confirmEdit(){
           this.$refs['formValidate1'].validate((valid) => {
             if(valid) {
-                this.axios.post('/userPerm/upRole',this.editRoleData)
+                this.axios.post('/userPerm/upRole',qs.stringify(this.editRoleData))
                 .then(res=>{
                     if(res&&res.success=='1'){
                         this.$Message.success("操作成功！")

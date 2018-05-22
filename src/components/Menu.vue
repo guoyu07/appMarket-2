@@ -7,38 +7,38 @@
                       <Icon type="android-home"></Icon>
                           首页
                   </MenuItem>
-                  <MenuItem name="/index/appManage" auth='1' class='isMenu'>
+                  <MenuItem name="/index/appManage" auth='app' class='isMenu'>
                           <Icon type="ios-keypad"></Icon>
                           应用管理
                   </MenuItem>
-                  <Submenu name="userManage" auth='2' class='isMenu'>
+                  <Submenu name="userManage" auth='user' class='isMenu'>
                       <template slot="title">
                           <Icon type="android-people"></Icon>
                           用户管理
                       </template>
-                      <MenuItem name="/index/webUser"  auth='11' class='isMenu'>平台用户</MenuItem>
-                      <MenuItem name="/index/phoneUser" auth='12' class='isMenu'>手机用户</MenuItem>
+                      <MenuItem name="/index/webUser"  auth='plate_user' class='isMenu'>平台用户</MenuItem>
+                      <MenuItem name="/index/phoneUser" auth='phone_user' class='isMenu'>手机用户</MenuItem>
                   </Submenu>
-                  <MenuItem name="/index/rightsManage"  auth='3' class='isMenu'>
+                  <MenuItem name="/index/rightsManage"  auth='perm' class='isMenu'>
                           <Icon type="android-settings"></Icon>
                           权限管理
                   </MenuItem>
-                  <MenuItem name="/index/deviceManage"  auth='4' class='isMenu'>
+                  <MenuItem name="/index/deviceManage"  auth='device' class='isMenu'>
                           <Icon type="android-phone-portrait"></Icon>
                           设备管理
                   </MenuItem>
-                  <Submenu name="journaling"  auth='5' class='isMenu'>
+                  <Submenu name="journaling"  auth='record' class='isMenu'>
                       <template slot="title">
                           <Icon type="stats-bars"></Icon>
                           日志报表
                       </template>
-                      <MenuItem name="/index/reportForm" auth='35' class='isMenu'>报表</MenuItem>
+                      <MenuItem name="/index/reportForm" auth='record_report' class='isMenu'>报表</MenuItem>
                       <Submenu name="log">
                           <template slot="title">
                               日志
                           </template> 
-                          <MenuItem name="/index/adminLog" auth='36' class='isMenu'>管理员日志</MenuItem>
-                          <MenuItem name="/index/userLog" auth='37' class='isMenu'>用户日志</MenuItem>
+                          <MenuItem name="/index/adminLog" auth='record_log_admin' class='isMenu'>管理员日志</MenuItem>
+                          <MenuItem name="/index/userLog" auth='record_log_plain' class='isMenu'>用户日志</MenuItem>
                       </Submenu>
                   </Submenu>
               </Menu>
@@ -77,14 +77,13 @@ export default {
     // 渲染菜单
     renderMenu(){
         let authList = JSON.parse(window.localStorage.getItem('authList'))
-        // console.log(authList)
         var allMenu = $(".isMenu")
         if(authList.length == 0){
             $("#aside_menu").hide()
         }else{
             for(var i = 0; i < allMenu.length; i++){
                 // console.log(allMenu[i].getAttribute("auth"))
-                let code = authList.indexOf(Number(allMenu[i].getAttribute("auth")))
+                let code = authList.indexOf(allMenu[i].getAttribute("auth"))
                 // console.log(code)
                 if(code == -1){
                     allMenu.eq(i).hide()

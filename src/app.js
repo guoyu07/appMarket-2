@@ -28,13 +28,13 @@ Vue.directive('has', {
 });
 Vue.prototype.$_has = function(value) {
     let isExist=false;
-    let btnPermsStr=window.localStorage.getItem("btnPerms");
+    let btnPermsStr=window.localStorage.getItem("authList");
     if(btnPermsStr==undefined || btnPermsStr==null){
       return false;
     }
     let btnPerms=JSON.parse(btnPermsStr);
     for(let i=0;i<btnPerms.length;i++){
-      if(btnPerms[i].perms==value){
+      if(btnPerms[i]==value){
         isExist=true;
         break;
       }
@@ -52,8 +52,7 @@ if (authList) {
 }
 
 router.beforeEach((to, from, next) => {
-    var userName = window.localStorage.getItem("userName")
-    var password = window.localStorage.getItem("pwd")
+    var userInfo = JSON.parse(window.localStorage.getItem("userInfo"))
     // 匹配不到路由跳转到notfound页面
     if (to.matched.length ===0) { 
         next({path:'/notfound'})
@@ -65,18 +64,18 @@ router.beforeEach((to, from, next) => {
     if(to.path === '/login'){
         window.localStorage.clear()
     }
-    if(userName && password){
+    if(userInfo){       
         next()
     }else{
         if(to.path=='/login'){
-            console.log(333)
             next()
+            window.localStorage.clear()
             
         }else{
-            console.log(444)
             next({path:'/login'})
+            window.localStorage.clear()
         }
-        window.localStorage.clear()
+        
     }
 })
 

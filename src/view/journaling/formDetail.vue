@@ -9,7 +9,7 @@
                     <Icon type="navicon-round"></Icon> {{formName}}
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary" @click="exportExcel"><Icon type="ios-download-outline" style="font-size:14px"></Icon> 导出</Button>
+                    <Button type="primary" v-has='btnId' @click="exportExcel"><Icon type="ios-download-outline" style="font-size:14px"></Icon> 导出</Button>
                 </div>
            </div>
            <Table border :columns="columns" :loading='loading' :data="formData" no-data-text="暂无数据"></Table>            
@@ -28,12 +28,14 @@ export default {
     this.reportType= this.$route.query.type
     this.formName = this.reportType==1?"设备报表":(this.reportType==2?'客户端统计报表':'数据流量报表')
     this.columns = this.reportType==1?this.columns1:(this.reportType==2?this.columns2:this.columns3)
+    this.btnId = this.reportType==1?'record_report_device_export':(this.reportType==2?'record_report_client_export':'record_report_flow_export')
     document.title = "日志报表-报表-详情"
     this.queryTable()
   },
 
   data(){
     return {
+      btnId:"",
       loading:false,
       totalPage:1,
       pageNo:1,

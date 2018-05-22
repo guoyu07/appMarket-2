@@ -364,7 +364,7 @@ export default {
       var that = this
       reader.onload = function(e){
         var base = this.result
-        console.log(base)
+        // console.log(base)
         var img = new Image()
         img.src = base
         img.onload = function(){
@@ -391,7 +391,7 @@ export default {
 
     // 上传截图
     handleUploadCaputer (file) {
-      console.log(file)
+      // console.log(file)
       const size = file.size / 1024 / 1024
       if(size>1){
         this.$Message.error({
@@ -441,7 +441,7 @@ export default {
           if(valid) {
             this.$refs['formValidate1'].validate((valid) => {
               if(valid) {
-                console.log(this.appInfo.captureUrls)
+                // console.log(this.appInfo.captureUrls)
                  this.axios.post('/app/addApp',{
                     ...this.app,
                     ...this.appInfo,

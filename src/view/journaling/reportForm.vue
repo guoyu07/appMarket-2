@@ -2,8 +2,8 @@
   <div>
     <h1><span>当前位置 > </span>日志报表 > 报表</h1>
      <div class="bottom_wrap">
-       <Table border :columns="columns" :loading='loading' :data="formData" no-data-text="暂无数据"></Table>
-       <Page :total="totalPage" :current='pageNo' show-total class="page_wrap"></Page>
+       <Table border :columns="columns" :loading='loading' :data="formData" no-data-text="暂无数据" :row-class-name="rowClassName"></Table>
+       <!-- <Page :total="totalPage" :current='pageNo' show-total class="page_wrap"></Page> -->
     </div>
   </div>
 </template>
@@ -14,19 +14,23 @@ export default {
   created(){
     document.title = "日志报表-报表"
   },
+  mounted(){
+    $(".ivu-table .isShow td").remove()
+  },
 
 // data----------------------------------------------------------------------
   data(){
     return {
+
       totalPage:3,
       pageNo:1,
       loading:false,
       columns:[
-        {
-            type: 'index',
-            align: 'center',
-            title: "序号"
-        },
+        // {
+        //     type: 'index',
+        //     align: 'center',
+        //     title: "序号"
+        // },
         {
             title: "报表名称",
             key: 'formName',
@@ -80,11 +84,39 @@ export default {
 
 // methods-------------------------------------------------------------------
   methods:{
-    
+    rowClassName (row, index) {
+      let authList=window.localStorage.getItem("authList");
+      if(authList==undefined || authList==null){
+        return false;
+      }
+      let btnPerms=JSON.parse(authList);
+      
+        if (index === 0) {
+            if(btnPerms.indexOf('record_report_device')==-1){
+               return 'isShow';
+            }else{
+              return ''
+            }
+        } else if (index === 1) {
+            if(btnPerms.indexOf('record_report_client')==-1){
+               return 'isShow';
+            }else{
+              return ''
+            }
+        }else if (index === 2){
+            if(btnPerms.indexOf('record_report_flow')==-1){
+               return 'isShow';
+            }else{
+              return ''
+            }
+        }
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped type="text/css">
-
+  .ivu-table .isShow td{
+      //  display:none!important
+  }
 </style>

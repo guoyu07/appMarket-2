@@ -20,7 +20,7 @@
                     <Icon type="navicon-round"></Icon> 设备列表
                 </div>
                 <div class="btns_wrap">
-                    <Button type="primary"  @click="addDevice"><Icon type="plus"></Icon> 添加设备</Button>
+                    <Button type="primary" v-has='"device_add"'  @click="addDevice"><Icon type="plus"></Icon> 添加设备</Button>
                 </div>
            </div>
            <Table border :columns="columns" :loading='loading' :data="deviceData" no-data-text="暂无数据"></Table>            
@@ -40,7 +40,7 @@
             <Select v-model="addDeviceData.userName" filterable style="width:200px" @on-change='handleUserChange'>
                 <Option :value="item.userName" v-for='(item,index) in userData' :key='index'>{{item.userName}}</Option>
             </Select>
-            <!-- <Button type='primary' @click='handleSelect'>选择用户</Button> -->
+
           </FormItem>
           <FormItem label="设备平台" prop="plateName">
             <Select v-model="addDeviceData.plateName"  style="width:200px">
@@ -292,7 +292,7 @@ export default {
             }
         })
       },
-
+// 匹配用户名对应的手机号
       handleUserChange(){
         this.addDeviceData.phone = this.userData.filter(item=>{
             return item.userName==this.addDeviceData.userName

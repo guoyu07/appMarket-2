@@ -55,23 +55,21 @@ export default {
     handleExpand(){
      
     },
+    
     handleCheck(checked,children){
-      
-      if(checked==false){
         children.forEach(item => {
-          item.checked = false
+          item.checked = checked
           if(item.children&&item.children.length!=0){
             item.children.forEach(ele=> {
-              ele.checked=false
+              ele.checked=checked
               if(ele.children&&ele.children.length!=0){
                 ele.children.forEach(element=>{
-                  element.checked=false
+                  element.checked=checked
                 })
               }
             })
           }
         });
-      }
     },
     handleCheck1(checked,id,item,children){
       console.log(checked)

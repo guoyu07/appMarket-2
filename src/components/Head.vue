@@ -17,7 +17,7 @@
           <!-- 用户名 -->
           <span @mousemove="tipsShow" @mouseleave="tipsHide">
             <span class="user_wrap">
-                <span class="username"></span>
+                <span>{{accountForm.userName}}</span>
                 <Icon type="ios-arrow-down"></Icon>
             </span>
             <div class='tips'>
@@ -43,7 +43,7 @@
             <Input type="text" v-model="accountForm.phone" style="width:350px" placeholder='手机号'></Input>
         </FormItem>
         <FormItem label="密码" prop="pwd">
-            <Input  v-model="accountForm.pwd" style="width:350px" placeholder='密码'></Input>
+            <Input type="password" v-model="accountForm.pwd" style="width:350px" placeholder='密码'></Input>
         </FormItem>
     </Form>
     <div slot="footer">
@@ -61,10 +61,11 @@ export default {
 // created-----------------------------------------------------------------------------------
   created(){
       this.sendWebSocket()
-      this.accountForm.id = window.localStorage.getItem("userId")
-      this.accountForm.userName = window.localStorage.getItem("userName")
-      this.accountForm.phone = window.localStorage.getItem("phone")
-      this.accountForm.pwd = window.localStorage.getItem("pwd")
+      const userInfo = JSON.parse(window.localStorage.getItem("userInfo"))
+      this.userId = userInfo['userId']
+      this.accountForm.userName = userInfo['userName']
+
+      this.queryCount()
   },
 
 // created-----------------------------------------------------------------------------------
@@ -80,7 +81,6 @@ export default {
         }else if(!regTest(value,'phone')){
           callback(new Error('请输入正确的手机号'))
         }else if(value==this.tmpPhone){
-            console.log(111)
           callback()
         }else{
           this.axios.get("/userPerm/checkUserPhone",{params:{
@@ -96,10 +96,11 @@ export default {
         }
     }
       return {
-          tmpPhone:'13333333333',
-          tmpPwd:'123456',
+          tmpPhone:'',
+          tmpPwd:'',
           websock:null,
-          count:1,
+          count:0,
+          userId:'',
           modifyAccountModal:false,
           accountForm: {
               id:'',
@@ -121,6 +122,35 @@ export default {
 
 // methods-----------------------------------------------------------------------------------
   methods: {
+     // 查询本账号信息
+     querySelf(){
+          this.axios.get("/userPerm/qryUserInfoById",{
+                params:{
+                id:this.userId
+                }
+            }).then(res=>{
+                if(res&&res.success==1){
+                    const data = res.data
+                    this.accountForm.id = data.id
+                    this.accountForm.userName = data.userName
+                    this.accountForm.pwd = data.pwd
+                    this.accountForm.phone = data.phone
+                    this.tmpPhone = data.phone
+                    this.tmpPwd = data.pwd
+                }
+            })
+                                
+     },
+     //  查询未读消息数量
+      queryCount(){
+          this.axios.get('/notification/getUnreadCnt',{
+              params:{
+                  userId:this.userId,
+              }
+          }).then(res=>{
+
+          })
+      },
       // 鼠标移入
       tipsShow() {
           $(".tips").stop().slideDown(100)
@@ -130,11 +160,9 @@ export default {
           $(".tips").stop().slideUp(100)
       },
       showModal() {
+          this.querySelf()
           this.$refs['formValidate'].resetFields()
           this.modifyAccountModal = true
-          // 获取本地存储的用户信息
-          this.accountForm.pwd = '123456'
-          this.accountForm.phone = '13333333333'
       },
       // 确定修改密码
       modifyAccount() {
@@ -145,6 +173,7 @@ export default {
                           id:this.accountForm.id,
                           userName:this.accountForm.userName,
                           phone:this.accountForm.phone,
+                          flag:1
                       }}).then(res=>{
                             if(res&&res.success=='1'){
                                 this.$Message.success("操作成功！")
@@ -156,7 +185,7 @@ export default {
                             }
                        })  
                     }else{
-                        this.axios.get("/userPerm/updateUser",{params:accountForm})
+                        this.axios.get("/userPerm/updateUser",{params:{...accountForm,flag:1}})
                         .then(res=>{
                             if(res&&res.success=='1'){
                                 this.$Message.success("操作成功！")
@@ -174,16 +203,13 @@ export default {
 
       // 退出登录
       logout() {
-        //   this.axios.post("/loginout",qs.stringify({
-
-        //   })).then(res=>{
-        //       if(res&&res.success==1){
-                  this.$Message.success("退出登录！")
-                  window.localStorage.clear();
-                this.$router.push('/login')
-                this.closeWebSocket()
-        //       }
-        //   })
+          this.axios.post("/loginout").then(res=>{
+              if(res&&res.success==1){
+                 window.localStorage.clear();
+                 this.$router.push('/login')
+                 this.closeWebSocket()
+              }
+          })
           
       },
 

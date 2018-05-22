@@ -373,7 +373,7 @@ export default {
         this.appInfo.captureUrls = this.$refs.upload.fileList.map(item=>{
           return item.url
         }).join(";")
-         console.log(this.appInfo.captureUrls)
+        //  console.log(this.appInfo.captureUrls)
     },
 
     // 上传图标
@@ -383,7 +383,7 @@ export default {
       var that = this
       reader.onload = function(e){
         var base = this.result
-        console.log(base)
+        // console.log(base)
         var img = new Image()
         img.src = base
         img.onload = function(){
@@ -410,7 +410,7 @@ export default {
 
     // 上传截图
     handleUploadCaputer (file) {
-      console.log(file)
+      // console.log(file)
       const size = file.size / 1024 / 1024
       if(size>1){
         this.$Message.error({
@@ -447,7 +447,7 @@ export default {
               that.appInfo.captureUrls = that.appInfo.uploadList.map(item=>{
                 return item.url
               }).join(";")
-              console.log(that.appInfo.captureUrls)
+              // console.log(that.appInfo.captureUrls)
             }
           })
         }
@@ -461,12 +461,13 @@ export default {
           if(valid) {
             this.$refs['formValidate1'].validate((valid) => {
               if(valid) {
-                console.log(this.app.captureUrls)
+                // console.log(this.app.captureUrls)
                  this.axios.post('/app/updateApp',{
                     ...this.app,
                     ...this.appInfo,
                     captureUrls:this.appInfo.captureUrls,
-                    appId:this.appId
+                    appId:this.appId,
+                    flag:this.$route.query.type=='0'?1:2
                   }).then(res=>{
                     if(res && res.success=='1'){
                       this.$Message.success("操作成功！")

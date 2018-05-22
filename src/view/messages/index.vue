@@ -121,7 +121,7 @@ export default {
 // watch--------------------------------------------------------------------------------------------------
    watch:{
     'time':function(){
-      console.log(this.time)
+      // console.log(this.time)
       this.searchData.fromDate = this.time[0]!=''?new Date(this.time[0]).format("yyyy-MM-dd"):''
       this.searchData.toDate = this.time[1]!=""?new Date(this.time[1]).format("yyyy-MM-dd"):''
     }
