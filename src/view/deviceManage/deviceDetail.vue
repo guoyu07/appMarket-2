@@ -162,8 +162,8 @@ export default {
       this.axios.post('/device/getAppinstall',{
         deviceId:this.$route.query.id
       }).then(res=>{
+          this.loading=false
           if(res&&res.success=='1'&&res.data){
-            this.loading=false
             const data = res.data
             this.appInstallData = data.list
             this.totalPage = data.total

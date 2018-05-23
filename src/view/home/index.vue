@@ -1,7 +1,7 @@
 <template>
   <div id="homepage">
 
-    <h1 @click='test'><span>当前位置 > </span >首页</h1>
+    <h1><span>当前位置 > </span >首页</h1>
     <div class="bottom_wrap">
       
         <!-- 统计数据部分 -->
@@ -10,8 +10,8 @@
             <!-- 应用 -->
             <div class="app_num">
               <div class="num">
-                <p class="number">{{appCnt||0}}</p>
-                <p>{{allSystemType[systemType]||'暂无数据'}}</p>
+                <p class="number">{{appCnt}}</p>
+                <p>{{allSystemType[systemType]}}</p>
               </div>
               <div class="name">
                 <p class="right_icon"><span class="mar-20 item">应用</span><Icon type="cube"></Icon></p>
@@ -25,7 +25,6 @@
                 <p class="number">{{item.cnt}}</p>
                 <p>{{allLoginState[item.loginState]}}</p>
               </div>
-              
               <div class="name">
                 <p class="right_icon right"><span class="mar-20 item">用户</span><Icon type="ios-people"></Icon></p>
               </div>
@@ -38,22 +37,42 @@
             <div class="charts">
               <div class="left">
                 <h2>设备报表</h2>
-                <div id="chart1" class="chart_bg"><div style="text-align:center;line-height:250px" v-if='isShow1'>暂无数据</div></div>
+                <div id="chart1" class="chart_bg">
+                  <div style="text-align:center;line-height:250px" v-if='isShow1'>暂无数据</div>
+                  <div class="demo-spin-container">
+                      <Spin fix v-if="loading1"></Spin>
+                  </div>
+                </div>
               </div>
               <div class="right">
                 <h2>客户端统计</h2>
-                <div id="chart2" class="chart_bg"><div style="text-align:center;line-height:250px" v-if='isShow2'>暂无数据</div></div>
+                <div id="chart2" class="chart_bg">
+                  <div style="text-align:center;line-height:250px" v-if='isShow2'>暂无数据</div>
+                  <div class="demo-spin-container">
+                      <Spin fix v-if="loading2"></Spin>
+                  </div>
+                </div>
               </div>
             </div>
 
             <div class="charts">
               <div class="left">
                 <h2>设备违规统计</h2>
-                <div id="chart3" class="chart_bg"><div style="text-align:center;line-height:250px" v-if='isShow3'>暂无数据</div></div>
+                <div id="chart3" class="chart_bg">
+                  <div style="text-align:center;line-height:250px" v-if='isShow3'>暂无数据</div>
+                  <div class="demo-spin-container">
+                      <Spin fix v-if="loading3"></Spin>
+                  </div>
+                </div>
               </div>
               <div class="right">
                 <h2>应用安装情况</h2>
-                <div id="chart4" class="chart_bg"><div style="text-align:center;line-height:250px" v-if='isShow4'>暂无数据</div></div>
+                <div id="chart4" class="chart_bg">
+                  <div style="text-align:center;line-height:250px" v-if='isShow4'>暂无数据</div>
+                  <div class="demo-spin-container">
+                      <Spin fix v-if="loading4"></Spin>
+                  </div>
+                </div>
               </div>
             </div>
         </div>
@@ -86,10 +105,14 @@ export default {
       systemType:"",
 
       loginUserData:null,
-      isShow1:true,
-      isShow2:true,
-      isShow3:true,
-      isShow4:true,
+      isShow1:false,
+      isShow2:false,
+      isShow3:false,
+      isShow4:false,
+      loading1:false,
+      loading2:false,
+      loading3:false,
+      loading4:false,
       
     }
   },
@@ -117,14 +140,6 @@ export default {
 // methods-----------------------------------------------------------------------------------------
   methods: {
     ...mapActions(['addMenu','loadRoutes',]),
-    test(){
-      // console.log(22222222222)
-      // window.localStorage.setItem("authList",JSON.stringify([22,23,24,31,32,41,42,51,52,61,62,63,64]))
-      //  this.addMenu([22,23,24,31,32,41,42,51,52,61,62,63,64])
-      //  this.$router.addRoutes(this.menuitems)
-      //  this.loadRoutes()  
-      // location.reload()
-    },
      // 查询应用数量
      queryAppNum(){
        this.axios.get('/statistic/appDistribution').then(res=>{
@@ -148,7 +163,9 @@ export default {
 
      // 设备型号分布图
      queryDeviceModel(){
+       this.loading1 = true
        this.axios.get('/statistic/deviceModelDistribution').then(res=>{
+         this.loading1 = false
          if(res && res.success=='1'&&res.data){
            const data = res.data.map(item=>{
              const arr = []
@@ -161,14 +178,17 @@ export default {
             title:"设备型号分布图",
             data:data,
           })
-          this.isShow1 = false
+         }else{
+           this.isShow1 = true
          }
        })
      },
 
      // 客户端统计图
      queryAppVersion(){
+       this.loading2 = true
        this.axios.get('/statistic/appVersionDistribution').then(res=>{
+         this.loading2 = false
          if(res && res.success=='1'&&res.data){
            const data = res.data.map(item=>{
              const arr = []
@@ -181,14 +201,17 @@ export default {
             title:"Andriod客户端版本分布图",
             data:data
           })
-          this.isShow2 = false
+         }else{
+           this.isShow2 = true
          }
        })
      },
 
      // 违规设备分布图
      queryState(){
+       this.loading3 = true
        this.axios.get('/statistic/stateDistribution').then(res=>{
+         this.loading3 = false
          if(res && res.success=='1'&&res.data){
               const data = res.data.map(item=>{
                 const arr = []
@@ -201,14 +224,17 @@ export default {
                 title:"违规设备分布图",
                 data:data,
               })
-              this.isShow3 = false
+         }else{
+           this.isShow3 = true
          }
        })
      },
 
      // 应用安装情况
      queryInstall(){
+       this.loading4 = true
        this.axios.get('/statistic/installDistribution').then(res=>{
+         this.loading4 = false
          if(res && res.success=='1'&&res.data){
             const data = res.data.map(item=>{
               const obj =  {}
@@ -223,7 +249,8 @@ export default {
                 data:data
               }],
             })
-            this.isShow4 = false
+         }else{
+           this.isShow4 = true
          }
        })
      },
@@ -245,7 +272,7 @@ export default {
             },
             title: {
                 text: options.title,
-                y:220
+                y:270
             },
             tooltip: {
                 headerFormat: '{series.name}<br>',
@@ -330,6 +357,7 @@ export default {
 </script>
 
 <style lang="scss" scoped type="text/css">
+
 #homepage {
   .statistics {
     width:1130px;
@@ -382,7 +410,7 @@ export default {
 
   .charts_wrap{
     .charts{
-      height:300px;
+      height:350px;
       // display: flex;
       // text-align:justify;
       margin-bottom:30px;
@@ -411,7 +439,7 @@ export default {
       }
       #chart1,#chart2,#chart3,#chart4{
         width:100%;
-        height:250px;
+        height:300px;
       }
     }
   }

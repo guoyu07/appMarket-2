@@ -216,8 +216,8 @@ export default {
                 pageNo:this.pageNo,
                 pageSize:10
             }).then(res=>{
+                this.loading = false
                 if(res && res.success=='1' && res.data){
-                    this.loading = false
                     const data = res.data
                     this.formData = data.list
                     this.totalPage = data.total

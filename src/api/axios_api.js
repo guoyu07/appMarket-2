@@ -10,15 +10,15 @@ let baseURL = env.apiPath
 axios.defaults.baseURL = baseURL;
 axios.defaults.withCredentials=true;
 
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;';
 axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded;';
 
 
 // http request 拦截器
 axios.interceptors.request.use(
     config => {
+        // config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
         if (window.localStorage.getItem('token')) {
-            // console.log(window.localStorage.getItem('token'))
             // config.headers.Authorization = `token ${window.localStorage.getItem('token')}`;
             Object.assign(config.headers, { 'token': window.localStorage.getItem('token') });
         }

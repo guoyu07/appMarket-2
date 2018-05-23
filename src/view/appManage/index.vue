@@ -393,8 +393,8 @@ export default {
          this.loading = true
          this.axios.get('/app/listApps',{params:this.searchData})
          .then(res=>{
+             this.loading = false
              if(res && res.success=='1' && res.data){
-                 this.loading = false
                  const data = res.data
                  this.totalPage = data.total
                  this.appData = data.list
@@ -422,8 +422,8 @@ export default {
          this.loading2 = true
          this.axios.get('/app/listUsers',{params:this.searchUserData})
          .then(res=>{
+             this.loading2 = false 
              if(res&&res.success=='1'){
-                 this.loading2 = false 
                  const data = res.data
                  // 默认选中数据
                  data.forEach(item=>{

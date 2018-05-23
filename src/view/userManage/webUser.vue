@@ -77,6 +77,9 @@
             <Button  size="large" @click="addUserModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmAdd">确定</Button>
         </div>
+        <div class="demo-spin-container">
+            <Spin fix v-if='isSubmit'></Spin>
+        </div>
     </Modal>
 
     <!-- 编辑用户模态框 -->
@@ -209,6 +212,7 @@ export default {
         }
     }
     return {
+      isSubmit:false,
       roleData:[],
       startRow:1,
       loading:false,
@@ -499,11 +503,13 @@ export default {
 
     // 确定添加用户
     confirmAdd(){
+      this.isSubmit = true
       this.$refs['formValidate'].validate((valid) => {
             if(valid) {
               this.axios.get("/userPerm/addUser",{
                   params:this.addUserData
               }).then(res=>{
+                this.isSubmit = false
                 if(res.success==1){
                   this.$Message.success("操作成功！")
                   this.addUserModal = false

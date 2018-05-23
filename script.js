@@ -29,7 +29,6 @@ program
 	.option('-p, --production', '修改为生产环境')
 	.option('-l, --list', '列表OSS上项目文件')
 	.option('-u, --upload', '上传./build目录中的文件到OSS上')
-	.option('-c, --copy', '将beefly-frame/public与static合并到./public目录中')
 	.parse(argv);
 
 

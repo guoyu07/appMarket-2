@@ -148,7 +148,9 @@ export default {
                   userId:this.userId,
               }
           }).then(res=>{
-
+              if(res&&res.success==1){
+                  this.count = res.data
+              }
           })
       },
       // 鼠标移入
@@ -173,7 +175,8 @@ export default {
                           id:this.accountForm.id,
                           userName:this.accountForm.userName,
                           phone:this.accountForm.phone,
-                          flag:1
+                          flag:1,
+                          userType:'1'
                       }}).then(res=>{
                             if(res&&res.success=='1'){
                                 this.$Message.success("操作成功！")
@@ -205,6 +208,7 @@ export default {
       logout() {
           this.axios.post("/loginout").then(res=>{
               if(res&&res.success==1){
+                 this.$Message.success(res.msg)
                  window.localStorage.clear();
                  this.$router.push('/login')
                  this.closeWebSocket()
@@ -218,11 +222,13 @@ export default {
           this.websock = new WebSocket("ws://"+env.apiPath.slice(7,-1)+"/websocket/socketServer.do?token="+localStorage.getItem('token'));
           this.websock.onopen = function(evt) { 
             console.log("打开连接....."); 
+            
             this.send("111");
           };
 
           this.websock.onmessage = function(evt) {
             console.log( "收到信息 ");
+            console.log(evt); 
             if(evt.data){
                 this.count++
             }

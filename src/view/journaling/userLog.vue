@@ -72,6 +72,9 @@ export default {
         {
             title: "用户类型",
             key: 'userType',
+            render:(h,params)=>{
+              return h('div',params.row.userType=='1'?'平台用户':'手机用户')
+            }
             
         },
         {
@@ -82,7 +85,7 @@ export default {
         },
         {
             title: "操作者",
-            key: 'userId',
+            key: 'userName',
         },
         {
             title: "IP地址",
@@ -117,8 +120,8 @@ export default {
         logType:'2',
         isadmin:'0'
       }).then(res=>{
+        this.loading = false
         if(res&&res.success=='1'&&res.data){
-          this.loading = false
           const data = res.data
           this.loginData = data.list
           this.totalPage = data.total

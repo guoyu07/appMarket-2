@@ -249,12 +249,12 @@ export default {
           pageNo:this.pageNo,
           pageSize:10
       }).then(res=>{
+        this.loading = false
         if(res&&res.success==1){
           const data = res.data
           this.totalPage = data.total
           this.roleData = data.list
           this.startRow = data.startRow
-          this.loading = false
           // 解决点击其他菜单栏再返回时页码问题
           this.setPage2(1)
         }

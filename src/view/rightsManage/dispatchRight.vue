@@ -3,6 +3,7 @@
     <input type='checkbox'/>
     <h1><span>当前位置 > </span><a href="#/index/rightsManage">权限管理</a><span> > </span><span class="title_active">分配权限</span></h1>
     <div class="bottom_wrap clearfix">
+        <Spin size="large" fix v-if="spinShow"></Spin>
         <div class="btn_wrap">
             <Button type="primary" style="margin-right:15px" @click="selectAll(flag)">{{flag==true?'全选':'取消全选'}}</Button>
             <Button type="primary" style="margin-right:15px" @click="openAll(flag1)">{{flag1==true?'全部展开':'全部折叠'}}</Button>
@@ -13,7 +14,6 @@
                 <Trees :data='appData'></Trees>
                 <div class="treeM"></div>
             </div>
-            <Spin size="large" fix v-if="spinShow"></Spin>
         </div>
         <div class="tree_wrap">
             <div class="title">用户管理</div>
@@ -21,7 +21,6 @@
                 <Trees :data="userData"></Trees>
                 <div class="treeM"></div>
             </div>
-            <Spin size="large" fix v-if="spinShow"></Spin>
         </div>
         <div class="tree_wrap">
             <div class="title">权限管理</div>
@@ -29,7 +28,6 @@
                 <Trees :data="rightsData"></Trees>
                 <div class="treeM"></div>
             </div>
-            <Spin size="large" fix v-if="spinShow"></Spin>
         </div>
         <div class="tree_wrap">
             <div class="title">设备管理</div>
@@ -37,7 +35,6 @@
                 <Trees :data="deviceData"></Trees>
                 <div class="treeM"></div>
             </div>
-            <Spin size="large" fix v-if="spinShow"></Spin>
         </div>
         <div class="tree_wrap">
             <div class="title">日志报表</div>
@@ -45,7 +42,7 @@
                 <Trees :data="logData"></Trees>
                 <div class="treeM"></div>
             </div>
-            <Spin size="large" fix v-if="spinShow"></Spin>
+            
         </div>
       
     </div>
@@ -100,8 +97,8 @@ export default {
                 } 
            })
            .then(res=>{
+               this.spinShow=false
                if(res&&res.success=='1'){
-                   this.spinShow=false
                    const data = res.data
                    this.data = data.map(item=>{
                        return [item]
@@ -140,6 +137,7 @@ export default {
 
        //确定提交权限
        submit(){
+           this.$Spin.show()
            getId(this.appData,this.idList)
            getId(this.userData,this.idList)
            getId(this.rightsData,this.idList)
@@ -152,6 +150,7 @@ export default {
                   permissionIds:this.idList.join(";")
               }
           }).then(res=>{
+              this.$Spin.hide()
               if(res&&res.success=='1'){
                   this.$Message.success('操作成功！')
                   this.$router.push({path:'/index/rightsManage'})
@@ -183,6 +182,9 @@ export default {
                 }
                 if(curVal[0].children[1].children[0].checked==false&&curVal[0].children[1].children[1].checked==false&&curVal[0].children[1].children[2].checked==false){
                     curVal[0].children[1].checked = false
+                }
+                if(curVal[0].children[0].checked==true || curVal[0].children[1].checked==true){
+                    curVal[0].checked = true
                 }
             },
             deep:true

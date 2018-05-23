@@ -94,23 +94,6 @@ export default {
 
     
   },
-  watch: {
-      '$route': function(){
-          let authList = window.localStorage.getItem('authList')
-            // console.log(authList) // 用户权限
-            let routes = staticRoute[0].children.filter(item=>{
-                return authList.indexOf(item.auth)!== -1
-            })
-            let route = routes.map(item=>{
-                return item.path
-            })
-            // console.log(route) // 用户权限所有路径
-          if(route.indexOf(this.$route.path)==-1){
-              this.activeName = this.$route.path
-          }
-      }
-  }
-
 }
 </script>
 

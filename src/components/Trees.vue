@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import {setValue} from '../util/util.js'
 export default {
   props:['data'],
   data(){
@@ -57,22 +58,12 @@ export default {
     },
     
     handleCheck(checked,children){
-        children.forEach(item => {
-          item.checked = checked
-          if(item.children&&item.children.length!=0){
-            item.children.forEach(ele=> {
-              ele.checked=checked
-              if(ele.children&&ele.children.length!=0){
-                ele.children.forEach(element=>{
-                  element.checked=checked
-                })
-              }
-            })
-          }
-        });
+      console.log(111)
+      setValue(children,'checked',checked)
     },
     handleCheck1(checked,id,item,children){
       console.log(checked)
+      setValue(children,'checked',checked)
       if(checked==true){
         if(item.id!=id){
           item.checked = true

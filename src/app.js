@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import app from './app.vue'
-import axios from  './api/axios_api.js'
 import iView from 'iview';
+import axios from  './api/axios_api.js'
 import vuescroll from 'vue-scroll'
 import 'minireset.css'
 import 'iview/dist/styles/iview.css';

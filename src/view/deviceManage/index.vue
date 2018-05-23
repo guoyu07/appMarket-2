@@ -192,17 +192,7 @@ export default {
             }
         }
       ],
-      deviceData: [
-        {
-            id:1,
-            name: 'Q787',
-            model: "ZXH-Q787",
-            imei:'1234455',
-            belongto:'企业',
-            sysVersion: '7.0',
-        }
-        
-      ],
+      deviceData: [],
       addModal: false,
       addDeviceData: {
           userName:'',
@@ -219,7 +209,6 @@ export default {
         '01':'企业',
         '02':'个人'
       },
-      loading2:false,
 
 
     }
@@ -233,8 +222,8 @@ export default {
         this.loading=true
         this.axios.post('/device/listDevices',this.searchData)
         .then(res=>{
+          this.loading=false
           if(res&&res.success=='1'&&res.data){
-            this.loading=false
             const data = res.data
             this.deviceData = data.list
             this.totalPage = data.total

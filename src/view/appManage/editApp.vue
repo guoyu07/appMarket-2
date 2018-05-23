@@ -457,6 +457,7 @@ export default {
 
     // 提交应用信息
     submit(){
+      this.$Spin.show()
        this.$refs['formValidate'].validate((valid) => {
           if(valid) {
             this.$refs['formValidate1'].validate((valid) => {
@@ -469,9 +470,12 @@ export default {
                     appId:this.appId,
                     flag:this.$route.query.type=='0'?1:2
                   }).then(res=>{
+                    this.$Spin.hide()
                     if(res && res.success=='1'){
                       this.$Message.success("操作成功！")
                       this.$router.push({path:'/index/appManage'})
+                    }else{
+                      this.$Message.error("操作失败！")
                     }
                   })
               }

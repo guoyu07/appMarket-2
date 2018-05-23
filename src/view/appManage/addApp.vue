@@ -167,6 +167,7 @@
         <div style="color:red;position:absolute;right:20px;top:65px;cursor:pointer"  @click='stopUpload'><Icon type="close-circled" size='24'></Icon></div>
       </div>
     </Modal>
+
   </div>
 </template>
 
@@ -437,6 +438,7 @@ export default {
 
     // 提交应用信息
     submit(){
+       this.$Spin.show()
        this.$refs['formValidate'].validate((valid) => {
           if(valid) {
             this.$refs['formValidate1'].validate((valid) => {
@@ -447,9 +449,12 @@ export default {
                     ...this.appInfo,
                     captureUrls:this.appInfo.captureUrls
                   }).then(res=>{
+                    this.$Spin.hide()
                     if(res && res.success=='1'){
                       this.$Message.success("操作成功！")
                       this.$router.push({path:'/index/appManage'})
+                    }else{
+                      this.$Message.error("操作失败！")
                     }
                   })
               }
@@ -463,6 +468,7 @@ export default {
 
 <style lang="scss" scoped type="text/css">
   #addApp {
+    padding-bottom:30px;
     h2 {
       height: 40px;
       line-height:40px;

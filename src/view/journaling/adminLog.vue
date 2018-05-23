@@ -98,6 +98,9 @@ export default {
         {
             title: "用户类型",
             key: 'userType',
+             render:(h,params)=>{
+              return h('div',params.row.userType=='1'?'平台用户':'手机用户')
+            }
         },
         {
             title: "操作类型",
@@ -108,7 +111,7 @@ export default {
         },
         {
             title: "操作者",
-            key: 'userId',
+            key: 'userName',
         },
         {
             title: "影响对象",
@@ -210,8 +213,8 @@ export default {
         pageNo:this.pageNo1,
         logType:'1',
       }).then(res=>{
+        this.loading1 = false
         if(res&&res.success=='1'&&res.data){
-          this.loading1 = false
           const data = res.data
           this.actionData = data.list
           this.totalPage1 = data.total
@@ -230,8 +233,8 @@ export default {
         logType:'2',
         isadmin:'1'
       }).then(res=>{
+        this.loading2 = false
         if(res&&res.success=='1'&&res.data){
-          this.loading2 = false
           const data = res.data
           this.loginData = data.list
           this.totalPage2 = data.total

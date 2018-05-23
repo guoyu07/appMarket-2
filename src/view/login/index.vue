@@ -25,8 +25,6 @@
 <script>
 import qs from 'qs'
 import {mapActions,mapGetters} from 'vuex'
-import Trees from '../../components/Trees.vue'
-
 export default {
   computed:{
     ...mapGetters(['isLoadRoutes','menuitems'])
@@ -76,9 +74,8 @@ export default {
                     duration: 0
                 });
                 // 发送登录请求
-                this.axios.post('/login',this.loginData)
+                this.axios.post('/login',qs.stringify(this.loginData))
                 .then((res)=>{
-                    // console.log(res.data.success=='1')
                     this.count = 0;
                     
                     if(res.success=='1'){
@@ -110,7 +107,7 @@ export default {
                         window.localStorage.setItem('currentMenu','/index/homepage')
                     }else{
                        this.$Message.destroy(msg)
-                       this.$Message.error("登陆失败！") 
+                       this.$Message.error(res.msg) 
                     }
                 })             
             }
