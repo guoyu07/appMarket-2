@@ -1,5 +1,5 @@
 <template>
-  <div id="adminLog">
+  <div id="userLog">
     <h1><span>当前位置 > </span>日志报表 > 日志 > 用户日志</h1>
     <div class="bottom_wrap">
       <!-- 条件选择部分 -->
@@ -143,7 +143,8 @@ export default {
 </script>
 
 <style lang="scss" scoped type="text/css">
-  #adminLog{
+  #userLog{
+    padding-bottom:50px;
     .search_wrap {
         background:#fff;
         padding:20px 20px 0 0;

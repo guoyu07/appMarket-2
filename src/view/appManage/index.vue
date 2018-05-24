@@ -206,7 +206,7 @@ export default {
                             style:{
                                 position:'absolute',
                                 left:'5px',
-                                bottom:'-5px',
+                                bottom:'-6px',
                                 cursor:'pointer'
                             }
                         }),
@@ -261,7 +261,7 @@ export default {
                             style:{
                                 position:'absolute',
                                 left:'5px',
-                                bottom:'-5px',
+                                bottom:'-6px',
                                 cursor:'pointer'
                             }
                         }),

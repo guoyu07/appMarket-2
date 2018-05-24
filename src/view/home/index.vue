@@ -166,7 +166,7 @@ export default {
        this.loading1 = true
        this.axios.get('/statistic/deviceModelDistribution').then(res=>{
          this.loading1 = false
-         if(res && res.success=='1'&&res.data){
+         if(res && res.success=='1'&&res.data.length!=0){
            const data = res.data.map(item=>{
              const arr = []
              arr.push(item.model)
@@ -189,7 +189,7 @@ export default {
        this.loading2 = true
        this.axios.get('/statistic/appVersionDistribution').then(res=>{
          this.loading2 = false
-         if(res && res.success=='1'&&res.data){
+         if(res && res.success=='1'&&res.data.length!=0){
            const data = res.data.map(item=>{
              const arr = []
              arr.push(item.appVersion||'3.0')
@@ -212,7 +212,7 @@ export default {
        this.loading3 = true
        this.axios.get('/statistic/stateDistribution').then(res=>{
          this.loading3 = false
-         if(res && res.success=='1'&&res.data){
+         if(res && res.success=='1'&&res.data.length!=0){
               const data = res.data.map(item=>{
                 const arr = []
                 arr.push(item.isViolation=='0'?'未违规':'违规')
@@ -235,7 +235,7 @@ export default {
        this.loading4 = true
        this.axios.get('/statistic/installDistribution').then(res=>{
          this.loading4 = false
-         if(res && res.success=='1'&&res.data){
+         if(res && res.success=='1'&&res.data.length!=0){
             const data = res.data.map(item=>{
               const obj =  {}
               obj.name = item.appName

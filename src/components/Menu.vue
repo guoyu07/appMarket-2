@@ -33,7 +33,7 @@
                           日志报表
                       </template>
                       <MenuItem name="/index/reportForm" auth='record_report' class='isMenu'>报表</MenuItem>
-                      <Submenu name="log">
+                      <Submenu name="log" auth='record_log' class='isMenu'>
                           <template slot="title">
                               日志
                           </template> 

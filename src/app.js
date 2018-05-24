@@ -11,6 +11,8 @@ import './my-theme/index.less';
 import store from './store/store'
 import * as types from './store/types.js'
 
+import promise from 'es6-promise';
+promise.polyfill();
 
 Vue.use(iView)
 Vue.use(vuescroll)
@@ -21,7 +23,6 @@ Vue.prototype.axios = axios
 Vue.directive('has', {
     bind: function(el, binding) {
         if (!Vue.prototype.$_has(binding.value)) {
-            // el.parentNode.removeChild(el);
             $(el).remove()
         }
     }
@@ -64,7 +65,8 @@ router.beforeEach((to, from, next) => {
     if(to.path === '/login'){
         window.localStorage.clear()
     }
-    if(userInfo){       
+    if(userInfo){    
+        console.log(11111111111)   
         next()
     }else{
         if(to.path=='/login'){

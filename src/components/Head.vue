@@ -60,12 +60,13 @@ import {regTest} from '../util/util.js'
 export default {
 // created-----------------------------------------------------------------------------------
   created(){
-      this.sendWebSocket()
       const userInfo = JSON.parse(window.localStorage.getItem("userInfo"))
       this.userId = userInfo['userId']
       this.accountForm.userName = userInfo['userName']
-
+      
       this.queryCount()
+      this.sendWebSocket()
+      this.querySelf()
   },
 
 // created-----------------------------------------------------------------------------------
@@ -137,6 +138,7 @@ export default {
                     this.accountForm.phone = data.phone
                     this.tmpPhone = data.phone
                     this.tmpPwd = data.pwd
+                    window.localStorage.setItem("roleId",data.roleId)
                 }
             })
                                 
@@ -162,8 +164,8 @@ export default {
           $(".tips").stop().slideUp(100)
       },
       showModal() {
-          this.querySelf()
           this.$refs['formValidate'].resetFields()
+          this.querySelf()
           this.modifyAccountModal = true
       },
       // 确定修改密码
@@ -219,30 +221,24 @@ export default {
 
       // Websocket显示消息数量
       sendWebSocket(){
-          this.websock = new WebSocket("ws://"+env.apiPath.slice(7,-1)+"/websocket/socketServer.do?token="+localStorage.getItem('token'));
-          this.websock.onopen = function(evt) { 
+          this.websocket = new WebSocket("ws://"+env.apiPath.slice(7,-1)+"/websocket/socketServer.do?token="+localStorage.getItem('token'));
+          this.websocket.onopen = function(evt) { 
             console.log("打开连接....."); 
-            
             this.send("111");
           };
-
-          this.websock.onmessage = function(evt) {
-            console.log( "收到信息 ");
-            console.log(evt); 
+          var that = this
+          console.log(that.count)
+          this.websocket.onmessage = function(evt) {
+            console.log(evt);
             if(evt.data){
-                this.count++
+                that.count++
             }
-            // this.close();
-          };
-            
-        //   ws.onclose = function(evt) {
-        //     console.log("连接关闭");
-        //   };      
+          }; 
       },
 
       // 关闭websocket
       closeWebSocket(){
-         this.websock.onclose = function(evt) {
+         this.websocket.onclose = function(evt) {
             console.log("连接关闭");
          };
       },
@@ -313,6 +309,7 @@ export default {
         border:1px solid #ccc;
         border-radius: 5px;
         box-shadow: 1px 1px 3px 1px #ccc;
+        background:#fff;
         p {
             height: 30px;
             line-height:30px;

@@ -31,23 +31,23 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-        // if(response.data.success!='1'){
-        //     this.$Message.error(response.data.msg)
-        // }
+        if(response.data.success==0&&response.data.erroCode=='1'){
+            this.$router.push({path:'/login'})
+        }
         return response.data;
     },
     error => {
-        if (error.response) {
-            switch (error.response.status) {
-                case 401:
-                    // 401 清除token信息并跳转到登录页面
-                    // store.commit(types.LOGOUT);
-                    router.replace({
-                        path: 'login',
-                        query: {redirect: router.currentRoute.fullPath}
-                    })
-            }
-        }
+        // if (error.response) {
+        //     switch (error.response.status) {
+        //         case 401:
+        //             // 401 清除token信息并跳转到登录页面
+        //             // store.commit(types.LOGOUT);
+        //             router.replace({
+        //                 path: 'login',
+        //                 query: {redirect: router.currentRoute.fullPath}
+        //             })
+        //     }
+        // }
         return Promise.reject(error)
     });
 

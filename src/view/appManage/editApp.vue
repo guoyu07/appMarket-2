@@ -457,11 +457,12 @@ export default {
 
     // 提交应用信息
     submit(){
-      this.$Spin.show()
+      
        this.$refs['formValidate'].validate((valid) => {
           if(valid) {
             this.$refs['formValidate1'].validate((valid) => {
               if(valid) {
+                this.$Spin.show()
                 // console.log(this.app.captureUrls)
                  this.axios.post('/app/updateApp',{
                     ...this.app,

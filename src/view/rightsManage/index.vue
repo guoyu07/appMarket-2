@@ -70,9 +70,12 @@
         title="删除角色"
         v-model="deleteModal"
         :mask-closable="false"
-        @on-ok="confirmDelete"
         class-name="vertical-center-modal">
         <p class="modalp">确定删除该角色吗？</p>
+        <div slot="footer">
+            <Button  size="large" @click="deleteModal=false">取消</Button>
+            <Button type="primary" size="large" @click="confirmDelete">确定</Button>
+        </div>
     </Modal>
   </div>
 </template>

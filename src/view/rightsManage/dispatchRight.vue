@@ -152,8 +152,20 @@ export default {
           }).then(res=>{
               this.$Spin.hide()
               if(res&&res.success=='1'){
-                  this.$Message.success('操作成功！')
-                  this.$router.push({path:'/index/rightsManage'})
+                  
+                   this.$Message.success('操作成功！')
+                   this.$router.push({path:'/index/rightsManage'})
+                  if(this.roleId==window.localStorage.getItem("roleId")){
+                      this.$Modal.warning({
+                            title: '',
+                            content: '账号权限已修改，请重新登陆！',
+                            top:200,
+                            onOk: () => {
+                              this.$router.push({path:'/login'})
+                            }
+                      });
+                      
+                  }
               }else{
                   this.$Message.error('操作失败！')
               }

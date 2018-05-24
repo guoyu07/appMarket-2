@@ -60,9 +60,10 @@ import {format} from '../../util/util.js'
 export default {
   created(){
     document.title = "日志报表-日志-管理员日志"
+    this.queryOptType()
     this.queryTable1()
     // this.queryTable2()
-    this.queryOptType()
+    
   },
 
   data(){

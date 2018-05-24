@@ -167,7 +167,6 @@ export default {
                 margin-top: -20px;
                 margin-bottom: 15px;
                 cursor: pointer;
-                color: #0148bb;
             }
         }
     }
