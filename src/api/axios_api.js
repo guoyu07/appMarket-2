@@ -17,9 +17,11 @@ axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded;
 // http request 拦截器
 axios.interceptors.request.use(
     config => {
-        // config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        config.data = {
+            ...config.data,
+            token:window.localStorage.getItem('token') 
+        }
         if (window.localStorage.getItem('token')) {
-            // config.headers.Authorization = `token ${window.localStorage.getItem('token')}`;
             Object.assign(config.headers, { 'token': window.localStorage.getItem('token') });
         }
         return config;
@@ -31,23 +33,13 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-        if(response.data.success==0&&response.data.erroCode=='1'){
-            this.$router.push({path:'/login'})
+        if(response.data.success=='0'&&response.data.erroCode=='1'){
+            window.localStorage.clear()
+            window.location.hash='/login'
         }
         return response.data;
     },
     error => {
-        // if (error.response) {
-        //     switch (error.response.status) {
-        //         case 401:
-        //             // 401 清除token信息并跳转到登录页面
-        //             // store.commit(types.LOGOUT);
-        //             router.replace({
-        //                 path: 'login',
-        //                 query: {redirect: router.currentRoute.fullPath}
-        //             })
-        //     }
-        // }
         return Promise.reject(error)
     });
 

@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import app from './app.vue'
 import iView from 'iview';
+
 import axios from  './api/axios_api.js'
 import vuescroll from 'vue-scroll'
 import 'minireset.css'
@@ -11,8 +12,7 @@ import './my-theme/index.less';
 import store from './store/store'
 import * as types from './store/types.js'
 
-import promise from 'es6-promise';
-promise.polyfill();
+require("es6-promise").polyfill();
 
 Vue.use(iView)
 Vue.use(vuescroll)
