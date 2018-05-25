@@ -405,7 +405,7 @@ export default {
              }
          })
          .catch(err=>{
-             console.log(err,'----------------------')
+             console.log(err)
          })
      },
 
@@ -440,6 +440,9 @@ export default {
                  this.userData = data
              }
          })
+         .catch(err=>{
+            console.log(err)
+        })
      },
 
     // 选中应用改变
@@ -544,6 +547,9 @@ export default {
                   this.queryTable()
               }
           })
+          .catch(err=>{
+            console.log(err)
+          })
      },
 
      // 确定下发
@@ -563,6 +569,9 @@ export default {
             }else{
                 this.$Message.error("操作失败！")
             }
+        })
+        .catch(err=>{
+            console.log(err)
         })
      },
 

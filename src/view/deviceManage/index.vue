@@ -232,6 +232,9 @@ export default {
             this.setPage3(1)
           }
         })
+        .catch(err=>{
+          console.log(err)
+        })
       },
 
       // 点击筛选按钮
@@ -252,6 +255,9 @@ export default {
           if(res&&res.success=='1'){
             this.userData = res.data
           }
+        })
+        .catch(err=>{
+          console.log(err)
         })
       },
 
@@ -277,6 +283,9 @@ export default {
                   this.$Message.error("操作失败！")
                   this.addModal=false
                 }
+              })
+              .catch(err=>{
+                console.log(err)
               })
             }
         })

@@ -11,6 +11,7 @@ import staticRoute from './router/staticRoute.js'
 import './my-theme/index.less';
 import store from './store/store'
 import * as types from './store/types.js'
+import 'babel-polyfill'
 
 require("es6-promise").polyfill();
 
@@ -18,7 +19,18 @@ Vue.use(iView)
 Vue.use(vuescroll)
 Vue.prototype.axios = axios
 
-
+if (
+    '-ms-scroll-limit' in document.documentElement.style && 
+    '-ms-ime-align' in document.documentElement.style
+    ) { // detect it's IE11
+    window.addEventListener("hashchange", function(event) {
+        var currentPath = window.location.hash.slice(1);
+        console.log('ieeeeeeeeeeeeeeeeeeeeeeeeeee')
+        if (this.$route.path !== currentPath) {
+        this.$router.push(currentPath)
+        }
+    }, false)
+    }
 // 自定义指令设置按钮权限
 Vue.directive('has', {
     bind: function(el, binding) {

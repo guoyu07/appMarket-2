@@ -186,6 +186,9 @@ export default {
           console.log(this.allOptData )
         }
       })
+      .catch(err=>{
+        console.log(err)
+      })
     },
     // tab栏切换
     tabChange(name){
@@ -222,6 +225,9 @@ export default {
           this.startRow1 = data.startRow
         }
       })
+      .catch(err=>{
+        console.log(err)
+      })
     },
 
     // 查询登录日志
@@ -241,6 +247,9 @@ export default {
           this.totalPage2 = data.total
           this.startRow2 = data.startRow
         }
+      })
+      .catch(err=>{
+        console.log(err)
       })
     }
 

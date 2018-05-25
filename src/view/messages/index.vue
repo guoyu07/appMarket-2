@@ -122,6 +122,9 @@ export default {
           this.startRow = data.startRow
         }
       })
+      .catch(err=>{
+        console.log(err)
+      })
     },
 
     // 页码改变

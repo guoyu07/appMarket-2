@@ -295,6 +295,9 @@ export default {
         
         }
       })
+      .catch(err=>{
+        console.log(err)
+      })
     },
     // 上传APK处理
     handleBeforeUploadApk(file){
@@ -354,17 +357,6 @@ export default {
 
     },
 
-    // 判断表单是否验证通过
-    validateForm(name){
-      this.$refs[name].validate((valid) => {
-          if(valid) {
-              return true
-          }else{
-            return false
-          }
-      })
-    },
-
 
     // 删除截图
     handleRemove (file) {
@@ -400,6 +392,9 @@ export default {
             if(res&&res.success=='1'){
               that.appInfo.iconUrl = res.data.imagePath
             }
+          })
+          .catch(err=>{
+            console.log(err)
           })
         }
         
@@ -450,6 +445,9 @@ export default {
               // console.log(that.appInfo.captureUrls)
             }
           })
+          .catch(err=>{
+            console.log(err)
+          })
         }
       }
       return false
@@ -478,6 +476,9 @@ export default {
                     }else{
                       this.$Message.error("操作失败！")
                     }
+                  })
+                  .catch(err=>{
+                    console.log(err)
                   })
               }
           })

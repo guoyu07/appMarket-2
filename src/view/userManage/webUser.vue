@@ -175,6 +175,9 @@ export default {
                 callback()
               }
           })
+          .catch(err=>{
+            console.log(err)
+          })
         }
         
     }
@@ -197,6 +200,9 @@ export default {
                 callback(new Error('手机号码已存在！'))
               }
             })
+            .catch(err=>{
+              console.log(err)
+            })
           }
         }else{
           this.axios.get("/userPerm/checkUserPhone",{params:{
@@ -208,6 +214,9 @@ export default {
             }else{
               callback(new Error('手机号码已存在！'))
             }
+          })
+          .catch(err=>{
+            console.log(err)
           })
         }
     }
@@ -338,6 +347,9 @@ export default {
                                     
                                   }
                                 })
+                                .catch(err=>{
+                                  console.log(err)
+                                })
                                   
                             }
                         }
@@ -410,6 +422,9 @@ export default {
           this.roleData = res.data
         }
       })
+      .catch(err=>{
+        console.log(err)
+      })
     },
 
     // 表格查询
@@ -427,6 +442,9 @@ export default {
           this.webUserData = data.list
           this.startRow = data.startRow
         }
+      })
+      .catch(err=>{
+        console.log(err)
       })
     },
 
@@ -499,6 +517,9 @@ export default {
           flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
         }
       })
+      .catch(err=>{
+        console.log(err)
+      })
     },
 
     // 确定添加用户
@@ -521,6 +542,9 @@ export default {
                     this.$Message.error("操作失败！")
                     this.addUserModal = false
                 }
+              })
+              .catch(err=>{
+                console.log(err)
               })
             }
       })
@@ -549,6 +573,9 @@ export default {
                     this.editUserModal = false
                   }
                 })
+                .catch(err=>{
+                  console.log(err)
+                })
               }else{
                 this.axios.get('/userPerm/updateUser',{params:{
                   id:this.editUserData.id,
@@ -568,6 +595,9 @@ export default {
                     this.$Message.error("操作失败！")
                     this.editUserModal = false
                   }
+                })
+                .catch(err=>{
+                  console.log(err)
                 })
               }
 

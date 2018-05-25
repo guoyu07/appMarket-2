@@ -94,6 +94,9 @@ export default {
               callback(new Error('手机号码已存在！'))
             }
           })
+          .catch(function (error) {
+                console.log(error);
+          }) 
         }
     }
       return {
@@ -141,6 +144,9 @@ export default {
                     window.localStorage.setItem("roleId",data.roleId)
                 }
             })
+            .catch(function (error) {
+                console.log(error);
+            }) 
                                 
      },
      //  查询未读消息数量
@@ -154,6 +160,9 @@ export default {
                   this.count = res.data
               }
           })
+          .catch(function (error) {
+                console.log(error);
+          }) 
       },
       // 鼠标移入
       tipsShow() {
@@ -188,7 +197,10 @@ export default {
                                 this.$Message.error("操作失败！")
                                 this.modifyAccountModal = false
                             }
-                       })  
+                       })
+                       .catch(function (error) {
+                          console.log(error);
+                       })   
                     }else{
                         this.axios.get("/userPerm/updateUser",{params:{...accountForm,flag:1}})
                         .then(res=>{
@@ -201,6 +213,9 @@ export default {
                                 this.modifyAccountModal = false
                             }
                         })
+                        .catch(function (error) {
+                          console.log(error);
+                       }) 
                     }
                 }
             })
@@ -216,6 +231,9 @@ export default {
                  this.closeWebSocket()
               }
           })
+          .catch(function (error) {
+                console.log(error);
+          }) 
           
       },
 
@@ -229,9 +247,19 @@ export default {
           var that = this
           console.log(that.count)
           this.websocket.onmessage = function(evt) {
-            console.log(evt);
+            console.log(evt.data);
             if(evt.data){
                 that.count++
+            }
+            if(evt.data.code=='3'){
+                this.$Modal.warning({
+                    title: '',
+                    content: evt.data.code,
+                    top:200,
+                    onOk: () => {
+                        this.$router.push({path:'/login'})
+                    }
+                });
             }
           }; 
       },
@@ -257,7 +285,7 @@ export default {
 <style lang="scss" scoped type="text/css">
 .big_title {
     color: #fff;
-    font-size: 26px;
+    font-size: 22px;
     width: 100%;
     background: #63c185;
     text-align: center;

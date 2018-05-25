@@ -126,6 +126,9 @@ export default {
           this.uploadList = data.captureUrls.split(";")
         }
       })
+      .catch(err=>{
+        console.log(err)
+      })
     }
   }
   

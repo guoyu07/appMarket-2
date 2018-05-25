@@ -111,6 +111,9 @@ export default {
 
                }
            })
+           .catch(err=>{
+                console.log(err)
+            })
        },
 
        // 全选
@@ -169,6 +172,9 @@ export default {
               }else{
                   this.$Message.error('操作失败！')
               }
+          })
+          .catch(err=>{
+                console.log(err)
           })
        },
 

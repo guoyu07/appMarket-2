@@ -109,7 +109,10 @@ export default {
                        this.$Message.destroy(msg)
                        this.$Message.error(res.msg) 
                     }
-                })             
+                })
+                .catch(function (error) {//加上catch 
+                    console.log(error);
+                })            
             }
         })
       },
@@ -138,7 +141,8 @@ export default {
         width:100%;
         height:100%;
         position: relative;
-         background:#37a861;         
+        background:-ms-repeating-linear-gradient(#37a861,#40c4d8);/*IE<10/11>*/
+        filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#37a861, endColorstr=#40c4d8);/*IE<9>*/
         background:-webkit-linear-gradient(#37a861,#40c4d8);
         #login_form {
             h1 {

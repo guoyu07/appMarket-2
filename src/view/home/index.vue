@@ -149,6 +149,9 @@ export default {
            this.appCnt = data[0].cnt
          }
        })
+       .catch(err=>{
+          console.log(err)
+        })
      },
 
      // 查询用户状态
@@ -159,6 +162,9 @@ export default {
             this.loginUserData = data
          }
        })
+       .catch(err=>{
+          console.log(err)
+        })
      },
 
      // 设备型号分布图
@@ -182,6 +188,9 @@ export default {
            this.isShow1 = true
          }
        })
+       .catch(err=>{
+          console.log(err)
+        })
      },
 
      // 客户端统计图
@@ -189,7 +198,9 @@ export default {
        this.loading2 = true
        this.axios.get('/statistic/appVersionDistribution').then(res=>{
          this.loading2 = false
+         console.log(333)
          if(res && res.success=='1'&&res.data.length!=0){
+           console.log(222)
            const data = res.data.map(item=>{
              const arr = []
              arr.push(item.appVersion||'3.0')
@@ -202,9 +213,13 @@ export default {
             data:data
           })
          }else{
+           console.log(111)
            this.isShow2 = true
          }
        })
+       .catch(err=>{
+          console.log(err)
+        })
      },
 
      // 违规设备分布图
@@ -228,6 +243,9 @@ export default {
            this.isShow3 = true
          }
        })
+       .catch(err=>{
+          console.log(err)
+        })
      },
 
      // 应用安装情况
@@ -253,6 +271,9 @@ export default {
            this.isShow4 = true
          }
        })
+       .catch(err=>{
+          console.log(err)
+        })
      },
 
      // 渲染饼图

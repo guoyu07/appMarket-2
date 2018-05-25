@@ -207,6 +207,9 @@ export default {
                 callback()
               }
           })
+          .catch(err=>{
+            console.log(err)
+          })
         }
     }
     const introValidate = (rule,value,callback)=>{
@@ -333,20 +336,6 @@ export default {
 
     },
 
-
-
-    // 判断表单是否验证通过
-    validateForm(name){
-      this.$refs[name].validate((valid) => {
-          if(valid) {
-              return true
-          }else{
-            return false
-          }
-      })
-    },
-
-
     // handleView (name) {
     //     this.imgName = name;
     //     this.visible = true;
@@ -382,6 +371,9 @@ export default {
             if(res&&res.success=='1'){
               that.appInfo.iconUrl = res.data.imagePath
             }
+          })
+          .catch(function (error) {
+                console.log(error);
           })
         }
         
@@ -431,6 +423,9 @@ export default {
               }).join(";")
             }
           })
+          .catch(function (error) {
+                console.log(error);
+          })
         }
       }
       return false
@@ -456,6 +451,9 @@ export default {
                     }else{
                       this.$Message.error("操作失败！")
                     }
+                  })
+                  .catch(function (error) {
+                        console.log(error);
                   })
               }
           })

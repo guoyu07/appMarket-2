@@ -262,6 +262,9 @@ export default {
           this.setPage2(1)
         }
       })
+      .catch(err=>{
+        console.log(err)
+      })
     },
 
     // 改变页码
@@ -291,6 +294,9 @@ export default {
                         this.addModal = false
                     }
                 })
+                .catch(err=>{
+                    console.log(err)
+                })
             }
         })
       },
@@ -309,6 +315,9 @@ export default {
                         this.$Message.error("操作失败！")
                         this.editModal = false
                     }
+                })
+                .catch(err=>{
+                    console.log(err)
                 })
             }
         })
@@ -329,6 +338,9 @@ export default {
                   this.$Message.error(res.msg)
                   this.deleteModal=false
               }
+          })
+          .catch(err=>{
+                console.log(err)
           })
       }
   }
