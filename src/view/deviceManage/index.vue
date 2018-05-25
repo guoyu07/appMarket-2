@@ -293,10 +293,11 @@ export default {
 // 匹配用户名对应的手机号
       handleUserChange(){
           console.log(this.userData)
-          this.addDeviceData.phone = this.userData.filter(item=>{
-              return item.userName==this.addDeviceData.userName
-          })[0]['phone']
-        
+          if(this.addDeviceData.userName){
+            this.addDeviceData.phone = this.userData.filter(item=>{
+                return item.userName==this.addDeviceData.userName
+            })[0]['phone']
+          }
       }
   }
 }

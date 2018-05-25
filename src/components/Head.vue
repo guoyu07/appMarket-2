@@ -262,7 +262,7 @@ export default {
                 that.$Modal.warning({
                     title: '',
                     content: data.msg,
-                    top:200,
+                    top:300,
                     onOk: () => {
                         that. queryCount()
                         that.$router.push({path:'/login'})
