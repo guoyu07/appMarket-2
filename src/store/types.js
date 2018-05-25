@@ -16,3 +16,5 @@ export const SET_PAGE1 = 'SET_PAGE1'
 export const SET_PAGE2 = 'SET_PAGE2'
 
 export const SET_PAGE3 = 'SET_PAGE3'
+
+export const SET_COUNT = 'SET_COUNT'

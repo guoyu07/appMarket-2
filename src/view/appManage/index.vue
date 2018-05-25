@@ -393,7 +393,7 @@ export default {
          this.loading = true
          this.axios.get('/app/listApps',{params:this.searchData})
          .then(res=>{
-             console.log(res,'----------------------------')
+            //  console.log(res,'----------------------------')
              this.loading = false
              if(res && res.success=='1' && res.data){
                  const data = res.data

@@ -1,34 +1,34 @@
 <template>
   <Header>
       <!-- <Menu mode="horizontal" theme="dark" active-name="1"> -->
-          <Row>
-                <Col span="4">
-                    <div class="big_title">应用市场管理平台</div>
-                </Col>
-      <!-- </Menu> -->
-      <Col span="20">
-      <div id="right_wrap">
-          <!-- 信息 -->
-            <span class="messages" @click='viewMsg' style="color:#fff"  title="消息">
-                <Icon type="ios-email-outline"></Icon>
-                <div id="num" v-if="count!=0">{{count}}</div>
-            </span>
+    <Row>
+        <Col span="4">
+            <div class="big_title">应用市场管理平台</div>
+        </Col>
+        <!-- </Menu> -->
+        <Col span="20">
+            <div id="right_wrap">
+                <!-- 信息 -->
+                <span class="messages" @click='viewMsg' style="color:#fff"  title="消息">
+                    <Icon type="ios-email-outline"></Icon>
+                    <div id="num" v-if="count!=0">{{count}}</div>
+                </span>
 
-          <!-- 用户名 -->
-          <span @mousemove="tipsShow" @mouseleave="tipsHide">
-            <span class="user_wrap">
-                <span>{{accountForm.userName}}</span>
-                <Icon type="ios-arrow-down"></Icon>
-            </span>
-            <div class='tips'>
-                <p @click="showModal"><Icon type="gear-b"></Icon><span>账号信息管理</span></p>
-                <p @click='logout'><Icon type="log-out"></Icon><span>退出登录</span></p>
+                <!-- 用户名 -->
+                <span @mousemove="tipsShow" @mouseleave="tipsHide">
+                    <span class="user_wrap">
+                        <span>{{accountForm.userName}}</span>
+                        <Icon type="ios-arrow-down"></Icon>
+                    </span>
+                    <div class='tips'>
+                        <p @click="showModal"><Icon type="gear-b"></Icon><span>账号信息管理</span></p>
+                        <p @click='logout'><Icon type="log-out"></Icon><span>退出登录</span></p>
+                    </div>
+                </span>
+
             </div>
-          </span>
-
-      </div>
-      </Col>
-      </Row>
+        </Col>
+    </Row>
 
     <!-- 修改密码模态框 -->
       <Modal
@@ -57,7 +57,9 @@
 <script>
 import env from '../js/env.js'
 import {regTest} from '../util/util.js'
+import {mapGetters, mapActions} from 'vuex'
 export default {
+  
 // created-----------------------------------------------------------------------------------
   created(){
       const userInfo = JSON.parse(window.localStorage.getItem("userInfo"))
@@ -67,6 +69,10 @@ export default {
       this.queryCount()
       this.sendWebSocket()
       this.querySelf()
+      console.log(this.count,'------------------------')
+  },
+  computed:{
+    ...mapGetters(['count'])
   },
 
 // created-----------------------------------------------------------------------------------
@@ -103,7 +109,6 @@ export default {
           tmpPhone:'',
           tmpPwd:'',
           websock:null,
-          count:0,
           userId:'',
           modifyAccountModal:false,
           accountForm: {
@@ -126,6 +131,7 @@ export default {
 
 // methods-----------------------------------------------------------------------------------
   methods: {
+      ...mapActions(['setCount']),
      // 查询本账号信息
      querySelf(){
           this.axios.get("/userPerm/qryUserInfoById",{
@@ -157,7 +163,7 @@ export default {
               }
           }).then(res=>{
               if(res&&res.success==1){
-                  this.count = res.data
+                  this.setCount(res.data)
               }
           })
           .catch(function (error) {
@@ -245,21 +251,24 @@ export default {
             this.send("111");
           };
           var that = this
-          console.log(that.count)
           this.websocket.onmessage = function(evt) {
-            console.log(evt.data);
-            if(evt.data){
-                that.count++
+            var data = JSON.parse(evt.data)
+
+            var a = that.count
+            if(data.code=='1'||data.code=='2'){
+                that.setCount(++a)
             }
-            if(evt.data.code=='3'){
-                this.$Modal.warning({
+            if(data.code=='3'){
+                that.$Modal.warning({
                     title: '',
-                    content: evt.data.code,
+                    content: data.msg,
                     top:200,
                     onOk: () => {
-                        this.$router.push({path:'/login'})
+                        that. queryCount()
+                        that.$router.push({path:'/login'})
                     }
                 });
+                
             }
           }; 
       },
@@ -274,7 +283,6 @@ export default {
       //
       viewMsg(){
           this.$router.push({path:'/index/messages'})
-          this.count = 0
       }
 
   }

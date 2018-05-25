@@ -83,8 +83,8 @@
 
 <script>
 var Highcharts = require('highcharts')
-// 在 Highcharts 加载之后加载功能模块
-require('highcharts/modules/exporting')(Highcharts)
+// // 在 Highcharts 加载之后加载功能模块
+// require('highcharts/modules/exporting')(Highcharts)
 import {allSystemType} from '../../util/util.js'
 import {mapActions,mapGetters} from 'vuex'
 
@@ -119,22 +119,16 @@ export default {
 
 // created----------------------------------------------------------------------------------------
   created(){
+    console.log(Highcharts)
     document.title = '首页-应用市场管理平台'
     this.queryAppNum()
     this.queryUserState()
+  },
+  mounted(){
     this.queryDeviceModel()
     this.queryAppVersion()
     this.queryState()
     this.queryInstall()
-  },
-
-// mounted----------------------------------------------------------------------------------------
-  mounted(){
-  },
-
-// computed----------------------------------------------------------------------------------------
-  computed: {
-   
   },
 
 // methods-----------------------------------------------------------------------------------------
@@ -180,10 +174,10 @@ export default {
              return arr
            })
            this.renderPie({
-            ele:"chart1",
+             ele:"chart1",
             title:"设备型号分布图",
             data:data,
-          })
+           })
          }else{
            this.isShow1 = true
          }
@@ -198,9 +192,7 @@ export default {
        this.loading2 = true
        this.axios.get('/statistic/appVersionDistribution').then(res=>{
          this.loading2 = false
-         console.log(333)
          if(res && res.success=='1'&&res.data.length!=0){
-           console.log(222)
            const data = res.data.map(item=>{
              const arr = []
              arr.push(item.appVersion||'3.0')
@@ -213,7 +205,6 @@ export default {
             data:data
           })
          }else{
-           console.log(111)
            this.isShow2 = true
          }
        })
@@ -279,11 +270,7 @@ export default {
      // 渲染饼图
      renderPie(options){
         Highcharts.chart(options.ele, {
-            chart: {
-                // plotBackgroundColor: null,
-                // plotBorderWidth: null,
-                // plotShadow: false
-            },
+
             colors:['#f45853','#7bd5e9','#73dcb6','#ffbe31','#a15db2','#446cb4','#60b730','#ebee13','#de9667','#1de4c1'],
             credits: {
                 enabled: false,

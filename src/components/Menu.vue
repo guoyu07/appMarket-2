@@ -57,9 +57,6 @@ export default {
       accordion: true,
     }
   },
-  computed: {
-
-  },
   created(){
       this.activeName = window.localStorage.getItem('currentMenu')
   },

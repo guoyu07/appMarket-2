@@ -39,6 +39,7 @@
 
 <script>
 import {format} from '../../util/util.js'
+import {mapActions} from 'vuex'
 export default {
 // created-----------------------------------------------------------------------------------
   created(){
@@ -105,6 +106,7 @@ export default {
 
 // methods------------------------------------------------------------------------------------
   methods:{
+    ...mapActions(['setCount']),
     query(){
       this.searchData.pageNo = 1
       this.queryTable()
@@ -120,6 +122,7 @@ export default {
           this.messageData  = data.list
           this.totalPage = data.total
           this.startRow = data.startRow
+          this.setCount(0)
         }
       })
       .catch(err=>{

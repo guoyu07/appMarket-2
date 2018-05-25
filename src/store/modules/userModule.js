@@ -5,6 +5,8 @@ const state = {
     appPage:1,
     rightPage:1,
     devicePage:1,
+  // 推送的消息数量
+    count:0
 }
 const mutations = {
     [types.GET_USER](state,obj){
@@ -18,6 +20,11 @@ const mutations = {
     },
     [types.SET_PAGE3](state,page){
         state.devicePage = page
+    },
+    [types.SET_COUNT](state,num){
+        state.count = num
+        console.log(state.count)
+        
     },
 
 }
@@ -33,6 +40,9 @@ const actions = {
     },
     setPage3({commit},page){
         commit(types.SET_PAGE3,page)
+    },
+    setCount({commit},num){
+        commit(types.SET_COUNT,num)
     }
 }
 
@@ -41,6 +51,7 @@ const getters = {
     appPage: (state) =>{return state.appPage},
     rightPage: (state) =>{return state.rightPage},
     devicePage: (state) =>{return state.devicePage},
+    count: (state) =>{return state.count},
 }
 export default {
     state,

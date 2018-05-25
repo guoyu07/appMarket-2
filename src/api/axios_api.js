@@ -41,14 +41,16 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-        if(response.data.success=='0'&&response.data.erroCode=='1'){
+        // 会话超时
+        if(response.data.erroCode=='1'||response.data.erroCode=='2'){
             window.localStorage.clear()
             window.location.hash='/login'
         }
+        // 
         return response.data;
     },
     error => {
-        return Promise.reject(error)
+        // return Promise.reject(error)
     });
 
 export default axios;

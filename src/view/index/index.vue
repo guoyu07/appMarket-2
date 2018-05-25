@@ -30,15 +30,6 @@
             "Head": Head,
             "MenuComponent": Menu,
         },
-        data(){
-            return {
-                
-            }
-        },
-
-        methods: {
-           
-        }
     }
 </script>
 
