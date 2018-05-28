@@ -365,9 +365,9 @@ export default {
             })
             return
           }
-          that.axios.post('/file/uploadImage',qs.stringify({
+          that.axios.post('/file/uploadImage',{
             imageStr:base
-          })).then(res=>{
+          }).then(res=>{
             if(res&&res.success=='1'){
               that.appInfo.iconUrl = res.data.imagePath
             }
@@ -411,9 +411,9 @@ export default {
             })
             return
           }
-          that.axios.post('/file/uploadImage',qs.stringify({
+          that.axios.post('/file/uploadImage',{
             imageStr:base
-          })).then(res=>{
+          }).then(res=>{
             if(res&&res.success=='1'){
               let obj = {}
               obj.url = res.data.imagePath

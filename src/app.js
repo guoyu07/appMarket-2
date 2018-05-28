@@ -12,7 +12,6 @@ import './my-theme/index.less';
 import store from './store/store'
 import * as types from './store/types.js'
 import 'babel-polyfill'
-
 require("es6-promise").polyfill();
 
 Vue.use(iView)

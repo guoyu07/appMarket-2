@@ -75,6 +75,9 @@
             <Button  size="large" @click="addModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmAdd">确定</Button>
         </div>
+        <div class="demo-spin-container">
+            <Spin fix v-if='loading2'></Spin>
+        </div>
     </Modal>
   </div>
 </template>
@@ -101,6 +104,7 @@ export default {
     return {
       userData:[],
       loading:false,
+      loading2:false,
       searchData:{
         searchText:'',
         pageNo:1,
@@ -271,8 +275,10 @@ export default {
       confirmAdd(){
         this.$refs['formValidate'].validate((valid) => {
             if(valid) {
+              this.loading2 = true
               this.axios.get('/device/addDevice',{params:this.addDeviceData})
               .then(res=>{
+                this.loading2 = false
                 if(res&&res.success=='1'){
                   this.$Message.success("操作成功！")
                   this.addModal=false

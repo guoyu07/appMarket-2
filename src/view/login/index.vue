@@ -1,5 +1,5 @@
 <template>
-    <div id="login">
+    <div id="login" :style='{backgroundImage:"url("+bg+")"}'>
         <div id="login_form">
             <h1>应用市场管理平台</h1>
              <Form ref="formValidate" :model="loginData" :rules="ruleValidate">
@@ -9,7 +9,7 @@
                     </Input>
                 </FormItem>
                 <FormItem prop="pwd">
-                    <Input type="password" v-model="loginData.pwd" placeholder="密码" size="large">
+                    <Input type="password"  id='pwdIpt' v-model="loginData.pwd" placeholder="密码" size="large" @keyup.enter.native="handleSubmit('formValidate')">
                         <Icon type="ios-locked-outline" slot="prepend"></Icon>
                     </Input>
                 </FormItem>
@@ -37,7 +37,7 @@ export default {
 // data--------------------------------------------------------------------------------------
   data(){
       return {
-         
+          bg:require('../../assets/img/bg.png'),
           loginData: {
             userName: '',
             pwd: '',
@@ -130,7 +130,7 @@ export default {
             clearTimeout(timer)
         },5000)
 
-      }
+      },
   }
 
 }
@@ -141,9 +141,10 @@ export default {
         width:100%;
         height:100%;
         position: relative;
-        background:-ms-repeating-linear-gradient(#37a861,#40c4d8);/*IE<10/11>*/
-        filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#37a861, endColorstr=#40c4d8);/*IE<9>*/
-        background:-webkit-linear-gradient(#37a861,#40c4d8);
+        // background:-ms-repeating-linear-gradient(#37a861,#40c4d8);/*IE<10/11>*/
+        // filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr=#37a861, endColorstr=#40c4d8);/*IE<9>*/
+        // background:-webkit-linear-gradient(#37a861,#40c4d8);
+        background-size:cover;
         #login_form {
             h1 {
                 text-align: center;

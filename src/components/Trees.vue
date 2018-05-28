@@ -53,9 +53,6 @@ export default {
     }
   },
   methods:{
-    handleExpand(){
-     
-    },
     
     handleCheck(checked,children){
       console.log(111)

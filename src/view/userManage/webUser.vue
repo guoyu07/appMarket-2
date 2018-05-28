@@ -78,7 +78,7 @@
             <Button type="primary" size="large" @click="confirmAdd">确定</Button>
         </div>
         <div class="demo-spin-container">
-            <Spin fix v-if='isSubmit'></Spin>
+            <Spin fix v-if='loading2'></Spin>
         </div>
     </Modal>
 
@@ -114,6 +114,9 @@
             <Button  size="large" @click="editUserModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmEdit">确定</Button>
         </div>
+        <div class="demo-spin-container">
+            <Spin fix v-if='loading3'></Spin>
+        </div>
     </Modal>
 
     <!-- 启用模态框 -->
@@ -127,6 +130,9 @@
             <Button  size="large" @click="startUseModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmIsUse('1')">确定</Button>
         </div>
+        <div class="demo-spin-container">
+            <Spin fix v-if='loading4'></Spin>
+        </div>
     </Modal>
     <!-- 禁用模态框 -->
     <Modal
@@ -138,6 +144,9 @@
         <div slot="footer">
             <Button  size="large" @click="forbiddenUseModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmIsUse('2')">确定</Button>
+        </div>
+        <div class="demo-spin-container">
+            <Spin fix v-if='loading4'></Spin>
         </div>
     </Modal>
   </div>
@@ -225,6 +234,9 @@ export default {
       roleData:[],
       startRow:1,
       loading:false,
+      loading2:false,
+      loading3:false,
+      loading4:false,
       addUserModal: false,
       editUserModal: false,
       startUseModal:false,
@@ -504,10 +516,12 @@ export default {
 
     // 确定启用/禁用
     confirmIsUse(flag){
+      this.loading4 = true
       this.axios.get('/userPerm/changeUserState',{params:{
         userIds:this.selectedUserData,
         flag:flag
       }}).then(res=>{
+        this.loading4 = false
         if(res && res.success == '1'){
           this.$Message.success("操作成功！")
           flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
@@ -527,10 +541,11 @@ export default {
       this.isSubmit = true
       this.$refs['formValidate'].validate((valid) => {
             if(valid) {
+              this.loading2 = true
               this.axios.get("/userPerm/addUser",{
                   params:this.addUserData
               }).then(res=>{
-                this.isSubmit = false
+                this.loading2 = false
                 if(res.success==1){
                   this.$Message.success("操作成功！")
                   this.addUserModal = false
@@ -556,6 +571,7 @@ export default {
       this.$refs['formValidate1'].validate((valid) => {
 
             if(valid) {
+              this.loading3 = true
               // 若密码修改了，则传参密码
               if(this.editUserData.pwd != this.tmpwd){
                 this.axios.get('/userPerm/updateUser',{params:{
@@ -564,6 +580,7 @@ export default {
                   flag:2
                 }})
                 .then(res=>{
+                  this.loading3 = false
                   if(res.success==1){
                     this.$Message.success("操作成功！")
                     this.editUserModal = false
@@ -587,6 +604,7 @@ export default {
                   flag:2
                 }})
                 .then(res=>{
+                  this.loading3 = false
                   if(res.success==1){
                     this.$Message.success("操作成功！")
                     this.editUserModal = false

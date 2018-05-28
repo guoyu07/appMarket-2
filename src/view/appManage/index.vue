@@ -54,6 +54,9 @@
         :mask-closable="false"
         class-name="vertical-center-modal">
         <p class="modalp">{{content}}</p>
+        <div class="demo-spin-container">
+            <Spin fix v-if="loading3"></Spin>
+        </div>
         <div slot="footer">
             <Button  size="large" @click="actionModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmAction(flag)">确定</Button>
@@ -74,6 +77,9 @@
         <div slot="footer">
             <Button  size="large" @click="dispatchModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmDispatch">确定</Button>
+        </div>
+        <div class="demo-spin-container">
+            <Spin fix v-if="loading4"></Spin>
         </div>
     </Modal>
     <Action></Action>
@@ -110,6 +116,9 @@ export default {
     return{
       perms:null,
       loading:false,
+      loading2:false,
+      loading3:false,
+      loading4:false,
       totalPage:1,
       searchData: {
         content: "",
@@ -357,7 +366,6 @@ export default {
       selectedIsBlacklist:null,
       startRow:1,
       selectedUserData: [],
-      loading2:false,
       searchUserData:{
         content: '',
         state: '1',
@@ -534,6 +542,7 @@ export default {
 
      // 确定启用/禁用/黑名单/白名单
      confirmAction(flag){
+          this.loading3 = true
           this.axios.get('/app/changeState',{
               params:{
                   appIds:this.selectedAppData,
@@ -541,6 +550,7 @@ export default {
               }
           })
           .then(res=>{
+              this.loading3 = false
               if(res && res.success=='1'){
                   this.$Message.success("操作成功！")
                   this.actionModal = false
@@ -558,10 +568,12 @@ export default {
             this.$Message.warning('请至少选择一位用户！');
             return
         }
+        this.loading4 = true
         this.axios.get('/app/assignApp',{params:{
             appId:this.searchUserData.appId,
             userIds:this.userIds
         }}).then(res=>{
+            this.loading4 = false
             if(res && res.success=='1'){
                 this.$Message.success("操作成功！")
                 this.dispatchModal = false

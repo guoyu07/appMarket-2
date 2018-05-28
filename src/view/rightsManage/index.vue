@@ -16,10 +16,6 @@
            <div style="position:relative">
                 <Table border :columns="columns" :loading="loading" :data="roleData" no-data-text="暂无数据"></Table>            
                 <Page :total="totalPage" :current='pageNo' @on-change='changePage' show-total class="page_wrap" @></Page>
-                <!-- <Spin fix v-if='loading'>
-                    <Icon type="load-c" size=18 class="demo-spin-icon-load"></Icon>
-                    <div>loading...</div>
-                </Spin> -->
            </div>
       </div>
     </div>
@@ -43,6 +39,9 @@
             <Button  size="large" @click="addModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmAdd">确定</Button>
         </div>
+        <div class="demo-spin-container">
+            <Spin fix v-if='loading2'></Spin>
+        </div>
     </Modal>
 
 
@@ -64,6 +63,9 @@
             <Button  size="large" @click="editModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmEdit">确定</Button>
         </div>
+        <div class="demo-spin-container">
+            <Spin fix v-if='loading3'></Spin>
+        </div>
     </Modal>
     <!-- 删除模态框 -->
     <Modal
@@ -75,6 +77,9 @@
         <div slot="footer">
             <Button  size="large" @click="deleteModal=false">取消</Button>
             <Button type="primary" size="large" @click="confirmDelete">确定</Button>
+        </div>
+        <div class="demo-spin-container">
+            <Spin fix v-if='loading4'></Spin>
         </div>
     </Modal>
   </div>
@@ -108,7 +113,7 @@ export default {
         }else if(this.editModal==true){
             this.tmpMask == value?callback():callback(new Error('角色名称已存在'))
         }else{
-            this.axios.post('/userPerm/checkRoleName',qs.stringify({roleName:value})).then(res=>{
+            this.axios.get('/userPerm/checkRoleName',{params:{roleName:value}}).then(res=>{
                 if(res && res.success=='1'){
                     callback()
                 }else{
@@ -120,6 +125,9 @@ export default {
     return {
       authList:[],
       loading:false,
+      loading2:false,
+      loading3:false,
+      loading4:false,
       pageNo:1,
       totalPage:1,
       startRow:1,
@@ -283,8 +291,10 @@ export default {
       confirmAdd(){
         this.$refs['formValidate'].validate((valid) => {
             if(valid) {
-                this.axios.post('/userPerm/addRole',qs.stringify(this.addRoleData))
+                this.loading2 = true
+                this.axios.get('/userPerm/addRole',{params:this.addRoleData})
                 .then(res=>{
+                    this.loading2 = false
                     if(res&&res.success=='1'){
                         this.$Message.success("操作成功！")
                         this.addModal = false
@@ -305,8 +315,10 @@ export default {
       confirmEdit(){
           this.$refs['formValidate1'].validate((valid) => {
             if(valid) {
-                this.axios.post('/userPerm/upRole',qs.stringify(this.editRoleData))
+                this.loading3 = true
+                this.axios.get('/userPerm/upRole',{params:this.editRoleData})
                 .then(res=>{
+                    this.loading3 = false
                     if(res&&res.success=='1'){
                         this.$Message.success("操作成功！")
                         this.editModal = false
@@ -325,11 +337,13 @@ export default {
 
       // 确认删除
       confirmDelete(){
+          this.loading4 = true
           this.axios.get('/userPerm/delRole',{
               params:{
                   id: this.delId
               }
           }).then(res=>{
+              this.loading4 = false
               if(res&&res.success=='1'){
                   this.$Message.success("操作成功！")
                   this.deleteModal=false

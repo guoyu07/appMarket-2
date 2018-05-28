@@ -119,7 +119,6 @@ export default {
 
 // created----------------------------------------------------------------------------------------
   created(){
-    console.log(Highcharts)
     document.title = '首页-应用市场管理平台'
     this.queryAppNum()
     this.queryUserState()

@@ -36,20 +36,23 @@
         v-model="modifyAccountModal"
         :mask-closable="false">
         <Form ref="formValidate" :model="accountForm"  :label-width="85" :rules="ruleValidate">
-        <FormItem label="用户名">
-            <Input type="text" v-model="accountForm.userName" style="width:350px" placeholder='用户名' disabled></Input>
-        </FormItem>
-        <FormItem label="手机号" prop="phone">
-            <Input type="text" v-model="accountForm.phone" style="width:350px" placeholder='手机号'></Input>
-        </FormItem>
-        <FormItem label="密码" prop="pwd">
-            <Input type="password" v-model="accountForm.pwd" style="width:350px" placeholder='密码'></Input>
-        </FormItem>
-    </Form>
-    <div slot="footer">
-        <Button  size="large" @click="modifyAccountModal=false">取消</Button>
-        <Button type="primary" size="large" @click="modifyAccount">确定</Button>
-    </div>
+            <FormItem label="用户名">
+                <Input type="text" v-model="accountForm.userName" style="width:350px" placeholder='用户名' disabled></Input>
+            </FormItem>
+            <FormItem label="手机号" prop="phone">
+                <Input type="text" v-model="accountForm.phone" style="width:350px" placeholder='手机号'></Input>
+            </FormItem>
+            <FormItem label="密码" prop="pwd">
+                <Input type="password" v-model="accountForm.pwd" style="width:350px" placeholder='密码'></Input>
+            </FormItem>
+        </Form>
+        <div slot="footer">
+            <Button  size="large" @click="modifyAccountModal=false">取消</Button>
+            <Button type="primary" size="large" @click="modifyAccount">确定</Button>
+        </div>
+        <div class="demo-spin-container">
+                <Spin fix v-if='loading'></Spin>
+        </div>
     </Modal>
   </Header>
 </template>
@@ -69,7 +72,6 @@ export default {
       this.queryCount()
       this.sendWebSocket()
       this.querySelf()
-      console.log(this.count,'------------------------')
   },
   computed:{
     ...mapGetters(['count'])
@@ -106,6 +108,7 @@ export default {
         }
     }
       return {
+          loading:false,
           tmpPhone:'',
           tmpPwd:'',
           websock:null,
@@ -134,11 +137,13 @@ export default {
       ...mapActions(['setCount']),
      // 查询本账号信息
      querySelf(){
+         this.loading = true
           this.axios.get("/userPerm/qryUserInfoById",{
                 params:{
                 id:this.userId
                 }
             }).then(res=>{
+                this.loading = false
                 if(res&&res.success==1){
                     const data = res.data
                     this.accountForm.id = data.id
@@ -187,6 +192,7 @@ export default {
       modifyAccount() {
           this.$refs['formValidate'].validate((valid) => {
                 if (valid) {
+                    this.loading = true
                     if(this.tmpPwd == this.accountForm.pwd){
                       this.axios.get("/userPerm/updateUser",{params:{
                           id:this.accountForm.id,
@@ -195,6 +201,7 @@ export default {
                           flag:1,
                           userType:'1'
                       }}).then(res=>{
+                          this.loading = false
                             if(res&&res.success=='1'){
                                 this.$Message.success("操作成功！")
                                 // 修改本地存储的用户信息
@@ -208,8 +215,11 @@ export default {
                           console.log(error);
                        })   
                     }else{
-                        this.axios.get("/userPerm/updateUser",{params:{...accountForm,flag:1}})
-                        .then(res=>{
+                        this.axios.get("/userPerm/updateUser",{params:{
+                            ...this.accountForm,
+                            flag:1
+                        }}).then(res=>{
+                            this.loading = false
                             if(res&&res.success=='1'){
                                 this.$Message.success("操作成功！")
                                 // 修改本地存储的用户信息
