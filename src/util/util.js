@@ -108,7 +108,7 @@ export function regTest(str,type){
   return myReg.test(str)?true:false
 }
 
-// 解决多次点击按钮多次提示的问题  应用管理与用户管理模块启用禁用黑白名单按钮---------------
+// 解决多次点击按钮多次提示的问题  应用管理与用户管理模块启用禁用黑白名单按钮-----------------
 export function breakTips(){
   $(".isDisabled").attr("disabled",true)
   $(".isDisabled").css({
@@ -122,7 +122,7 @@ export function breakTips(){
   },2000)
 }
 
-// 权限管理部分全选、取消全选与全部折叠、全部展开
+// 权限管理部分全选、取消全选与全部折叠、全部展开-------------------------------------------
 export function setValue(arr,key,flag){
   for(var i = 0; i<arr.length; i++){
     arr[i][key] = flag
@@ -131,7 +131,7 @@ export function setValue(arr,key,flag){
     }
   }
 }
-
+// 获取权限ID------------------------------------------------------------------------------
 export function getId(arr,arr1){
   
   for(var i = 0; i<arr.length;i++){
@@ -143,7 +143,7 @@ export function getId(arr,arr1){
     }
   }
 }
-// 日期格式化
+// 日期格式化-------------------------------------------------------------------------------
 Date.prototype.format = function(fmt) { 
   var o = { 
      "M+" : this.getMonth()+1,                 //月份 
@@ -165,198 +165,5 @@ Date.prototype.format = function(fmt) {
  return fmt; 
 }        
 
-// /**
-//  * 原生js仿 jq的 Siblings()兄弟选择器
-//  */
-// export function siblings(elem) {
-//   var nodes = [] // 定义一个数组，用来存elem的兄弟元素
-//   var previ = elem.previousSibling
-//   while (previ) { // 先取o的哥哥们判断有没有上一个哥哥元素，如果有则往下执行previ表示previousSibling
-//     if (previ.nodeType === 1) {
-//       nodes.push(previ)
-//     }
-//     previ = previ.previousSibling // 最后把上一个节点赋给previ
-//   }
-//   nodes.reverse()
-//   var nexts = elem.nextSibling // 再取elem的弟弟
-//   while (nexts) { // 判断有没有下一个弟弟结点nexts是nextSibling的意思
-//     if (nexts.nodeType === 1) {
-//       nodes.push(nexts)
-//     }
-//     nexts = nexts.nextSibling
-//   }
-//   return nodes
-// }
-
-// /**
-//  * 用途：检查输入手机号码是否正确
-//   输入：
-//   s：字符串
-//   返回：
-//   如果通过验证返回true,否则返回false
-//  */
-// export function checkMobile(s) {
-//   var regu = /^[1][3-9][0-9]{9}$/
-//   var re = new RegExp(regu)
-//   if (re.test(s)) {
-//     return true
-//   } else {
-//     return false
-//   }
-// }
-// /**
-//  * 验证非负正整数
-//  * @param {*} value
-//  */
-// export function checkPositiveNumber(value) {
-//   if (!isNaN(value)) {
-//     // 验证正整数包括0
-//     var bool = /^(0|[1-9][0-9]*)$/.test(value)
-//     return bool
-//   } else {
-//     return false
-//   }
-// }
-
-// /**
-//  * 用户名 验证 英文字母开头+ 数字组合
-//  */
-// export function checkUserName(string) {
-//   if (string !== '') {
-//     var reg = /^[a-zA-Z][\w]{0,}$/
-//     return reg.test(string)
-//   }
-// }
-// /**
-//  * 设置cookie
-//  */
-
-// export function setCookie(name, value) {
-//   var Days = 30
-//   var exp = new Date()
-//   exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000)
-//   document.cookie = name + '=' + escape(value) + ';expires=' + exp.toGMTString()
-// }
-// /**
-//  * 读取cookie
-//  */
-// export function getCookie(name) {
-//   // console.log(name)
-//   var arr = null
-//   var reg = new RegExp('(^| )' + name + '=([^;]*)(;|$)')
-//   if (document.cookie) {
-//     arr = document.cookie.match(reg)
-//   } else {
-//     arr = []
-//   }
-//   return arr[2]
-// }
-// /**
-//  * 删除cookie
-//  */
-// export function delCookie(name) {
-//   var exp = new Date()
-//   exp.setTime(exp.getTime() - 1)
-//   var cval = getCookie(name)
-//   if (cval != null) {
-//     document.cookie = name + '=' + cval + ';expires=' + exp.toGMTString()
-//   }
-// }
-
-// /**
-//  *  如果需要设定自定义过期时间
-//  *  那么把上面的setCookie函数换成下面两个函数就ok;
-//  *  程序代码
-//  */
-// export function setCookieWithTime(name, value, time) {
-//   var strsec = getsec(time)
-//   var exp = new Date()
-//   exp.setTime(exp.getTime() + strsec * 1)
-//   document.cookie = name + '=' + escape(value) + ';expires=' + exp.toGMTString()
-// }
-// export function getsec(str) {
-//   var str1 = str.substring(1, str.length) * 1
-//   var str2 = str.substring(0, 1)
-//   if (str2 === 's') {
-//     return str1 * 1000
-//   } else if (str2 === 'h') {
-//     return str1 * 60 * 60 * 1000
-//   } else if (str2 === 'd') {
-//     return str1 * 24 * 60 * 60 * 1000
-//   }
-// }
-// /**
-//  * 判断表单是否为空
-//  */
-// export function IsEmpty(keyVal) {
-//   if (keyVal.length === 0) {
-//     return true
-//   } else {
-//     return false
-//   }
-// }
-// /**
-//  * 验证身份证
-//  * 身份证号码为15位或者18位，15位时全为数字，18位前17位为数字，最后一位是校验位，可能为数字或字符X
-//  * @param {*string} card
-//  */
-// export function isCardNo(card) {
-//   var reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/
-//   if (reg.test(card) === false) {
-//     return false
-//   } else {
-//     return true
-//   }
-// }
-// /**
-//  * 验证护照
-//  */
-// export function isPassportNo(card) {
-//   var reg = /^1[45][0-9]{7}|G[0-9]{8}|P[0-9]{7}|S[0-9]{7,8}|D[0-9]+$/
-//   if (reg.test(card) === false) {
-//     return false
-//   } else {
-//     return true
-//   }
-// }
-// /*数组去重*/
-// Array.prototype.unique = function () {
-//   var res = [];
-//   var json = {};
-//   for (var i = 0; i < this.length; i++) {
-//     if (!json[this[i]]) {
-//       res.push(this[i]);
-//       json[this[i]] = 1;
-//     }
-//   }
-//   return res;
-// }
-// /*随即色*/
-// export function randomColor() {
-//   var rgb = '255,255,255'
-//   var r = Math.floor(Math.random() * 255) + 1
-//   var g = Math.floor(Math.random() * 255) + 1
-//   var b = Math.floor(Math.random() * 255) + 1
-//   var color = 'rgba(' + r + ',' + g + ',' + b + ',0.7)'
-//   return color
-// }
-// Number.prototype.thousandFormat = function () {
-//   return this.toFixed(2).toString().replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
-// }
-// Number.prototype.thousand = function () {
-//   return this.toFixed(0).toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,');
-// }
-// /*检查空对象*/
-// export function isOwnEmpty(obj)
-//  {
-//  　　for(var name in obj)
-//  　　{
-//  　　　　if(obj.hasOwnProperty(name))
-//  　　　　{
-//  　　　　　　return false;//返回false，不为空对象
-//  　　　　}
-//  　　}
-//  　　return true;//返回true，为空对象
-//  };
 
  

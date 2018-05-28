@@ -2,11 +2,11 @@
     <div class="layout">
         <Layout>
             <!-- 头部 -->
-            <Head></Head>
+            <Heads></Heads>
             <Row>
                 <Col span="4">
                      <!-- 侧边栏 -->
-                     <MenuComponent></MenuComponent>
+                     <Menus></Menus>
                 </Col>
                 <Col span="20">
                     <div class="layout-content-main">
@@ -23,12 +23,12 @@
 </template>
 
 <script>
-    import Head from '../../components/Head.vue'
-    import Menu from '../../components/Menu.vue'
+    import Heads from '../../components/Heads.vue'
+    import Menus from '../../components/Menus.vue'
     export default {
         components: {
-            "Head": Head,
-            "MenuComponent": Menu,
+            Heads,
+            Menus,
         },
     }
 </script>

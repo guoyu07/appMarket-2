@@ -84,7 +84,7 @@
 <script>
 var Highcharts = require('highcharts')
 // // 在 Highcharts 加载之后加载功能模块
-// require('highcharts/modules/exporting')(Highcharts)
+require('highcharts/modules/exporting')(Highcharts)
 import {allSystemType} from '../../util/util.js'
 import {mapActions,mapGetters} from 'vuex'
 
@@ -95,6 +95,7 @@ export default {
 // data------------------------------------------------------------------------------------------ 
   data(){
     return {
+      a:[],
       allSystemType:allSystemType,
       allLoginState:{
         '01':'在线用户',
@@ -103,7 +104,6 @@ export default {
       },
       appCnt:"",
       systemType:"",
-
       loginUserData:null,
       isShow1:false,
       isShow2:false,
@@ -122,12 +122,14 @@ export default {
     document.title = '首页-应用市场管理平台'
     this.queryAppNum()
     this.queryUserState()
+    
+
   },
   mounted(){
     this.queryDeviceModel()
     this.queryAppVersion()
     this.queryState()
-    this.queryInstall()
+    this.queryInstall()    
   },
 
 // methods-----------------------------------------------------------------------------------------
@@ -164,19 +166,15 @@ export default {
      queryDeviceModel(){
        this.loading1 = true
        this.axios.get('/statistic/deviceModelDistribution').then(res=>{
-         this.loading1 = false
          if(res && res.success=='1'&&res.data.length!=0){
-           const data = res.data.map(item=>{
-             const arr = []
-             arr.push(item.model)
-             arr.push(item.cnt)
-             return arr
+           var data = res.data.map(item=>{
+             return [item.model,item.cnt]
            })
-           this.renderPie({
-             ele:"chart1",
-            title:"设备型号分布图",
-            data:data,
-           })
+             this.renderPie({
+              ele:"chart1",
+              title:"设备型号分布图",
+              data:data,
+            })
          }else{
            this.isShow1 = true
          }
@@ -190,7 +188,7 @@ export default {
      queryAppVersion(){
        this.loading2 = true
        this.axios.get('/statistic/appVersionDistribution').then(res=>{
-         this.loading2 = false
+        //  this.loading2 = false
          if(res && res.success=='1'&&res.data.length!=0){
            const data = res.data.map(item=>{
              const arr = []
@@ -216,7 +214,7 @@ export default {
      queryState(){
        this.loading3 = true
        this.axios.get('/statistic/stateDistribution').then(res=>{
-         this.loading3 = false
+        //  this.loading3 = false
          if(res && res.success=='1'&&res.data.length!=0){
               const data = res.data.map(item=>{
                 const arr = []
@@ -242,7 +240,7 @@ export default {
      queryInstall(){
        this.loading4 = true
        this.axios.get('/statistic/installDistribution').then(res=>{
-         this.loading4 = false
+        //  this.loading4 = false
          if(res && res.success=='1'&&res.data.length!=0){
             const data = res.data.map(item=>{
               const obj =  {}
@@ -268,7 +266,7 @@ export default {
 
      // 渲染饼图
      renderPie(options){
-        Highcharts.chart(options.ele, {
+       var chart =  Highcharts.chart(options.ele, {
 
             colors:['#f45853','#7bd5e9','#73dcb6','#ffbe31','#a15db2','#446cb4','#60b730','#ebee13','#de9667','#1de4c1'],
             credits: {

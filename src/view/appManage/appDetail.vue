@@ -137,6 +137,7 @@ export default {
 
 <style lang="scss" scoped type="text/css">
   #appDetail {
+    padding-bottom:50px;
     .bottom_wrap{
       .intro {
         padding:20px;
