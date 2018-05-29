@@ -84,7 +84,7 @@
 <script>
 var Highcharts = require('highcharts')
 // // 在 Highcharts 加载之后加载功能模块
-require('highcharts/modules/exporting')(Highcharts)
+// require('highcharts/modules/exporting')(Highcharts)
 import {allSystemType} from '../../util/util.js'
 import {mapActions,mapGetters} from 'vuex'
 
@@ -144,9 +144,6 @@ export default {
            this.appCnt = data[0].cnt
          }
        })
-       .catch(err=>{
-          console.log(err)
-        })
      },
 
      // 查询用户状态
@@ -157,9 +154,6 @@ export default {
             this.loginUserData = data
          }
        })
-       .catch(err=>{
-          console.log(err)
-        })
      },
 
      // 设备型号分布图
@@ -179,9 +173,6 @@ export default {
            this.isShow1 = true
          }
        })
-       .catch(err=>{
-          console.log(err)
-        })
      },
 
      // 客户端统计图
@@ -205,9 +196,6 @@ export default {
            this.isShow2 = true
          }
        })
-       .catch(err=>{
-          console.log(err)
-        })
      },
 
      // 违规设备分布图
@@ -231,9 +219,6 @@ export default {
            this.isShow3 = true
          }
        })
-       .catch(err=>{
-          console.log(err)
-        })
      },
 
      // 应用安装情况
@@ -259,9 +244,6 @@ export default {
            this.isShow4 = true
          }
        })
-       .catch(err=>{
-          console.log(err)
-        })
      },
 
      // 渲染饼图

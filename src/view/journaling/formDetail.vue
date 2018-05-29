@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 import env from '../../js/env.js'
 export default {
   created(){
@@ -223,9 +222,6 @@ export default {
                     this.totalPage = data.total
                     this.startRow = data.startRow
                 }
-            })
-            .catch(err=>{
-                console.log(err)
             })
         },
 

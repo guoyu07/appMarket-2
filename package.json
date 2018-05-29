@@ -1,5 +1,5 @@
 {
-  "name": "analysis",
+  "name": "appMarket",
   "version": "1.0.0",
   "description": "",
   "main": ".postcssrc.js",
@@ -28,7 +28,6 @@
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "uglifyjs-webpack-plugin": "^0.4.6",
-    "url-loader": "^0.5.9",
     "vue": "^2.4.2",
     "vue-loader": "^13.0.4",
     "vue-loading-spinner": "^1.0.10",

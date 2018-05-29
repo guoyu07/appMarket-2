@@ -6,13 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <!-- <link rel="icon" href="../../favicon.ico"/>         -->
-        <!-- <link rel="stylesheet" href="http://at.alicdn.com/t/font_397862_a14oc3v140wwmi.css"> -->
-        <!-- <script src="https://cdn.bootcss.com/xlsx/0.11.12/xlsx.full.min.js"></script> -->
         <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
-        <!-- <script src="http://momentjs.cn/downloads/moment.min.js"></script> -->
-        <!-- <script type="text/javascript" src="http://code.highcharts.com/stock/highstock.js"></script> -->
-        <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script> 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.1/jquery.form.min.js" integrity="sha384-tIwI8+qJdZBtYYCKwRkjxBGQVZS3gGozr3CtI+5JF/oL1JmPEHzCEnIKbDbLTCer" crossorigin="anonymous"></script>
         
     </head>
@@ -25,22 +19,20 @@
             if (Object.getOwnPropertyNames(HTMLElement.prototype).indexOf('dataset') === -1) {
                 Object.defineProperty(HTMLElement.prototype, 'dataset', {
                     get: function () {
-                        var attributes = this.attributes; //获取节点的所有属性
+                        var attributes = this.attributes;
                         var name = [],
-                            value = []; //定义两个数组保存属性名和属性值
-                        var obj = {}; //定义一个空对象
-                        for (var i = 0; i < attributes.length; i++) { //遍历节点的所有属性
-                            if (attributes[i].nodeName.slice(0, 5) == 'data-') { //如果属性名的前面5个字符符合"data-"
-                                // 取出属性名的"data-"的后面的字符串放入name数组中
+                            value = [];
+                        var obj = {};
+                        for (var i = 0; i < attributes.length; i++) {
+                            if (attributes[i].nodeName.slice(0, 5) == 'data-') {
                                 name.push(attributes[i].nodeName.slice(5));
-                                //取出对应的属性值放入value数组中
                                 value.push(attributes[i].nodeValue);
                             }
                         }
-                        for (var j = 0; j < name.length; j++) { //遍历name和value数组
-                            obj[name[j]] = value[j]; //将属性名和属性值保存到obj中
+                        for (var j = 0; j < name.length; j++) {
+                            obj[name[j]] = value[j];
                         }
-                        return obj; //返回对象
+                        return obj;
                     }
                 });
             }

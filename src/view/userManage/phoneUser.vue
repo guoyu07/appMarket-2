@@ -236,9 +236,6 @@ export default {
                                     
                                   }
                                 })
-                                .catch(err=>{
-                                  console.log(err)
-                                })
                                 
                             }
                         }
@@ -315,15 +312,10 @@ export default {
           this.startRow = data.startRow
         }
       })
-      .catch(err=>{
-        console.log(err)
-      })
     },
 
     // 改变页码
     changePage(current){
-
-      // console.log(current)
       this.searchData.pageNo = current
       this.queryTable()
 
@@ -381,12 +373,8 @@ export default {
           flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
           this.queryTable()
         }else{
-          this.$Message.error("操作失败！")
           flag=='1'?(this.startUseModal = false):(this.forbiddenUseModal = false)
         }
-      })
-      .catch(err=>{
-        console.log(err)
       })
     },
 
@@ -405,12 +393,8 @@ export default {
                     this.editUserModal = false
                     this.queryTable()
                   }else{
-                    this.$Message.error("操作失败！")
                     this.editUserModal = false
                   }
-                })
-                .catch(err=>{
-                  console.log(err)
                 })
               // 若没有修改密码，则不传
               }else{
@@ -430,12 +414,8 @@ export default {
                     this.editUserModal = false
                     this.queryTable()
                   }else{
-                    this.$Message.error("操作失败！")
                     this.editUserModal = false
                   }
-                })
-                .catch(err=>{
-                  console.log(err)
                 })
               }
 

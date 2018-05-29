@@ -11,7 +11,7 @@ export default {
     }
   },
   props: [
-      'hasName', 'textName','id','pageNo'
+      'hasName', 'textName','id','pageNo','state'
     ],
   methods:{
     ...mapActions(['setPage1']),
@@ -20,16 +20,24 @@ export default {
       switch (this.hasName) {
         // 应用管理 版本升级、详情、编辑
         case 'app_upper':
-          this.setPage1(this.pageNo);
-          this.$router.push({path:"/index/editApp",query:{type:0,id:this.id}});
+          if(this.state=='2'){
+              return
+          }else{
+            this.setPage1(this.pageNo);
+            this.$router.push({path:"/index/editApp",query:{type:0,id:this.id}});
+          }
           break;
         case 'app':
           this.setPage1(this.pageNo);
           this.$router.push({path:"/index/appDetail",query:{id:this.id}})
           break;
         case 'app_edit':
-          this.setPage1(this.pageNo);
-          this.$router.push({path:"/index/editApp",query:{type:1,id:this.id}})
+         if(this.state=='2'){
+              return
+          }else{
+            this.setPage1(this.pageNo);
+            this.$router.push({path:"/index/editApp",query:{type:1,id:this.id}})
+          }
           break;
       }     
     }

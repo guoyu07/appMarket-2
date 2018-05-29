@@ -165,7 +165,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 import {validate,appClassify} from '../../util/util.js'
 
 export default {
@@ -295,9 +294,6 @@ export default {
         
         }
       })
-      .catch(err=>{
-        console.log(err)
-      })
     },
     // 上传APK处理
     handleBeforeUploadApk(file){
@@ -340,9 +336,6 @@ export default {
             this.progressModal=false
             this.percent = 0
           }
-        }).catch(res=>{
-            this.$Message.warning("取消上传！")
-            this.percent = 0
         })
        
         return false 
@@ -365,7 +358,6 @@ export default {
         this.appInfo.captureUrls = this.$refs.upload.fileList.map(item=>{
           return item.url
         }).join(";")
-        //  console.log(this.appInfo.captureUrls)
     },
 
     // 上传图标
@@ -375,7 +367,6 @@ export default {
       var that = this
       reader.onload = function(e){
         var base = this.result
-        // console.log(base)
         var img = new Image()
         img.src = base
         img.onload = function(){
@@ -393,9 +384,6 @@ export default {
               that.appInfo.iconUrl = res.data.imagePath
             }
           })
-          .catch(err=>{
-            console.log(err)
-          })
         }
         
       } 
@@ -405,7 +393,6 @@ export default {
 
     // 上传截图
     handleUploadCaputer (file) {
-      // console.log(file)
       const size = file.size / 1024 / 1024
       if(size>1){
         this.$Message.error({
@@ -442,11 +429,7 @@ export default {
               that.appInfo.captureUrls = that.appInfo.uploadList.map(item=>{
                 return item.url
               }).join(";")
-              // console.log(that.appInfo.captureUrls)
             }
-          })
-          .catch(err=>{
-            console.log(err)
           })
         }
       }
@@ -461,7 +444,6 @@ export default {
             this.$refs['formValidate1'].validate((valid) => {
               if(valid) {
                 this.$Spin.show()
-                // console.log(this.app.captureUrls)
                  this.axios.post('/app/updateApp',{
                     ...this.app,
                     ...this.appInfo,
@@ -473,12 +455,7 @@ export default {
                     if(res && res.success=='1'){
                       this.$Message.success("操作成功！")
                       this.$router.push({path:'/index/appManage'})
-                    }else{
-                      this.$Message.error("操作失败！")
                     }
-                  })
-                  .catch(err=>{
-                    console.log(err)
                   })
               }
           })

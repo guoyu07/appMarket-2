@@ -18,7 +18,8 @@
                 <span @mousemove="tipsShow" @mouseleave="tipsHide">
                     <span class="user_wrap">
                         <span>{{accountForm.userName}}</span>
-                        <Icon type="ios-arrow-down"></Icon>
+                        <Icon type="ios-arrow-down" v-if='iconShow'></Icon>
+                        <Icon type="ios-arrow-up" v-else></Icon>
                     </span>
                     <div class='tips'>
                         <p @click="showModal"><Icon type="gear-b"></Icon><span>账号信息管理</span></p>
@@ -102,12 +103,10 @@ export default {
               callback(new Error('手机号码已存在！'))
             }
           })
-          .catch(function (error) {
-                console.log(error);
-          }) 
         }
     }
       return {
+          iconShow:true,
           loading:false,
           tmpPhone:'',
           tmpPwd:'',
@@ -155,9 +154,6 @@ export default {
                     window.localStorage.setItem("roleId",data.roleId)
                 }
             })
-            .catch(function (error) {
-                console.log(error);
-            }) 
                                 
      },
      //  查询未读消息数量
@@ -170,18 +166,17 @@ export default {
               if(res&&res.success==1){
                   this.setCount(res.data)
               }
-          })
-          .catch(function (error) {
-                console.log(error);
           }) 
       },
       // 鼠标移入
       tipsShow() {
           $(".tips").stop().slideDown(100)
+          this.iconShow = false
       },
       // 鼠标移出
       tipsHide() {
           $(".tips").stop().slideUp(100)
+          this.iconShow = true
       },
       showModal() {
           this.$refs['formValidate'].resetFields()
@@ -203,36 +198,44 @@ export default {
                       }}).then(res=>{
                           this.loading = false
                             if(res&&res.success=='1'){
-                                this.$Message.success("操作成功！")
-                                // 修改本地存储的用户信息
                                 this.modifyAccountModal = false
+                                this.$Modal.warning({
+                                    title: '',
+                                    content: "账号信息修改成功，请重新登陆！",
+                                    top:300,
+                                    onOk: () => {
+                                        this.$router.push({path:'/login'})
+                                    }
+                                });
                             }else{
-                                this.$Message.error("操作失败！")
                                 this.modifyAccountModal = false
                             }
                        })
-                       .catch(function (error) {
-                          console.log(error);
-                       })   
+                         
                     }else{
                         this.axios.get("/userPerm/updateUser",{params:{
                             ...this.accountForm,
-                            flag:1
+                            flag:1,
+                            userType:'1'
                         }}).then(res=>{
                             this.loading = false
                             if(res&&res.success=='1'){
-                                this.$Message.success("操作成功！")
-                                // 修改本地存储的用户信息
                                 this.modifyAccountModal = false
+                                this.$Modal.warning({
+                                    title: '',
+                                    content: "账号信息修改成功，请重新登陆！",
+                                    top:300,
+                                    onOk: () => {
+                                        this.$router.push({path:'/login'})
+                                    }
+                                });
                             }else{
-                                this.$Message.error("操作失败！")
                                 this.modifyAccountModal = false
                             }
                         })
-                        .catch(function (error) {
-                          console.log(error);
-                       }) 
+                         
                     }
+                    
                 }
             })
       },
@@ -246,9 +249,6 @@ export default {
                  this.$router.push('/login')
                  this.closeWebSocket()
               }
-          })
-          .catch(function (error) {
-                console.log(error);
           }) 
           
       },
@@ -331,11 +331,17 @@ export default {
         cursor:pointer;
 
         #num {
-            position:absolute;
-            color:red;
-            font-size:14px;
-            right:-5px;
-            top:-25px;
+            position: absolute;
+            color: #fff;
+            font-size: 12px;
+            left: 12px;
+            top: 0px;
+            background: red;
+            width: 14px;
+            height: 14px;
+            line-height: 14px;
+            text-align: center;
+            border-radius: 50%;
         }
     }
     .user_wrap{

@@ -301,13 +301,16 @@ export default {
                     h(Action, {
                         style: {
                             marginRight: '10px',
-                            padding:0
+                            padding:0,
+                            color:params.row.state=="1"?'#63c185':'#ccc',
+                            cursor:params.row.state=="1"?'pointer':'not-allowed'
                         },
                         props: {
                             hasName: 'app_upper',
                             textName: '版本升级',
                             id:params.row.id,
-                            pageNo:this.searchData.pageNo
+                            pageNo:this.searchData.pageNo,
+                            state:params.row.state
                         }
                     }),
                     h(Action, {
@@ -325,13 +328,16 @@ export default {
                     h(Action, {
                         style: {
                             marginRight: '10px',
-                            padding:0
+                            padding:0,
+                            color:params.row.state=="1"?'#63c185':'#ccc',
+                            cursor:params.row.state=="1"?'pointer':'not-allowed'
                         },
                         props: {
                             hasName: 'app_edit',
                             textName: '编辑',
                             id:params.row.id,
-                            pageNo:this.searchData.pageNo
+                            pageNo:this.searchData.pageNo,
+                            state:params.row.state
                         }
                     }),
                     h('a', {
@@ -401,7 +407,6 @@ export default {
          this.loading = true
          this.axios.get('/app/listApps',{params:this.searchData})
          .then(res=>{
-            //  console.log(res,'----------------------------')
              this.loading = false
              if(res && res.success=='1' && res.data){
                  const data = res.data
@@ -411,9 +416,6 @@ export default {
 
                  this.setPage1(1)
              }
-         })
-         .catch(err=>{
-             console.log(err)
          })
      },
 
@@ -448,9 +450,6 @@ export default {
                  this.userData = data
              }
          })
-         .catch(err=>{
-            console.log(err)
-        })
      },
 
     // 选中应用改变
@@ -557,9 +556,6 @@ export default {
                   this.queryTable()
               }
           })
-          .catch(err=>{
-            console.log(err)
-          })
      },
 
      // 确定下发
@@ -578,19 +574,13 @@ export default {
                 this.$Message.success("操作成功！")
                 this.dispatchModal = false
                 this.queryTable()
-            }else{
-                this.$Message.error("操作失败！")
             }
-        })
-        .catch(err=>{
-            console.log(err)
         })
      },
 
      // 选中用户改变
      selectUserChange(selection){
          this.selectedUserData = selection
-        //  console.log(this.selectedUserData)
          this.userIds = this.selectedUserData.map(item=>{
              return item.id
          }).join(";")

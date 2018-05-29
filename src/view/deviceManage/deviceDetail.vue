@@ -154,9 +154,6 @@ export default {
           this.deviceData = data
         }
       })
-      .catch(err=>{
-        console.log(err)
-      })
     },
 
     // 查询应用安装情况
@@ -172,9 +169,6 @@ export default {
             this.totalPage = data.total
             this.startRow = data.startRow
           }
-      })
-      .catch(err=>{
-        console.log(err)
       })
     },
 

@@ -55,7 +55,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 import {format} from '../../util/util.js'
 export default {
   created(){
@@ -186,13 +185,9 @@ export default {
           console.log(this.allOptData )
         }
       })
-      .catch(err=>{
-        console.log(err)
-      })
     },
     // tab栏切换
     tabChange(name){
-      // console.log(name)
       this.searchData.optType = '-1'
       this.searchData.userType = '-1'
       this.searchData.fromDate = null
@@ -225,9 +220,6 @@ export default {
           this.startRow1 = data.startRow
         }
       })
-      .catch(err=>{
-        console.log(err)
-      })
     },
 
     // 查询登录日志
@@ -248,9 +240,6 @@ export default {
           this.startRow2 = data.startRow
         }
       })
-      .catch(err=>{
-        console.log(err)
-      })
     }
 
   },
@@ -258,7 +247,6 @@ export default {
 // watch------------------------------------------------------------------------------------------------
   watch:{
     'time':function(){
-      // console.log(this.time)
       this.searchData.fromDate = this.time[0]!=''?new Date(this.time[0]).format("yyyy-MM-dd"):null
       this.searchData.toDate = this.time[1]!=""?new Date(this.time[1]).format("yyyy-MM-dd"):null
     }

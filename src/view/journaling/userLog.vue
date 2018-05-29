@@ -34,7 +34,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 import {format} from '../../util/util.js'
 export default {
   created(){
@@ -128,16 +127,12 @@ export default {
           this.startRow = data.startRow
         }
       })
-      .catch(err=>{
-        console.log(err)
-      })
     }
 
   },
 
   watch:{
     'time':function(){
-      // console.log(this.time)
       this.searchData.fromDate = this.time[0]!=''?new Date(this.time[0]).format("yyyy-MM-dd"):null
       this.searchData.toDate = this.time[1]!=""?new Date(this.time[1]).format("yyyy-MM-dd"):null
     }

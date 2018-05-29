@@ -172,7 +172,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 import {validate,appClassify} from '../../util/util.js'
 
 export default {
@@ -206,9 +205,6 @@ export default {
               }else{
                 callback()
               }
-          })
-          .catch(err=>{
-            console.log(err)
           })
         }
     }
@@ -319,9 +315,6 @@ export default {
             this.progressModal=false
             this.percent = 0
           }
-        }).catch(res=>{
-            this.$Message.warning("取消上传！")
-            this.percent = 0
         })
        
         return false 
@@ -354,7 +347,6 @@ export default {
       var that = this
       reader.onload = function(e){
         var base = this.result
-        // console.log(base)
         var img = new Image()
         img.src = base
         img.onload = function(){
@@ -372,9 +364,6 @@ export default {
               that.appInfo.iconUrl = res.data.imagePath
             }
           })
-          .catch(function (error) {
-                console.log(error);
-          })
         }
         
       } 
@@ -384,7 +373,6 @@ export default {
 
     // 上传截图
     handleUploadCaputer (file) {
-      // console.log(file)
       const size = file.size / 1024 / 1024
       if(size>1){
         this.$Message.error({
@@ -423,9 +411,6 @@ export default {
               }).join(";")
             }
           })
-          .catch(function (error) {
-                console.log(error);
-          })
         }
       }
       return false
@@ -438,7 +423,6 @@ export default {
             this.$refs['formValidate1'].validate((valid) => {
               if(valid) {
                 this.$Spin.show()
-                // console.log(this.appInfo.captureUrls)
                  this.axios.post('/app/addApp',{
                     ...this.app,
                     ...this.appInfo,
@@ -448,12 +432,7 @@ export default {
                     if(res && res.success=='1'){
                       this.$Message.success("操作成功！")
                       this.$router.push({path:'/index/appManage'})
-                    }else{
-                      this.$Message.error("操作失败！")
                     }
-                  })
-                  .catch(function (error) {
-                        console.log(error);
                   })
               }
           })

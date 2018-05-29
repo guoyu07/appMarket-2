@@ -86,7 +86,6 @@
 </template>
 
 <script>
-import qs from 'qs'
 import {mapActions, mapGetters} from 'vuex'
 export default {
 // created------------------------------------------------------------------------------
@@ -201,7 +200,6 @@ export default {
                         on: {
                             click: () => {
                                 this.setPage2(this.pageNo)
-                                // console.log(this.rightPage)
                                 this.$router.push({path:'/index/dispatchRight',query:{roleId:params.row.id}})
                             }
                         }
@@ -270,9 +268,6 @@ export default {
           this.setPage2(1)
         }
       })
-      .catch(err=>{
-        console.log(err)
-      })
     },
 
     // 改变页码
@@ -300,12 +295,8 @@ export default {
                         this.addModal = false
                         this.queryTable()
                     }else{
-                        this.$Message.error("操作失败！")
                         this.addModal = false
                     }
-                })
-                .catch(err=>{
-                    console.log(err)
                 })
             }
         })
@@ -324,12 +315,8 @@ export default {
                         this.editModal = false
                         this.queryTable()
                     }else{
-                        this.$Message.error("操作失败！")
                         this.editModal = false
                     }
-                })
-                .catch(err=>{
-                    console.log(err)
                 })
             }
         })
@@ -349,12 +336,8 @@ export default {
                   this.deleteModal=false
                   this.queryTable()
               }else{
-                  this.$Message.error(res.msg)
                   this.deleteModal=false
               }
-          })
-          .catch(err=>{
-                console.log(err)
           })
       }
   }

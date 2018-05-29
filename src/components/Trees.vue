@@ -53,9 +53,7 @@ export default {
     }
   },
   methods:{
-    
     handleCheck(checked,children){
-      console.log(111)
       setValue(children,'checked',checked)
     },
     handleCheck1(checked,id,item,children){

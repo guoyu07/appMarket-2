@@ -1,9 +1,6 @@
 import axios from 'axios'
-import store from '../store/store'
-import * as types from '../store/types'
-import router from '../router/router-config'
 import env from '../js/env'
-
+import { Message } from 'iview';
 
 let baseURL = env.apiPath
 
@@ -17,40 +14,45 @@ axios.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded;
 // http request 拦截器
 axios.interceptors.request.use(
     config => {
-        
-        if (window.localStorage.getItem('token')) {
+        let token = window.localStorage.getItem('token')
+        if (token) {
             if(config.method=='post'){
                 config.data = {
                     ...config.data,
-                    token: window.localStorage.getItem('token'),
+                    token: token,
                 }
             }else if(config.method=='get'){
                 config.params = {
-                    token: window.localStorage.getItem('token'),
+                    token: token,
                     ...config.params
                 }
             }
-            // Object.assign(config.headers, { 'token': window.localStorage.getItem('token') });
         }
         return config;
     },
     err => {
-        // return Promise.reject(err);
+        return Promise.reject(err);
     });
 
 // http response 拦截器
 axios.interceptors.response.use(
     response => {
-        // 会话超时
-        if(response.data.erroCode=='1'||response.data.erroCode=='2'){
-            window.localStorage.clear()
-            window.location.hash='/login'
+        
+        if(response.data.success==0){
+            Message.error(response.data.msg)
+            // 会话超时
+            if(response.data.erroCode=='1'||response.data.erroCode=='2'){
+                window.localStorage.clear()
+                window.location.hash='/login'
+            }
         }
-        // 
         return response.data;
     },
     error => {
-        // return Promise.reject(error)
+        var p = Promise.reject(error)
+        p.catch(error=>{
+            console.log(error)
+        })
+        return p
     });
-
 export default axios;

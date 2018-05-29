@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import app from './app.vue'
 import iView from 'iview';
-
 import axios from  './api/axios_api.js'
-import vuescroll from 'vue-scroll'
 import 'minireset.css'
 import 'iview/dist/styles/iview.css';
 import router from './router/index.js'
@@ -11,11 +9,9 @@ import staticRoute from './router/staticRoute.js'
 import './my-theme/index.less';
 import store from './store/store'
 import * as types from './store/types.js'
-import 'babel-polyfill'
-require("es6-promise").polyfill();
+
 
 Vue.use(iView)
-Vue.use(vuescroll)
 Vue.prototype.axios = axios
 
 

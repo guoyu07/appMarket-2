@@ -79,9 +79,7 @@ export default {
             $("#aside_menu").hide()
         }else{
             for(var i = 0; i < allMenu.length; i++){
-                // console.log(allMenu[i].getAttribute("auth"))
                 let code = authList.indexOf(allMenu[i].getAttribute("auth"))
-                // console.log(code)
                 if(code == -1){
                     allMenu.eq(i).hide()
                 }

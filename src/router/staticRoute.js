@@ -1,7 +1,3 @@
-// import Login from '../view/login/index.vue'
-// import Home from '../view/home/index.vue'
-// import Index from '../view/index/index.vue'
-
 
 const Index = resolve => require.ensure([], () => resolve(require('../view/index/index.vue')), 'Index')
 
@@ -37,12 +33,6 @@ let staticRoutes = [
         path: '/',
         component: Index,
         children:[
-            // {
-            //     path:'/index/homepage',
-            //     component: Home,
-            //     name:'首页',
-            //     auth:11
-            // },
             {
                 path:'/index/appManage',
                 component: AppManage,

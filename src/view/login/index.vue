@@ -61,7 +61,6 @@ export default {
       // 点击登录
       ...mapActions(['addMenu','loadRoutes',]),
       handleSubmit(name){
-        // console.log(this)
         if(this.count>0){
             return
         }
@@ -103,16 +102,12 @@ export default {
                         window.localStorage.setItem("authList",JSON.stringify(this.authList))              
 
                         // 跳转到首页
-                        this.$router.push({path: '/index/homepage'})
                         window.localStorage.setItem('currentMenu','/index/homepage')
+                        this.$router.push({path: '/index/homepage'})
                     }else{
                        this.$Message.destroy(msg)
-                       this.$Message.error(res.msg) 
                     }
-                })
-                .catch(function (error) {//加上catch 
-                    console.log(error);
-                })            
+                })          
             }
         })
       },
