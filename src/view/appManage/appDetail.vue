@@ -48,7 +48,7 @@
             <Form :label-width="100">
                 <FormItem label="应用图标">
                   <div style="width:66px;height:66px;margin-top:10px;border:1px solid #ccc">
-                    <img :src="appInfo.iconUrl" alt="" style="width:100%;height:100%">
+                    <img :src="appInfo.iconUrl" alt="" style="display:block;width:100%;height:100%">
                   </div>
                 </FormItem>
                 <FormItem label="应用截图">

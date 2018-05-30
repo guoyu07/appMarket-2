@@ -270,6 +270,8 @@ export default {
                   size:180,
                     cursor: 'pointer',
                     dataLabels: {
+                    padding: 0,
+                    distance: 25,
                         enabled: true,
                         format: '<b>{point.name}</b>: {point.percentage:.2f} %',
                         style: {

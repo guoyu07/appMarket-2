@@ -10,11 +10,11 @@ var stringify = (result) => JSON.stringify(result, null, '    ');
 
 
 const bucket = 'mfweb';
-const ossRootDir = 'admin/appMarket';
+const ossRootDir = 'scripts/appmarket';
 const publicDir = 'build';
 const uploadDir = ossRootDir + '/' + env.dir; 
-// admin/appMarket/test
-// admin/appMarket/official
+// scripts/appMarket/test
+// scripts/appMarket/official
 
 // 设置默认显示使用帮助
 var argv = process.argv;
@@ -98,23 +98,24 @@ function travel(src, dest) {
 		}
 	});
 }
-console.log('program为',program)
+
 //copy
 if (program.copy) {
-	// travel("../beefly-frame/public", './public');
-	travel("./static", './build');
+	// travel("./static", './build');
 }
 
 function readOssConifg(_bucket) {
 	let data = fs.readFileSync(os.homedir() + '/.ossconfig', "utf-8");
 	let ossConfig = JSON.parse(data);
 	ossConfig.bucket = _bucket;
+	console.log('ossConfig:',ossConfig)
 	return ossConfig;
 }
 
 // oss client
 const client = new OSS(readOssConifg(bucket));
-
+console.log('client',client)
+console.log('os',os)
 // 遍历目录中所有文件
 const listNativeFiles = (dir) => {
 	let children = [];
@@ -123,7 +124,6 @@ const listNativeFiles = (dir) => {
 		if (result) {
 			result.forEach(function (filename) {
 				let path = dir + "/" + filename;
-				console.log(path)
 				let stat = fs.statSync(path);
 				if (stat && stat.isDirectory()) {
 					children = children.concat(listNativeFiles(path))
@@ -169,15 +169,12 @@ const listOssFiles = co.wrap(function* listDir(dir) {
 			// }
 		}
 	}
-
-	// arrs.push(dir);
 	return Promise.resolve(arrs)
 });
 
 function* listTask(objectKey) {
 	console.log('list dir:' + objectKey);
 	let result = yield listOssFiles(objectKey);
-	console.log('result: ', stringify(result));
 }
 
 // 列出oss上文件列表
@@ -192,7 +189,6 @@ function* cleanupTask(objectKey) {
 	let result = yield listOssFiles(objectKey);
 	if (result.length > 0)
 		yield client.deleteMulti(result);
-	console.log('result: ', stringify(result));
 }
 
 function* uploadTask(nativeDir, ossDir) {

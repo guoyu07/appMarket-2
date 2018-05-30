@@ -183,6 +183,7 @@ export default {
                          
                                 $(window.event.target).css("color",'#63c185')
                                 $(window.event.target).siblings().css("color",'#555')
+                                $(window.event.target).parents('th').siblings().find('i').css("color",'#555')                                
                                 if(window.event.target.className.indexOf('ivu-icon-arrow-up-b')!=-1){
                                     this.searchData.orderStr = '1'
                                     this.searchData.pageNo = 1
@@ -238,6 +239,7 @@ export default {
                             
                                 $(window.event.target).css("color",'#63c185')
                                 $(window.event.target).siblings().css("color",'#555')
+                                $(window.event.target).parents('th').siblings().find('i').css("color",'#555')
                                 if(window.event.target.className.indexOf('ivu-icon-arrow-up-b')!=-1){
                                     this.searchData.orderStr = '3'
                                     this.searchData.pageNo = 1

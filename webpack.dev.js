@@ -8,11 +8,11 @@
    devtool: 'inline-source-map',
    output:{
     filename: 'javascripts/[name].[hash].js', 
-    // filename: '[name].js'+"?update="+ new Date().getTime(), 
     path: BUILD_PATH,
     publicPath:'/',
  },
    devServer: {
+    //  host:'133.100.108.49',
      disableHostCheck: true,
      port:9090,
      contentBase: './build',
