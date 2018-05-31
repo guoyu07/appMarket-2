@@ -468,6 +468,7 @@ export default {
 
 <style lang="scss" scoped type="text/css">
   #addApp {
+    padding-bottom:50px;
     h2 {
       height: 40px;
       line-height:40px;

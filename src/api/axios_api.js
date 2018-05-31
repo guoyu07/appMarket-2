@@ -1,4 +1,4 @@
-// import axios from 'axios'
+import axios from 'axios'
 import env from '../js/env'
 import { Message } from 'iview';
 
@@ -39,7 +39,7 @@ axios.interceptors.response.use(
     response => {
         
         if(response.data.success==0){
-            Message.error(response.data.msg)
+            Message.error({content:response.data.msg,duration:5})
             // 会话超时
             if(response.data.erroCode=='1'||response.data.erroCode=='2'){
                 window.localStorage.clear()

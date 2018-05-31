@@ -34,7 +34,6 @@ const getters = {
 function generateMenuItems(state, authList){
     // 所有路由
     var arr = state.staticRoute[0].children
-    // console.log(arr)
     // 新路由
     var newArr = []
     for(var i = 0; i< arr.length; i++){
@@ -42,7 +41,6 @@ function generateMenuItems(state, authList){
           newArr.push(arr[i])
       }
     }
-    // console.log(newArr)
     var res = Object.assign({},state.staticRoute[0],{children:newArr})
     state.items = [res]
     return

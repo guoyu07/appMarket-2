@@ -138,6 +138,9 @@ export default {
         {
             title: "用户类型",
             key: 'userType',
+            render:(h,params)=>{
+              return h('div',params.row.userType=='1'?'平台用户':'手机用户')
+            }
         },
         {
             title: "操作类型",
@@ -147,7 +150,7 @@ export default {
         },
         {
             title: "操作者",
-            key: 'userId',
+            key: 'userName',
         },
         {
             title: "IP地址",

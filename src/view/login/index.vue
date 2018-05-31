@@ -52,7 +52,7 @@ export default {
           },
           isShow:false,
           authList:null,
-          count:0
+          count:0,
       }
   },
 
@@ -68,17 +68,17 @@ export default {
         // 判断是否填写用户名密码
         this.$refs[name].validate((valid) => {
             if (valid) {
-                const msg = this.$Message.loading({
-                    content: '正在登陆...',
-                    duration: 0
+                this.$Loading.config({
+                    color: '#5cb85c',
+                    height: 3
                 });
+                this.$Loading.start()
                 // 发送登录请求
                 this.axios.post('/login',qs.stringify(this.loginData))
                 .then((res)=>{
                     this.count = 0;
-                    
+                    this.$Loading.finish();
                     if(res.success=='1'){
-                        this.$Message.destroy(msg)
                         this.$Message.success("登陆成功！")
                         // 本地存储token
                         window.localStorage.setItem("token",res.token)
@@ -104,8 +104,6 @@ export default {
                         // 跳转到首页
                         window.localStorage.setItem('currentMenu','/index/homepage')
                         this.$router.push({path: '/index/homepage'})
-                    }else{
-                       this.$Message.destroy(msg)
                     }
                 })          
             }

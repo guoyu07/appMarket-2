@@ -11,7 +11,7 @@ export default {
     }
   },
   props: [
-      'hasName', 'textName','id','pageNo','state'
+      'hasName', 'textName','id','pageNo','state','source'
     ],
   methods:{
     ...mapActions(['setPage1']),
@@ -20,7 +20,7 @@ export default {
       switch (this.hasName) {
         // 应用管理 版本升级、详情、编辑
         case 'app_upper':
-          if(this.state=='2'){
+          if(this.state=='2'||this.source=='2'){
               return
           }else{
             this.setPage1(this.pageNo);
@@ -32,7 +32,7 @@ export default {
           this.$router.push({path:"/index/appDetail",query:{id:this.id}})
           break;
         case 'app_edit':
-         if(this.state=='2'){
+         if(this.state=='2'||this.source=='2'){
               return
           }else{
             this.setPage1(this.pageNo);

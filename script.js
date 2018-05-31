@@ -114,8 +114,7 @@ function readOssConifg(_bucket) {
 
 // oss client
 const client = new OSS(readOssConifg(bucket));
-console.log('client',client)
-console.log('os',os)
+
 // 遍历目录中所有文件
 const listNativeFiles = (dir) => {
 	let children = [];

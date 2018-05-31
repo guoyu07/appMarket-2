@@ -303,16 +303,17 @@ export default {
                     h(Action, {
                         style: {
                             marginRight: '10px',
-                            padding:0,
-                            color:params.row.state=="1"?'#63c185':'#ccc',
-                            cursor:params.row.state=="1"?'pointer':'not-allowed'
+                            padding:0, // 禁用或来源为search不可版本升级
+                            color:(params.row.state=="2"||params.row.source=="2")?'#ccc':'#63c185',
+                            cursor:(params.row.state=="2"||params.row.source=="2")?'not-allowed':'pointer'
                         },
                         props: {
                             hasName: 'app_upper',
                             textName: '版本升级',
                             id:params.row.id,
                             pageNo:this.searchData.pageNo,
-                            state:params.row.state
+                            state:params.row.state,
+                            source:params.row.source
                         }
                     }),
                     h(Action, {
@@ -330,26 +331,27 @@ export default {
                     h(Action, {
                         style: {
                             marginRight: '10px',
-                            padding:0,
-                            color:params.row.state=="1"?'#63c185':'#ccc',
-                            cursor:params.row.state=="1"?'pointer':'not-allowed'
+                            padding:0, // 禁用或来源为search不可编辑
+                            color:(params.row.state=="2"||params.row.source=="2")?'#ccc':'#63c185',
+                            cursor:(params.row.state=="2"||params.row.source=="2")?'not-allowed':'pointer'
                         },
                         props: {
                             hasName: 'app_edit',
                             textName: '编辑',
                             id:params.row.id,
                             pageNo:this.searchData.pageNo,
-                            state:params.row.state
+                            state:params.row.state,
+                            source:params.row.source
                         }
                     }),
                     h('a', {
-                        style: {
-                            color:params.row.isBlacklist=="1"?'#ccc':'#63c185',
-                            cursor:params.row.isBlacklist=="1"?'not-allowed':'pointer'
+                        style: {// 禁用或白名单不可下发
+                            color:(params.row.state=='2'||params.row.isBlacklist=="1")?'#ccc':'#63c185',
+                            cursor:(params.row.state=='2'||params.row.isBlacklist=="1")?'not-allowed':'pointer'
                         },
                         on: {
                             click: () => {
-                                if(params.row.isBlacklist=='1'){
+                                if(params.row.isBlacklist=='1'||params.row.state=='2'){
                                     return
                                 }
                                 this.$refs.selection.selectAll(false);
@@ -494,21 +496,33 @@ export default {
           return true
         }
       }else if(flag=='3'){
-        if(this.selectedIsBlacklist.indexOf("0")!=-1){
-          this.$Message.warning('含有已是黑名单的数据！');
-          breakTips()
-          return false
-        }else{
-          return true
-        }
+          if(this.selectedState.indexOf("2")!=-1){
+              this.$Message.warning('禁用应用不允许操作！')
+               breakTips()
+               return false
+          }else{
+            if(this.selectedIsBlacklist.indexOf("0")!=-1||this.selectedState.indexOf("2")!=-1){
+                this.$Message.warning('含有已是黑名单的数据！');
+                breakTips()
+                return false
+            }else{
+                return true
+            }
+          }
       }else if(flag=='4'){
-        if(this.selectedIsBlacklist.indexOf("1")!=-1){
-          this.$Message.warning('含有已是白名单的数据！');
-          breakTips()
-          return false
-        }else{
-          return true
-        }
+          if(this.selectedState.indexOf("2")!=-1){
+              this.$Message.warning('禁用应用不允许操作！')
+              breakTips()
+              return false
+          }else{
+            if(this.selectedIsBlacklist.indexOf("1")!=-1){
+                this.$Message.warning('含有已是白名单的数据！');
+                breakTips()
+                return false
+            }else{
+                return true
+            }
+          }
       }
      },
 
