@@ -122,14 +122,11 @@ export default {
     document.title = '首页-应用市场管理平台'
     this.queryAppNum()
     this.queryUserState()
-    
-
-  },
-  mounted(){
     this.queryDeviceModel()
     this.queryAppVersion()
     this.queryState()
-    this.queryInstall()    
+    this.queryInstall()  
+
   },
 
 // methods-----------------------------------------------------------------------------------------
@@ -170,6 +167,7 @@ export default {
               data:data,
             })
          }else{
+           this.loading1 = false
            this.isShow1 = true
          }
        })
@@ -179,7 +177,6 @@ export default {
      queryAppVersion(){
        this.loading2 = true
        this.axios.get('/statistic/appVersionDistribution').then(res=>{
-        //  this.loading2 = false
          if(res && res.success=='1'&&res.data.length!=0){
            const data = res.data.map(item=>{
              const arr = []
@@ -193,6 +190,7 @@ export default {
             data:data
           })
          }else{
+           this.loading2 = false
            this.isShow2 = true
          }
        })
@@ -202,7 +200,6 @@ export default {
      queryState(){
        this.loading3 = true
        this.axios.get('/statistic/stateDistribution').then(res=>{
-        //  this.loading3 = false
          if(res && res.success=='1'&&res.data.length!=0){
               const data = res.data.map(item=>{
                 const arr = []
@@ -216,6 +213,7 @@ export default {
                 data:data,
               })
          }else{
+           this.loading3 = false
            this.isShow3 = true
          }
        })
@@ -225,7 +223,6 @@ export default {
      queryInstall(){
        this.loading4 = true
        this.axios.get('/statistic/installDistribution').then(res=>{
-        //  this.loading4 = false
          if(res && res.success=='1'&&res.data.length!=0){
             const data = res.data.map(item=>{
               const obj =  {}
@@ -241,6 +238,7 @@ export default {
               }],
             })
          }else{
+           this.loading4 = false
            this.isShow4 = true
          }
        })

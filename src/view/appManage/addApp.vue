@@ -286,6 +286,7 @@ export default {
         this.fileName = file.name
         let form = new FormData()
         form.append("file",file)
+        form.append("token",window.localStorage.getItem("token"))
         
         this.source = this.axios.CancelToken.source()
         var config = {

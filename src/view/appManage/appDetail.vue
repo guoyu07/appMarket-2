@@ -139,9 +139,11 @@ export default {
       .intro {
         padding:20px;
         background:#fff;
+        p{
+            margin-bottom:10px;
+          }
         .info{
           margin-left:23%;
-          
           .img_wrap,.left,.right{
             float:left;
             margin-right:50px;
@@ -152,7 +154,8 @@ export default {
           .img_wrap{
             width:48px;
             height: 48px;
-            background:#ccc
+            background:#ccc;
+            border-radius:8px;
           }
         }
       }
