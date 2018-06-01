@@ -22,10 +22,7 @@ const mutations = {
         state.devicePage = page
     },
     [types.SET_COUNT](state,num){
-        console.log(state.count)
-        state.count = num
-        console.log(state.count)
-        
+        state.count = num 
     },
 
 }

@@ -57,8 +57,6 @@ export default {
       setValue(children,'checked',checked)
     },
     handleCheck1(checked,id,item,children){
-      console.log(checked)
-      console.log(children)
       if(children){
         setValue(children,'checked',checked)
       }
@@ -72,7 +70,6 @@ export default {
                 if(item.children[i].children[j].id!=id){
                   for(var k=0;k<item.children[i].children[j].children.length;k++){
                     if(item.children[i].children[j].children[k].id==id){
-                      console.log(item.children[i].children[j])
                       item.children[i].children[j].checked=true
                       item.children[i].checked=true
                     }

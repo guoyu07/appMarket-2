@@ -185,7 +185,6 @@ export default {
           data.forEach(item=>{
            this.allOptData[item.optType] = item.optDesc
           })
-          console.log(this.allOptData )
         }
       })
     },
